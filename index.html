@@ -2,353 +2,713 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asistente de Inversión - USA y Europa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SANTISYSTEMS - Bot Inversor IA</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            height: 100vh;
+            font-family: 'Segoe UI', 'Roboto', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0f1e 0%, #0a1a2f 100%);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
+
+        /* Pantalla de Login */
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .login-card {
+            background: rgba(18, 25, 45, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            padding: 40px 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(66, 153, 225, 0.2);
+            border: 1px solid rgba(66, 153, 225, 0.3);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .login-header .badge {
+            display: inline-block;
+            background: rgba(66, 153, 225, 0.2);
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            color: #90cdf4;
+            margin-top: 12px;
+            border: 1px solid rgba(66, 153, 225, 0.4);
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: #a0aec0;
+            font-size: 0.85rem;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #cbd5e0;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #2d3748;
+            border-radius: 16px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .checkbox-group label {
+            color: #a0aec0;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 40px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.4);
+        }
+
+        .error-message {
+            background: rgba(229, 62, 62, 0.2);
+            border: 1px solid rgba(229, 62, 62, 0.5);
+            color: #fc8181;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Chat Container (oculto hasta login) */
         .chat-container {
             width: 90%;
-            max-width: 1200px;
-            height: 85vh;
+            max-width: 1300px;
+            height: 90vh;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-radius: 28px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            display: none;
         }
+
         .chat-header {
-            background: #2c3e50;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
             color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        .chat-header h1 {
-            font-size: 1.5rem;
-        }
-        .chat-header p {
-            font-size: 0.85rem;
-            opacity: 0.9;
-        }
-        .scan-panel {
-            background: #ecf0f1;
-            padding: 15px;
+            padding: 18px 24px;
             display: flex;
-            gap: 10px;
-            border-bottom: 1px solid #bdc3c7;
+            justify-content: space-between;
+            align-items: center;
             flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .scan-panel button {
-            flex: 1;
-            padding: 12px;
+
+        .header-title h1 {
+            font-size: 1.3rem;
+            letter-spacing: -0.3px;
+        }
+
+        .header-title h1 span {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .header-title p {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-buttons button {
+            padding: 8px 18px;
             border: none;
-            border-radius: 8px;
-            font-weight: bold;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .btn-clear {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-clear:hover {
+            background: rgba(229, 62, 62, 0.7);
+            border-color: #e53e3e;
+        }
+
+        .btn-logout {
+            background: rgba(255,255,255,0.1);
+            color: #cbd5e0;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .scan-panel {
+            background: #f1f5f9;
+            padding: 15px 24px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .scan-panel button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s;
+            font-size: 0.85rem;
         }
+
         .scan-panel button:hover {
             transform: translateY(-2px);
         }
+
         .btn-europe {
             background: #3498db;
             color: white;
         }
+
         .btn-usa {
             background: #e74c3c;
             color: white;
         }
+
         .btn-tickers {
             background: #27ae60;
             color: white;
         }
+
         .messages-area {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
-            background: #f8f9fa;
+            padding: 24px;
+            background: #f8fafc;
         }
+
         .message {
-            margin-bottom: 15px;
-            padding: 12px;
-            border-radius: 12px;
+            margin-bottom: 16px;
+            padding: 12px 18px;
+            border-radius: 20px;
             max-width: 85%;
+            word-wrap: break-word;
+            line-height: 1.5;
         }
+
         .user-message {
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             margin-left: auto;
             text-align: right;
+            border-bottom-right-radius: 4px;
         }
+
         .bot-message {
             background: white;
-            border: 1px solid #ddd;
+            border: 1px solid #e2e8f0;
             margin-right: auto;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
+
         .input-area {
-            padding: 20px;
+            padding: 20px 24px;
             background: white;
-            border-top: 1px solid #ddd;
+            border-top: 1px solid #e2e8f0;
             display: flex;
-            gap: 10px;
+            gap: 12px;
         }
+
         .input-area input {
             flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: 14px 18px;
+            border: 1px solid #cbd5e0;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s;
         }
+
+        .input-area input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
         .input-area button {
-            padding: 12px 24px;
-            background: #667eea;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 40px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
         }
-        .signal-compra {
-            color: #27ae60;
-            font-weight: bold;
-        }
-        .signal-no-compra {
-            color: #e74c3c;
-            font-weight: bold;
-        }
-        .signal-observar {
-            color: #f39c12;
-            font-weight: bold;
-        }
+
+        .signal-compra { color: #27ae60; font-weight: bold; }
+        .signal-no-compra { color: #e74c3c; font-weight: bold; }
+        .signal-observar { color: #f39c12; font-weight: bold; }
+
         .stock-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
+            gap: 12px;
+            margin-top: 12px;
         }
+
         .stock-item {
-            background: #ecf0f1;
-            padding: 10px;
-            border-radius: 8px;
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 16px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
         }
+
         .stock-item:hover {
-            background: #bdc3c7;
+            background: #e2e8f0;
+            transform: translateY(-2px);
         }
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #666;
+
+        @media (max-width: 768px) {
+            .chat-container { width: 95%; height: 95vh; }
+            .message { max-width: 95%; }
+            .scan-panel button { flex: 1; text-align: center; }
         }
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <h1>🤖 Asistente de Inversión</h1>
-            <p>Escáner de 80 empresas | Análisis profundo con IA (Claude)</p>
+
+<!-- PANTALLA DE LOGIN -->
+<div class="login-container" id="loginContainer">
+    <div class="login-card">
+        <div class="login-header">
+            <h1>SANTISYSTEMS</h1>
+            <div class="badge">Bot Inversor con IA - Paper Trading</div>
+        </div>
+        <div class="login-subtitle">Accede a tu dashboard de inversión</div>
+        
+        <div class="input-group">
+            <label>USUARIO</label>
+            <input type="text" id="loginUser" placeholder="Tu usuario" autocomplete="off">
         </div>
         
-        <div class="scan-panel">
-            <button class="btn-europe" onclick="scanMarket('europe')">🌍 Escáner Europa (8:30)</button>
-            <button class="btn-usa" onclick="scanMarket('usa')">🇺🇸 Escáner USA (15:30)</button>
-            <button class="btn-tickers" onclick="showTickers()">📋 Ver todas las empresas (80)</button>
+        <div class="input-group">
+            <label>CONTRASEÑA</label>
+            <input type="password" id="loginPass" placeholder="••••••••">
         </div>
         
-        <div class="messages-area" id="messages">
-            <div class="message bot-message">
-                👋 ¡Hola! Soy tu asistente de inversión.<br><br>
-                <strong>¿Qué puedo hacer por ti?</strong><br>
-                • Haz clic en "Escáner Europa" para ver oportunidades del día<br>
-                • Haz clic en "Escáner USA" para ver oportunidades USA<br>
-                • Haz clic en "Ver todas las empresas" para ver la lista completa<br>
-                • Escribe "analiza AAPL" para análisis profundo con IA<br><br>
-                ⚠️ <em>Esto es una herramienta de análisis, no consejo financiero.</em>
-            </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="rememberCheck">
+            <label>Mantener sesión</label>
         </div>
         
-        <div class="input-area">
-            <input type="text" id="userInput" placeholder="Ej: analiza AAPL, escanea europa, o haz una pregunta..." onkeypress="if(event.key==='Enter') sendMessage()">
-            <button onclick="sendMessage()">Enviar 📤</button>
+        <button class="login-btn" onclick="doLogin()">Entrar →</button>
+        <div id="loginError" class="error-message" style="display: none;"></div>
+    </div>
+</div>
+
+<!-- CHAT PRINCIPAL -->
+<div class="chat-container" id="chatContainer">
+    <div class="chat-header">
+        <div class="header-title">
+            <h1>⚡ SANTISYSTEMS <span>| Bot Inversor IA</span></h1>
+            <p>7 indicadores técnicos + IA (Claude) | Mercados USA y Europa</p>
+        </div>
+        <div class="header-buttons">
+            <button class="btn-clear" onclick="clearChat()">🗑️ Limpiar chat</button>
+            <button class="btn-logout" onclick="logout()">🚪 Salir</button>
         </div>
     </div>
+    
+    <div class="scan-panel">
+        <button class="btn-europe" onclick="scanMarket('europe')">🌍 Escáner Europa (8:30)</button>
+        <button class="btn-usa" onclick="scanMarket('usa')">🇺🇸 Escáner USA (15:30)</button>
+        <button class="btn-tickers" onclick="showTickers()">📋 Ver 80 empresas</button>
+    </div>
+    
+    <div class="messages-area" id="messages">
+        <div class="message bot-message">
+            🤖 <strong>SANTISYSTEMS AI</strong><br><br>
+            Bienvenido al Bot Inversor con IA.<br><br>
+            📊 <strong>Mercados disponibles:</strong><br>
+            • 🇺🇸 USA: 40 empresas (tiempo real vía Alpaca)<br>
+            • 🌍 Europa: 40 empresas (Yahoo Finance)<br><br>
+            <strong>Comandos rápidos:</strong><br>
+            • "escanea europa" - Oportunidades europeas<br>
+            • "escanea usa" - Oportunidades USA<br>
+            • "analiza AAPL" - Análisis con 7 indicadores + IA<br>
+            • "lista" - Ver todas las empresas<br><br>
+            ⚠️ <em>Análisis técnico + IA. No es consejo financiero garantizado.</em>
+        </div>
+    </div>
+    
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Ej: analiza AAPL, escanea europa, lista..." onkeypress="if(event.key==='Enter') sendMessage()">
+        <button onclick="sendMessage()">Enviar 📤</button>
+    </div>
+</div>
 
-    <script>
-        // 🔴 IMPORTANTE: CAMBIA ESTA URL POR LA DE TU WORKER
-        const WORKER_URL = "https://botinvertir.santibernabebb.workers.dev";
+<script>
+    // 🔴 CONFIGURACIÓN - CAMBIA LA URL DE TU WORKER
+    const WORKER_URL = "https://botinvertir.santibernabebb.workers.dev";
+    
+    // Verificar sesión guardada
+    function checkSession() {
+        const savedUser = localStorage.getItem('santisystems_user');
+        const savedPass = localStorage.getItem('santisystems_pass');
+        if (savedUser && savedPass) {
+            document.getElementById('loginUser').value = savedUser;
+            document.getElementById('loginPass').value = savedPass;
+            document.getElementById('rememberCheck').checked = true;
+            // Intentar login automático
+            doLogin(true);
+        }
+    }
+    
+    // Función de login
+    async function doLogin(silent = false) {
+        const username = document.getElementById('loginUser').value.trim();
+        const password = document.getElementById('loginPass').value;
+        const remember = document.getElementById('rememberCheck').checked;
+        const errorDiv = document.getElementById('loginError');
         
-        function addMessage(text, isUser = false) {
-            const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-            messageDiv.innerHTML = text;
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        if (!username || !password) {
+            errorDiv.style.display = 'block';
+            errorDiv.innerText = '❌ Usuario y contraseña requeridos';
+            return;
         }
         
-        async function scanMarket(market) {
-            addMessage(`🔍 Escaneando mercado ${market === 'europe' ? 'Europeo' : 'USA'}...`, true);
-            try {
-                const response = await fetch(`${WORKER_URL}/api/scan`);
-                const stocks = await response.json();
-                
-                if (!Array.isArray(stocks)) {
-                    throw new Error("El escáner no devolvió datos válidos");
-                }
-                
-                const filtered = market === 'europe' ? stocks.filter(s => s.market === 'Europa') : stocks.filter(s => s.market === 'USA');
-                const topStocks = filtered.slice(0, 15);
-                
-                if (topStocks.length === 0) {
-                    addMessage(`⚠️ No se encontraron oportunidades en ${market === 'europe' ? 'Europa' : 'USA'} en este momento.`);
-                    return;
-                }
-                
-                let html = `<strong>📊 ${market === 'europe' ? 'EUROPA' : 'USA'} - Top oportunidades (${new Date().toLocaleTimeString()})</strong><br><br>`;
-                html += `<div class="stock-list">`;
-                topStocks.forEach(stock => {
-                    let signalClass = '';
-                    let signalText = stock.signal;
-                    if (stock.signal === '🟢 POSIBLE OPORTUNIDAD') signalClass = 'signal-compra';
-                    if (stock.signal === '🔴 SOBRECOMPRADO') signalClass = 'signal-no-compra';
-                    html += `
-                        <div class="stock-item" onclick="analyzeStock('${stock.ticker}')">
-                            <strong>${stock.ticker}</strong><br>
-                            Precio: ${stock.price}${stock.market === 'Europa' ? '€' : '$'}<br>
-                            RSI: ${stock.rsi}<br>
-                            <span class="${signalClass}">${signalText}</span>
-                        </div>
-                    `;
-                });
-                html += `</div><br><small>💡 Haz clic en cualquier acción para análisis profundo con IA (Claude)</small>`;
-                addMessage(html);
-            } catch(e) {
-                console.error("Error en scan:", e);
-                addMessage(`❌ Error al escanear: ${e.message}<br><br>Verifica que el Worker esté funcionando.`);
-            }
-        }
-        
-        async function analyzeStock(ticker) {
-            addMessage(`🔍 Analizando ${ticker} en profundidad con IA...`, true);
-            try {
-                const response = await fetch(`${WORKER_URL}/api/analyze?ticker=${ticker}`);
-                const data = await response.json();
-                
-                if (data.error) {
-                    addMessage(`❌ ${data.error}`);
-                    return;
-                }
-                
-                let recommendationClass = '';
-                if (data.recommendation === 'COMPRA') recommendationClass = 'signal-compra';
-                if (data.recommendation === 'NO COMPRA') recommendationClass = 'signal-no-compra';
-                if (data.recommendation === 'OBSERVAR') recommendationClass = 'signal-observar';
-                
-                const html = `
-                    <strong>📈 ANÁLISIS PROFUNDO: ${data.ticker}</strong><br><br>
-                    📍 Mercado: ${data.market}<br>
-                    💰 Precio actual: ${data.price}${data.market === 'Europa' ? '€' : '$'}<br>
-                    📊 RSI: ${data.rsi}<br>
-                    🎯 Recomendación: <span class="${recommendationClass}">${data.recommendation}</span><br>
-                    📊 Confianza: ${data.confidence}<br><br>
-                    🤖 <strong>Análisis IA (Claude):</strong><br>
-                    ${data.iaAnalysis || data.geminiAnalysis || "No disponible"}<br><br>
-                    ⏰ ${new Date(data.timestamp).toLocaleString()}<br><br>
-                    <small>⚠️ Inversión manual sugerida. Este no es consejo financiero.</small>
-                `;
-                addMessage(html);
-            } catch(e) {
-                console.error("Error en análisis:", e);
-                addMessage(`❌ Error en el análisis: ${e.message}`);
-            }
-        }
-        
-        async function showTickers() {
-            addMessage("📋 Cargando lista de empresas...", false);
+        try {
+            // Llamar al worker para validar credenciales
+            const response = await fetch(`${WORKER_URL}/api/auth`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
             
-            try {
-                const response = await fetch(`${WORKER_URL}/api/tickers`);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                console.log("Datos recibidos:", data);
-                
-                let html = `<strong>📋 Empresas disponibles (${data.total} en total)</strong><br><br>`;
-                
-                if (data.usa && data.europe) {
-                    html += `<strong>🇺🇸 USA (${data.usa.length} empresas):</strong><br>`;
-                    html += `<div style="background:#ecf0f1; padding:10px; border-radius:8px; margin:5px 0;">`;
-                    html += data.usa.join(', ');
-                    html += `</div><br>`;
-                    
-                    html += `<strong>🌍 Europa (${data.europe.length} empresas):</strong><br>`;
-                    html += `<div style="background:#ecf0f1; padding:10px; border-radius:8px; margin:5px 0;">`;
-                    html += data.europe.join(', ');
-                    html += `</div><br>`;
+            const result = await response.json();
+            
+            if (result.success) {
+                // Guardar sesión si "Mantener sesión" está activado
+                if (remember) {
+                    localStorage.setItem('santisystems_user', username);
+                    localStorage.setItem('santisystems_pass', password);
                 } else {
-                    html += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    localStorage.removeItem('santisystems_user');
+                    localStorage.removeItem('santisystems_pass');
                 }
                 
-                html += `<small>💡 Escribe "analiza TICKER" para análisis profundo con IA (ej: "analiza AAPL")</small>`;
-                addMessage(html);
+                // Mostrar chat, ocultar login
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('chatContainer').style.display = 'flex';
                 
-            } catch(e) {
-                console.error("Error en showTickers:", e);
-                addMessage(`❌ Error al cargar empresas: ${e.message}<br><br>
-                🔧 Verifica que:<br>
-                1. La URL del Worker es correcta: <code>${WORKER_URL}</code><br>
-                2. El Worker está desplegado correctamente`);
-            }
-        }
-        
-        async function sendMessage() {
-            const input = document.getElementById('userInput');
-            const text = input.value.trim();
-            if (!text) return;
-            
-            addMessage(text, true);
-            input.value = '';
-            
-            const lowerText = text.toLowerCase();
-            
-            if (lowerText.includes('escanea europa') || lowerText.includes('escanear europa')) {
-                await scanMarket('europe');
-            } else if (lowerText.includes('escanea usa') || lowerText.includes('escanear usa')) {
-                await scanMarket('usa');
-            } else if (lowerText.includes('analiza ')) {
-                const ticker = text.split('analiza ')[1].split(' ')[0].toUpperCase();
-                if (ticker && ticker.length > 0) {
-                    await analyzeStock(ticker);
-                } else {
-                    addMessage("❌ Especifica un ticker. Ejemplo: 'analiza AAPL'");
+                if (!silent) {
+                    addSystemMessage('✅ Login exitoso. Bienvenido al Bot Inversor SANTISYSTEMS.');
                 }
-            } else if (lowerText.includes('lista') || lowerText.includes('empresas') || lowerText.includes('tickers') || lowerText.includes('ver todas')) {
-                await showTickers();
             } else {
-                addMessage(`📝 No entendí el comando. Prueba:<br>
-                • "escanea europa" - Ver oportunidades europeas<br>
-                • "escanea usa" - Ver oportunidades USA<br>
-                • "analiza AAPL" - Análisis profundo con IA (Claude)<br>
-                • "lista" - Ver todas las 80 empresas`);
+                errorDiv.style.display = 'block';
+                errorDiv.innerText = '❌ Usuario o contraseña incorrectos';
             }
+        } catch (error) {
+            console.error('Error de autenticación:', error);
+            errorDiv.style.display = 'block';
+            errorDiv.innerText = '❌ Error de conexión con el servidor. Verifica que el Worker esté activo.';
         }
-    </script>
+    }
+    
+    // Cerrar sesión
+    function logout() {
+        localStorage.removeItem('santisystems_user');
+        localStorage.removeItem('santisystems_pass');
+        document.getElementById('chatContainer').style.display = 'none';
+        document.getElementById('loginContainer').style.display = 'flex';
+        document.getElementById('loginUser').value = '';
+        document.getElementById('loginPass').value = '';
+        document.getElementById('loginError').style.display = 'none';
+    }
+    
+    // Limpiar chat
+    function clearChat() {
+        const messagesDiv = document.getElementById('messages');
+        messagesDiv.innerHTML = `
+            <div class="message bot-message">
+                🤖 <strong>SANTISYSTEMS AI</strong><br><br>
+                Chat limpiado. ¿En qué puedo ayudarte?<br><br>
+                📊 Comandos: "escanea europa", "escanea usa", "analiza AAPL", "lista"
+            </div>
+        `;
+    }
+    
+    function addSystemMessage(text) {
+        const messagesDiv = document.getElementById('messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message bot-message';
+        messageDiv.innerHTML = text;
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    
+    function addMessage(text, isUser = false) {
+        const messagesDiv = document.getElementById('messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+        messageDiv.innerHTML = text;
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    
+    async function scanMarket(market) {
+        addMessage(`🔍 Escaneando mercado ${market === 'europe' ? 'Europeo' : 'USA'}...`, true);
+        try {
+            const response = await fetch(`${WORKER_URL}/api/scan`);
+            const stocks = await response.json();
+            
+            if (!Array.isArray(stocks)) {
+                throw new Error("El escáner no devolvió datos válidos");
+            }
+            
+            const filtered = market === 'europe' ? stocks.filter(s => s.market === 'Europa') : stocks.filter(s => s.market === 'USA');
+            const topStocks = filtered.slice(0, 15);
+            
+            if (topStocks.length === 0) {
+                addMessage(`⚠️ No se encontraron oportunidades en ${market === 'europe' ? 'Europa' : 'USA'} en este momento.`);
+                return;
+            }
+            
+            let html = `<strong>📊 ${market === 'europe' ? 'EUROPA' : 'USA'} - Top oportunidades (${new Date().toLocaleTimeString()})</strong><br><br>`;
+            html += `<div class="stock-list">`;
+            topStocks.forEach(stock => {
+                let signalClass = '';
+                let signalText = stock.signal;
+                if (stock.signal.includes('OPORTUNIDAD')) signalClass = 'signal-compra';
+                if (stock.signal.includes('SOBRECOMPRADO')) signalClass = 'signal-no-compra';
+                html += `
+                    <div class="stock-item" onclick="analyzeStock('${stock.ticker}')">
+                        <strong>${stock.ticker}</strong><br>
+                        Precio: ${stock.price}${stock.market === 'Europa' ? '€' : '$'}<br>
+                        RSI: ${stock.rsi}<br>
+                        <span class="${signalClass}">${stock.signal}</span>
+                    </div>
+                `;
+            });
+            html += `</div><br><small>💡 Haz clic en cualquier acción para análisis profundo con IA (7 indicadores)</small>`;
+            addMessage(html);
+        } catch(e) {
+            addMessage(`❌ Error al escanear: ${e.message}`);
+        }
+    }
+    
+    async function analyzeStock(ticker) {
+        addMessage(`🔍 Analizando ${ticker} con 7 indicadores + IA...`, true);
+        try {
+            const response = await fetch(`${WORKER_URL}/api/analyze?ticker=${ticker}`);
+            const data = await response.json();
+            
+            if (data.error) {
+                addMessage(`❌ ${data.error}`);
+                return;
+            }
+            
+            let recClass = '';
+            if (data.recommendation && data.recommendation.verdict) {
+                const verdict = data.recommendation.verdict;
+                if (verdict.includes('COMPRA')) recClass = 'signal-compra';
+                if (verdict.includes('NO COMPRA')) recClass = 'signal-no-compra';
+                if (verdict.includes('OBSERVAR')) recClass = 'signal-observar';
+            }
+            
+            let html = `<strong>📈 ANÁLISIS COMPLETO: ${data.ticker}</strong><br><br>`;
+            html += `📍 Mercado: ${data.market}<br>`;
+            html += `💰 Precio: ${data.price}${data.market === 'Europa' ? '€' : '$'}<br>`;
+            html += `📉 Cambio día: ${data.change?.toFixed(2) || 0}%<br><br>`;
+            
+            if (data.indicators) {
+                html += `<strong>📊 INDICADORES TÉCNICOS (7):</strong><br>`;
+                html += `• RSI: ${data.indicators.rsi}<br>`;
+                if (data.indicators.sma20) html += `• SMA20: ${data.indicators.sma20} | SMA50: ${data.indicators.sma50}<br>`;
+                if (data.indicators.macd) html += `• MACD: ${data.indicators.macd.cross} (fuerza: ${data.indicators.macd.strength}%)<br>`;
+                if (data.indicators.bollinger) html += `• Bollinger: ${data.indicators.bollinger.position}<br>`;
+                if (data.indicators.supportResistance && data.indicators.supportResistance.support) {
+                    html += `• Soporte: ${data.indicators.supportResistance.support} | Resistencia: ${data.indicators.supportResistance.resistance}<br>`;
+                }
+                html += `• Volumen relativo: ${data.indicators.volumeRatio}x<br><br>`;
+            }
+            
+            if (data.recommendation) {
+                html += `<strong>🎯 RECOMENDACIÓN:</strong> <span class="${recClass}">${data.recommendation.verdict}</span><br>`;
+                html += `📊 Confianza: ${data.recommendation.confidence}<br>`;
+                html += `📈 Puntuación: ${data.recommendation.score} puntos<br><br>`;
+                
+                if (data.recommendation.reasons && data.recommendation.reasons.length) {
+                    html += `<strong>🔍 RAZONES:</strong><br>`;
+                    data.recommendation.reasons.forEach(r => { html += `• ${r}<br>`; });
+                    html += `<br>`;
+                }
+            }
+            
+            if (data.iaAnalysis) {
+                html += `<strong>🤖 ANÁLISIS IA (Claude):</strong><br>`;
+                html += `${data.iaAnalysis}<br><br>`;
+            }
+            
+            html += `<small>⏰ ${new Date(data.timestamp).toLocaleString()}<br>⚠️ ${data.disclaimer || 'Análisis informativo. No es consejo financiero.'}</small>`;
+            addMessage(html);
+        } catch(e) {
+            addMessage(`❌ Error en análisis: ${e.message}`);
+        }
+    }
+    
+    async function showTickers() {
+        addMessage("📋 Cargando lista de 80 empresas...", false);
+        try {
+            const response = await fetch(`${WORKER_URL}/api/tickers`);
+            const data = await response.json();
+            
+            let html = `<strong>📋 SANTISYSTEMS - Empresas disponibles (${data.total} en total)</strong><br><br>`;
+            html += `<strong>🇺🇸 USA (${data.usa.length}):</strong><br>`;
+            html += `<div style="background:#f1f5f9; padding:12px; border-radius:16px; margin:8px 0; font-size:0.85rem;">`;
+            html += data.usa.join(', ');
+            html += `</div><br>`;
+            html += `<strong>🌍 Europa (${data.europe.length}):</strong><br>`;
+            html += `<div style="background:#f1f5f9; padding:12px; border-radius:16px; margin:8px 0; font-size:0.85rem;">`;
+            html += data.europe.join(', ');
+            html += `</div><br>`;
+            html += `<small>💡 Escribe "analiza TICKER" para análisis completo (ej: "analiza AAPL")</small>`;
+            addMessage(html);
+        } catch(e) {
+            addMessage(`❌ Error: ${e.message}`);
+        }
+    }
+    
+    async function sendMessage() {
+        const input = document.getElementById('userInput');
+        const text = input.value.trim();
+        if (!text) return;
+        
+        addMessage(text, true);
+        input.value = '';
+        
+        const lowerText = text.toLowerCase();
+        
+        if (lowerText.includes('escanea europa') || lowerText.includes('escanear europa')) {
+            await scanMarket('europe');
+        } else if (lowerText.includes('escanea usa') || lowerText.includes('escanear usa')) {
+            await scanMarket('usa');
+        } else if (lowerText.includes('analiza ')) {
+            const ticker = text.split('analiza ')[1].split(' ')[0].toUpperCase();
+            if (ticker && ticker.length > 0) {
+                await analyzeStock(ticker);
+            } else {
+                addMessage("❌ Especifica un ticker. Ejemplo: 'analiza AAPL'");
+            }
+        } else if (lowerText.includes('lista') || lowerText.includes('empresas') || lowerText.includes('tickers')) {
+            await showTickers();
+        } else {
+            addMessage(`📝 Comando no reconocido. Prueba:<br>
+            • "escanea europa" - Oportunidades Europa<br>
+            • "escanea usa" - Oportunidades USA<br>
+            • "analiza AAPL" - Análisis profundo<br>
+            • "lista" - Ver 80 empresas`);
+        }
+    }
+    
+    // Inicializar: comprobar sesión al cargar
+    checkSession();
+    
+    // Permitir login con Enter
+    document.getElementById('loginPass').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') doLogin();
+    });
+    document.getElementById('loginUser').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') doLogin();
+    });
+</script>
 </body>
 </html>
