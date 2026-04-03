@@ -645,27 +645,40 @@
         }
     }
     
-    async function showTickers() {
-        addMessage("📋 Cargando lista de 80 empresas...", false);
-        try {
-            const response = await fetch(`${WORKER_URL}/api/tickers`);
-            const data = await response.json();
-            
-            let html = `<strong>📋 SANTISYSTEMS - Empresas disponibles (${data.total} en total)</strong><br><br>`;
-            html += `<strong>🇺🇸 USA (${data.usa.length}):</strong><br>`;
-            html += `<div style="background:#f1f5f9; padding:12px; border-radius:16px; margin:8px 0; font-size:0.85rem;">`;
-            html += data.usa.join(', ');
-            html += `</div><br>`;
-            html += `<strong>🌍 Europa (${data.europe.length}):</strong><br>`;
-            html += `<div style="background:#f1f5f9; padding:12px; border-radius:16px; margin:8px 0; font-size:0.85rem;">`;
-            html += data.europe.join(', ');
-            html += `</div><br>`;
-            html += `<small>💡 Escribe "analiza TICKER" para análisis completo (ej: "analiza AAPL")</small>`;
-            addMessage(html);
-        } catch(e) {
-            addMessage(`❌ Error: ${e.message}`);
-        }
+   async function showTickers() {
+    addMessage("📋 Cargando lista de 80 empresas...", false);
+    try {
+        const response = await fetch(`${WORKER_URL}/api/tickers`);
+        const data = await response.json();
+        
+        console.log("Datos recibidos:", data); // Para depurar
+        
+        let html = `<strong>📋 SANTISYSTEMS - Empresas disponibles (${data.total} en total)</strong><br><br>`;
+        
+        // USA
+        html += `<strong>🇺🇸 USA (${data.usa.length} empresas):</strong><br>`;
+        html += `<div style="background:#f1f5f9; padding:12px; border-radius:16px; margin:8px 0; max-height:200px; overflow-y:auto;">`;
+        data.usa.forEach(empresa => {
+            html += `<div style="margin:5px 0;"><strong>${empresa.ticker}</strong> - ${empresa.name}</div>`;
+        });
+        html += `</div><br>`;
+        
+        // Europa
+        html += `<strong>🌍 Europa (${data.europe.length} empresas):</strong><br>`;
+        html += `<div style="background:#f1f5f9; padding:12px; border-radius:16px; margin:8px 0; max-height:200px; overflow-y:auto;">`;
+        data.europe.forEach(empresa => {
+            html += `<div style="margin:5px 0;"><strong>${empresa.ticker}</strong> - ${empresa.name}</div>`;
+        });
+        html += `</div><br>`;
+        
+        html += `<small>💡 Escribe "analiza TICKER" para análisis completo (ej: "analiza AAPL")</small>`;
+        addMessage(html);
+        
+    } catch(e) {
+        console.error("Error:", e);
+        addMessage(`❌ Error al cargar empresas: ${e.message}`);
     }
+}
     
     async function sendMessage() {
         const input = document.getElementById('userInput');
