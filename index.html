@@ -344,10 +344,10 @@
     }
     
     async function doLogin(silent) {
-        const username = document.getElementById('loginUser').value.trim();
-        const password = document.getElementById('loginPass').value;
-        const remember = document.getElementById('rememberCheck').checked;
-        const errorDiv = document.getElementById('loginError');
+        var username = document.getElementById('loginUser').value.trim();
+        var password = document.getElementById('loginPass').value;
+        var remember = document.getElementById('rememberCheck').checked;
+        var errorDiv = document.getElementById('loginError');
         
         if (!username || !password) {
             errorDiv.style.display = 'block';
@@ -356,12 +356,12 @@
         }
         
         try {
-            const response = await fetch(WORKER_URL + '/api/auth', {
+            var response = await fetch(WORKER_URL + '/api/auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: username, password: password })
             });
-            const result = await response.json();
+            var result = await response.json();
             
             if (result.success === true) {
                 if (remember) {
@@ -401,8 +401,8 @@
     }
     
     function addMessage(text, isUser) {
-        const messagesDiv = document.getElementById('messages');
-        const messageDiv = document.createElement('div');
+        var messagesDiv = document.getElementById('messages');
+        var messageDiv = document.createElement('div');
         messageDiv.className = 'message ' + (isUser ? 'user-message' : 'bot-message');
         messageDiv.innerHTML = text;
         messagesDiv.appendChild(messageDiv);
@@ -410,34 +410,34 @@
     }
 
     function getMarketStatus() {
-        const now = new Date();
-        const h = now.getHours();
-        const m = now.getMinutes();
-        const d = now.getDay();
-        const tm = h * 60 + m;
+        var now = new Date();
+        var h = now.getHours();
+        var m = now.getMinutes();
+        var d = now.getDay();
+        var tm = h * 60 + m;
         if (d === 0 || d === 6) return { usa: 'closed', europe: 'closed' };
-        const usaOpen = (tm >= 930 && tm < 1320);
-        const europeOpen = (tm >= 540 && tm < 1050);
+        var usaOpen = (tm >= 930 && tm < 1320);
+        var europeOpen = (tm >= 540 && tm < 1050);
         return { usa: usaOpen ? 'open' : 'closed', europe: europeOpen ? 'open' : 'closed' };
     }
     
     async function loadRealtimeUSA() {
         try {
-            const res = await fetch(WORKER_URL + '/api/scan/usa');
-            const data = await res.json();
+            var res = await fetch(WORKER_URL + '/api/scan/usa');
+            var data = await res.json();
             if (Array.isArray(data)) {
                 usaData = data;
-                const container = document.getElementById('usaTableContainer');
+                var container = document.getElementById('usaTableContainer');
                 if (usaData.length === 0) {
                     container.innerHTML = '<div>Cargando...</div>';
                     return;
                 }
-                let html = '<table class="market-table"><thead><tr><th>Símbolo</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>';
-                for (let i = 0; i < Math.min(usaData.length, 10); i++) {
-                    const s = usaData[i];
-                    const cls = s.change >= 0 ? 'positive' : 'negative';
-                    const sym = s.change >= 0 ? '▲' : '▼';
-                    let sigCls = 'signal-observar';
+                var html = '<table class="market-table"><thead><tr><th>Símbolo</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>';
+                for (var i = 0; i < Math.min(usaData.length, 10); i++) {
+                    var s = usaData[i];
+                    var cls = s.change >= 0 ? 'positive' : 'negative';
+                    var sym = s.change >= 0 ? '▲' : '▼';
+                    var sigCls = 'signal-observar';
                     if (s.signal === 'COMPRA FUERTE' || s.signal === 'COMPRA') sigCls = 'signal-compra';
                     else if (s.signal === 'NO COMPRA' || s.signal === 'NO COMPRA FUERTE') sigCls = 'signal-no-compra';
                     html += '<tr onclick="analyzeStock(\'' + s.ticker + '\')">';
@@ -450,8 +450,8 @@
                 }
                 html += '</tbody></table><div style="font-size:0.7rem; margin-top:8px;">💡 Haz clic para análisis</div>';
                 container.innerHTML = html;
-                const status = getMarketStatus();
-                const statusEl = document.getElementById('usaStatus');
+                var status = getMarketStatus();
+                var statusEl = document.getElementById('usaStatus');
                 statusEl.textContent = status.usa === 'open' ? '🟢 ABIERTO' : '🔴 CERRADO';
                 statusEl.className = 'market-status ' + (status.usa === 'open' ? 'status-open' : 'status-closed');
                 document.getElementById('usaUpdate').textContent = '🕐 ' + new Date().toLocaleTimeString();
@@ -461,21 +461,21 @@
     
     async function loadRealtimeEurope() {
         try {
-            const res = await fetch(WORKER_URL + '/api/scan/europe');
-            const data = await res.json();
+            var res = await fetch(WORKER_URL + '/api/scan/europe');
+            var data = await res.json();
             if (Array.isArray(data)) {
                 europeData = data;
-                const container = document.getElementById('europaTableContainer');
+                var container = document.getElementById('europaTableContainer');
                 if (europeData.length === 0) {
                     container.innerHTML = '<div>Cargando...</div>';
                     return;
                 }
-                let html = '<table class="market-table"><thead><tr><th>Símbolo</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>';
-                for (let i = 0; i < Math.min(europeData.length, 10); i++) {
-                    const s = europeData[i];
-                    const cls = s.change >= 0 ? 'positive' : 'negative';
-                    const sym = s.change >= 0 ? '▲' : '▼';
-                    let sigCls = 'signal-observar';
+                var html = '<table class="market-table"><thead><tr><th>Símbolo</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>';
+                for (var i = 0; i < Math.min(europeData.length, 10); i++) {
+                    var s = europeData[i];
+                    var cls = s.change >= 0 ? 'positive' : 'negative';
+                    var sym = s.change >= 0 ? '▲' : '▼';
+                    var sigCls = 'signal-observar';
                     if (s.signal === 'COMPRA FUERTE' || s.signal === 'COMPRA') sigCls = 'signal-compra';
                     else if (s.signal === 'NO COMPRA' || s.signal === 'NO COMPRA FUERTE') sigCls = 'signal-no-compra';
                     html += '<tr onclick="analyzeStock(\'' + s.ticker + '\')">';
@@ -488,8 +488,8 @@
                 }
                 html += '</tbody></table><div style="font-size:0.7rem; margin-top:8px;">💡 Haz clic para análisis</div>';
                 container.innerHTML = html;
-                const status = getMarketStatus();
-                const statusEl = document.getElementById('europaStatus');
+                var status = getMarketStatus();
+                var statusEl = document.getElementById('europaStatus');
                 statusEl.textContent = status.europe === 'open' ? '🟢 ABIERTO' : '🔴 CERRADO';
                 statusEl.className = 'market-status ' + (status.europe === 'open' ? 'status-open' : 'status-closed');
                 document.getElementById('europaUpdate').textContent = '🕐 ' + new Date().toLocaleTimeString();
@@ -510,17 +510,17 @@
     async function scanMarket(market) {
         addMessage('🔍 Escaneando mercado ' + (market === 'europe' ? 'Europeo' : 'USA') + '...', true);
         try {
-            const endpoint = market === 'europe' ? '/api/scan/europe' : '/api/scan/usa';
-            const res = await fetch(WORKER_URL + endpoint);
-            const stocks = await res.json();
+            var endpoint = market === 'europe' ? '/api/scan/europe' : '/api/scan/usa';
+            var res = await fetch(WORKER_URL + endpoint);
+            var stocks = await res.json();
             if (stocks.length === 0) {
                 addMessage('⚠️ No se encontraron oportunidades.', false);
                 return;
             }
-            let html = '<strong>📊 ' + (market === 'europe' ? 'EUROPA' : 'USA') + ' - Oportunidades (' + new Date().toLocaleTimeString() + ')</strong><br><br><div class="stock-list">';
-            for (let i = 0; i < Math.min(stocks.length, 15); i++) {
-                const s = stocks[i];
-                let sigCls = 'signal-observar';
+            var html = '<strong>📊 ' + (market === 'europe' ? 'EUROPA' : 'USA') + ' - Oportunidades (' + new Date().toLocaleTimeString() + ')</strong><br><br><div class="stock-list">';
+            for (var i = 0; i < Math.min(stocks.length, 15); i++) {
+                var s = stocks[i];
+                var sigCls = 'signal-observar';
                 if (s.signal === 'COMPRA FUERTE' || s.signal === 'COMPRA') sigCls = 'signal-compra';
                 else if (s.signal === 'NO COMPRA' || s.signal === 'NO COMPRA FUERTE') sigCls = 'signal-no-compra';
                 html += '<div class="stock-item" onclick="analyzeStock(\'' + s.ticker + '\')">';
@@ -540,16 +540,16 @@
     async function analyzeStock(ticker) {
         addMessage('🔍 Analizando ' + ticker + '...', true);
         try {
-            const res = await fetch(WORKER_URL + '/api/analyze?ticker=' + ticker);
-            const data = await res.json();
+            var res = await fetch(WORKER_URL + '/api/analyze?ticker=' + ticker);
+            var data = await res.json();
             if (data.error) {
                 addMessage('❌ ' + data.error, false);
                 return;
             }
-            let sigCls = 'signal-observar';
+            var sigCls = 'signal-observar';
             if (data.recommendation === 'COMPRA FUERTE' || data.recommendation === 'COMPRA') sigCls = 'signal-compra';
             else if (data.recommendation === 'NO COMPRA' || data.recommendation === 'NO COMPRA FUERTE') sigCls = 'signal-no-compra';
-            let html = '<strong>📈 ANÁLISIS: ' + data.ticker + '</strong><br><br>';
+            var html = '<strong>📈 ANÁLISIS: ' + data.ticker + '</strong><br><br>';
             html += '📍 Mercado: ' + data.market + '<br>';
             html += '💰 Precio: ' + (data.market === 'Europa' ? '€' : '$') + data.price + '<br>';
             html += '📉 Cambio: ' + (data.change > 0 ? '+' : '') + data.change + '%<br><br>';
@@ -570,18 +570,18 @@
     async function showTickers() {
         addMessage('📋 Cargando lista...', false);
         try {
-            const res = await fetch(WORKER_URL + '/api/tickers');
-            const data = await res.json();
-            let html = '<strong>📋 Empresas (' + data.total + ')</strong><br><br>';
+            var res = await fetch(WORKER_URL + '/api/tickers');
+            var data = await res.json();
+            var html = '<strong>📋 Empresas (' + data.total + ')</strong><br><br>';
             html += '<strong>🇺🇸 USA (' + data.usa.length + '):</strong><br>';
             html += '<div style="background:#f7fafc;padding:12px;border-radius:12px;max-height:150px;overflow-y:auto;">';
-            for (let i = 0; i < data.usa.length; i++) {
+            for (var i = 0; i < data.usa.length; i++) {
                 html += '<div><strong>' + data.usa[i].ticker + '</strong> - ' + data.usa[i].name + '</div>';
             }
             html += '</div><br>';
             html += '<strong>🌍 Europa (' + data.europe.length + '):</strong><br>';
             html += '<div style="background:#f7fafc;padding:12px;border-radius:12px;max-height:150px;overflow-y:auto;">';
-            for (let i = 0; i < data.europe.length; i++) {
+            for (var i = 0; i < data.europe.length; i++) {
                 html += '<div><strong>' + data.europe[i].ticker + '</strong> - ' + data.europe[i].name + '</div>';
             }
             html += '</div><br>';
@@ -593,20 +593,20 @@
     }
     
     async function sendMessage() {
-        const input = document.getElementById('userInput');
-        const text = input.value.trim();
+        var input = document.getElementById('userInput');
+        var text = input.value.trim();
         if (text === '') return;
         addMessage(text, true);
         input.value = '';
-        const lower = text.toLowerCase();
+        var lower = text.toLowerCase();
         if (lower.includes('escanea europa')) {
             await scanMarket('europe');
         } else if (lower.includes('escanea usa')) {
             await scanMarket('usa');
         } else if (lower.includes('analiza ')) {
-            const parts = text.split('analiza ');
+            var parts = text.split('analiza ');
             if (parts.length > 1) {
-                const ticker = parts[1].split(' ')[0].toUpperCase();
+                var ticker = parts[1].split(' ')[0].toUpperCase();
                 if (ticker) await analyzeStock(ticker);
                 else addMessage('❌ Especifica un ticker. Ej: analiza AAPL', false);
             } else {
@@ -620,162 +620,162 @@
     }
 
     function openMarketsPage() {
-        const marketsWindow = window.open('', '_blank');
+        var marketsWindow = window.open('', '_blank');
         if (!marketsWindow) {
             alert('Permite ventanas emergentes para abrir los mercados');
             return;
         }
         
-        const htmlContent = '<!DOCTYPE html>\n' +
-'<html>\n' +
-'<head>\n' +
-'<meta charset="UTF-8">\n' +
-'<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
-'<title>SANTISYSTEMS - Mercados</title>\n' +
-'<style>\n' +
-'    * { margin:0; padding:0; box-sizing:border-box; }\n' +
-'    body { font-family: "Segoe UI", Roboto, sans-serif; background: #f0f2f5; padding: 20px; }\n' +
-'    .container { max-width: 1400px; margin: 0 auto; }\n' +
-'    h1 { color: #1a1a2e; margin-bottom: 10px; }\n' +
-'    h1 span { color: #667eea; }\n' +
-'    .subtitle { color: #718096; margin-bottom: 30px; font-size: 0.9rem; }\n' +
-'    .markets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }\n' +
-'    @media (max-width: 768px) { .markets-grid { grid-template-columns: 1fr; } }\n' +
-'    .market-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }\n' +
-'    .market-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0; }\n' +
-'    .market-title { font-size: 1.3rem; font-weight: bold; }\n' +
-'    .market-status { font-size: 0.75rem; padding: 4px 12px; border-radius: 40px; }\n' +
-'    .status-open { background: #c6f6d5; color: #22543d; }\n' +
-'    .status-closed { background: #fed7d7; color: #742a2a; }\n' +
-'    .update-time { font-size: 0.7rem; color: #718096; margin-bottom: 15px; }\n' +
-'    table { width: 100%; font-size: 0.8rem; border-collapse: collapse; }\n' +
-'    th { text-align: left; padding: 10px 6px; background: #f7fafc; color: #4a5568; border-bottom: 2px solid #e2e8f0; }\n' +
-'    td { padding: 10px 6px; border-bottom: 1px solid #edf2f7; }\n' +
-'    tr:hover { background: #f7fafc; cursor: pointer; }\n' +
-'    .positive { color: #27ae60; }\n' +
-'    .negative { color: #e74c3c; }\n' +
-'    .signal-badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 40px; display: inline-block; }\n' +
-'    .signal-compra { background: #c6f6d5; color: #22543d; }\n' +
-'    .signal-no-compra { background: #fed7d7; color: #742a2a; }\n' +
-'    .signal-observar { background: #feebc8; color: #7b4c1a; }\n' +
-'    .btn-back { background: #667eea; color: white; border: none; padding: 12px 24px; border-radius: 40px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-bottom: 20px; transition: all 0.2s; }\n' +
-'    .btn-back:hover { background: #5a67d8; transform: translateY(-1px); }\n' +
-'    .footer { margin-top: 30px; text-align: center; color: #718096; font-size: 0.75rem; }\n' +
-'    .loading { text-align: center; padding: 40px; color: #718096; }\n' +
-'</style>\n' +
-'</head>\n' +
-'<body>\n' +
-'<div class="container">\n' +
-'    <button class="btn-back" onclick="window.close()">← VOLVER AL CHAT</button>\n' +
-'    <h1>SANTI<span>SYSTEMS</span></h1>\n' +
-'    <div class="subtitle">📊 Mercados en tiempo real - Actualización cada 10 segundos</div>\n' +
-'    <div class="markets-grid">\n' +
-'        <div class="market-card">\n' +
-'            <div class="market-header">\n' +
-'                <span class="market-title">🇺🇸 MERCADO USA (40)</span>\n' +
-'                <span class="market-status" id="marketsUsaStatus">⏳</span>\n' +
-'            </div>\n' +
-'            <div class="update-time" id="marketsUsaUpdate"></div>\n' +
-'            <div id="marketsUsaTable">Cargando...</div>\n' +
-'        </div>\n' +
-'        <div class="market-card">\n' +
-'            <div class="market-header">\n' +
-'                <span class="market-title">🌍 MERCADO EUROPA (40)</span>\n' +
-'                <span class="market-status" id="marketsEuropaStatus">⏳</span>\n' +
-'            </div>\n' +
-'            <div class="update-time" id="marketsEuropaUpdate"></div>\n' +
-'            <div id="marketsEuropaTable">Cargando...</div>\n' +
-'        </div>\n' +
-'    </div>\n' +
-'    <div class="footer">💡 Haz clic en cualquier fila para análisis detallado (cerrará esta ventana)</div>\n' +
-'</div>\n' +
-'<script>\n' +
-'    const WORKER_URL = "' + WORKER_URL + '";\n' +
-'    let usaData = [], europeData = [];\n' +
-'    function getMarketStatus() {\n' +
-'        const now = new Date();\n' +
-'        const h = now.getHours();\n' +
-'        const m = now.getMinutes();\n' +
-'        const d = now.getDay();\n' +
-'        const tm = h * 60 + m;\n' +
-'        if (d === 0 || d === 6) return { usa: "closed", europe: "closed" };\n' +
-'        return { usa: (tm >= 930 && tm < 1320) ? "open" : "closed", europe: (tm >= 540 && tm < 1050) ? "open" : "closed" };\n' +
-'    }\n' +
-'    async function loadUSA() {\n' +
-'        try {\n' +
-'            const res = await fetch(WORKER_URL + "/api/scan/usa");\n' +
-'            const data = await res.json();\n' +
-'            if (Array.isArray(data)) {\n' +
-'                usaData = data;\n' +
-'                const container = document.getElementById("marketsUsaTable");\n' +
-'                if (usaData.length === 0) { container.innerHTML = "<div class=\"loading\">Cargando...</div>"; return; }\n' +
-'                let html = "<table><thead><tr><th>Símbolo</th><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>";\n' +
-'                for (let i = 0; i < usaData.length; i++) {\n' +
-'                    const s = usaData[i];\n' +
-'                    const cls = s.change >= 0 ? "positive" : "negative";\n' +
-'                    const sym = s.change >= 0 ? "▲" : "▼";\n' +
-'                    let sigCls = "signal-observar";\n' +
-'                    if (s.signal === "COMPRA FUERTE" || s.signal === "COMPRA") sigCls = "signal-compra";\n' +
-'                    else if (s.signal === "NO COMPRA" || s.signal === "NO COMPRA FUERTE") sigCls = "signal-no-compra";\n' +
-'                    html += "<tr onclick=\"window.opener.analyzeStockFromMarkets(\'" + s.ticker + "\'); window.close();\">";\n' +
-'                    html += "<td><strong>" + s.ticker + "</strong></td>";\n' +
-'                    html += "<td>" + s.name + "</td>";\n' +
-'                    html += "<td>$" + s.price.toFixed(2) + "</td>";\n' +
-'                    html += "<td class=\"" + cls + "\">" + sym + " " + Math.abs(s.change).toFixed(2) + "%</td>";\n' +
-'                    html += "<td>" + s.rsi + "</td>";\n' +
-'                    html += "<td><span class=\"signal-badge " + sigCls + "\">" + s.signal + "</span></td>";\n' +
-'                    html += "</tr>";\n' +
-'                }\n' +
-'                html += "</tbody></table>";\n' +
-'                container.innerHTML = html;\n' +
-'                const status = getMarketStatus();\n' +
-'                const statusEl = document.getElementById("marketsUsaStatus");\n' +
-'                statusEl.textContent = status.usa === "open" ? "🟢 ABIERTO" : "🔴 CERRADO";\n' +
-'                statusEl.className = "market-status " + (status.usa === "open" ? "status-open" : "status-closed");\n' +
-'                document.getElementById("marketsUsaUpdate").textContent = "🕐 " + new Date().toLocaleTimeString();\n' +
-'            }\n' +
-'        } catch(e) {}\n' +
-'    }\n' +
-'    async function loadEurope() {\n' +
-'        try {\n' +
-'            const res = await fetch(WORKER_URL + "/api/scan/europe");\n' +
-'            const data = await res.json();\n' +
-'            if (Array.isArray(data)) {\n' +
-'                europeData = data;\n' +
-'                const container = document.getElementById("marketsEuropaTable");\n' +
-'                if (europeData.length === 0) { container.innerHTML = "<div class=\"loading\">Cargando...</div>"; return; }\n' +
-'                let html = "<table><thead><tr><th>Símbolo</th><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>";\n' +
-'                for (let i = 0; i < europeData.length; i++) {\n' +
-'                    const s = europeData[i];\n' +
-'                    const cls = s.change >= 0 ? "positive" : "negative";\n' +
-'                    const sym = s.change >= 0 ? "▲" : "▼";\n' +
-'                    let sigCls = "signal-observar";\n' +
-'                    if (s.signal === "COMPRA FUERTE" || s.signal === "COMPRA") sigCls = "signal-compra";\n' +
-'                    else if (s.signal === "NO COMPRA" || s.signal === "NO COMPRA FUERTE") sigCls = "signal-no-compra";\n' +
-'                    html += "<tr onclick=\"window.opener.analyzeStockFromMarkets(\'" + s.ticker + "\'); window.close();\">";\n' +
-'                    html += "<td><strong>" + s.ticker + "</strong></td>";\n' +
-'                    html += "<td>" + s.name + "</td>";\n' +
-'                    html += "<td>€" + s.price.toFixed(2) + "</td>";\n' +
-'                    html += "<td class=\"" + cls + "\">" + sym + " " + Math.abs(s.change).toFixed(2) + "%</td>";\n' +
-'                    html += "<td>" + s.rsi + "</td>";\n' +
-'                    html += "<td><span class=\"signal-badge " + sigCls + "\">" + s.signal + "</span></td>";\n' +
-'                    html += "</tr>";\n' +
-'                }\n' +
-'                html += "</tbody></table>";\n' +
-'                container.innerHTML = html;\n' +
-'                const status = getMarketStatus();\n' +
-'                const statusEl = document.getElementById("marketsEuropaStatus");\n' +
-'                statusEl.textContent = status.europe === "open" ? "🟢 ABIERTO" : "🔴 CERRADO";\n' +
-'                statusEl.className = "market-status " + (status.europe === "open" ? "status-open" : "status-closed");\n' +
-'                document.getElementById("marketsEuropaUpdate").textContent = "🕐 " + new Date().toLocaleTimeString();\n' +
-'            }\n' +
-'        } catch(e) {}\n' +
-'    }\n' +
-'    loadUSA();\n' +
-'    loadEurope();\n' +
-'    setInterval(function() { loadUSA(); loadEurope(); }, 10000);\n' +
-'</script>\n' +
-'</body>\n' +
+        var htmlContent = '<!DOCTYPE html>' +
+'<html>' +
+'<head>' +
+'<meta charset="UTF-8">' +
+'<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+'<title>SANTISYSTEMS - Mercados</title>' +
+'<style>' +
+'    * { margin:0; padding:0; box-sizing:border-box; }' +
+'    body { font-family: "Segoe UI", Roboto, sans-serif; background: #f0f2f5; padding: 20px; }' +
+'    .container { max-width: 1400px; margin: 0 auto; }' +
+'    h1 { color: #1a1a2e; margin-bottom: 10px; }' +
+'    h1 span { color: #667eea; }' +
+'    .subtitle { color: #718096; margin-bottom: 30px; font-size: 0.9rem; }' +
+'    .markets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }' +
+'    @media (max-width: 768px) { .markets-grid { grid-template-columns: 1fr; } }' +
+'    .market-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }' +
+'    .market-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0; }' +
+'    .market-title { font-size: 1.3rem; font-weight: bold; }' +
+'    .market-status { font-size: 0.75rem; padding: 4px 12px; border-radius: 40px; }' +
+'    .status-open { background: #c6f6d5; color: #22543d; }' +
+'    .status-closed { background: #fed7d7; color: #742a2a; }' +
+'    .update-time { font-size: 0.7rem; color: #718096; margin-bottom: 15px; }' +
+'    table { width: 100%; font-size: 0.8rem; border-collapse: collapse; }' +
+'    th { text-align: left; padding: 10px 6px; background: #f7fafc; color: #4a5568; border-bottom: 2px solid #e2e8f0; }' +
+'    td { padding: 10px 6px; border-bottom: 1px solid #edf2f7; }' +
+'    tr:hover { background: #f7fafc; cursor: pointer; }' +
+'    .positive { color: #27ae60; }' +
+'    .negative { color: #e74c3c; }' +
+'    .signal-badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 40px; display: inline-block; }' +
+'    .signal-compra { background: #c6f6d5; color: #22543d; }' +
+'    .signal-no-compra { background: #fed7d7; color: #742a2a; }' +
+'    .signal-observar { background: #feebc8; color: #7b4c1a; }' +
+'    .btn-back { background: #667eea; color: white; border: none; padding: 12px 24px; border-radius: 40px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-bottom: 20px; transition: all 0.2s; }' +
+'    .btn-back:hover { background: #5a67d8; transform: translateY(-1px); }' +
+'    .footer { margin-top: 30px; text-align: center; color: #718096; font-size: 0.75rem; }' +
+'    .loading { text-align: center; padding: 40px; color: #718096; }' +
+'</style>' +
+'</head>' +
+'<body>' +
+'<div class="container">' +
+'    <button class="btn-back" onclick="window.close()">← VOLVER AL CHAT</button>' +
+'    <h1>SANTI<span>SYSTEMS</span></h1>' +
+'    <div class="subtitle">📊 Mercados en tiempo real - Actualización cada 10 segundos</div>' +
+'    <div class="markets-grid">' +
+'        <div class="market-card">' +
+'            <div class="market-header">' +
+'                <span class="market-title">🇺🇸 MERCADO USA (40)</span>' +
+'                <span class="market-status" id="marketsUsaStatus">⏳</span>' +
+'            </div>' +
+'            <div class="update-time" id="marketsUsaUpdate"></div>' +
+'            <div id="marketsUsaTable">Cargando...</div>' +
+'        </div>' +
+'        <div class="market-card">' +
+'            <div class="market-header">' +
+'                <span class="market-title">🌍 MERCADO EUROPA (40)</span>' +
+'                <span class="market-status" id="marketsEuropaStatus">⏳</span>' +
+'            </div>' +
+'            <div class="update-time" id="marketsEuropaUpdate"></div>' +
+'            <div id="marketsEuropaTable">Cargando...</div>' +
+'        </div>' +
+'    </div>' +
+'    <div class="footer">💡 Haz clic en cualquier fila para análisis detallado (cerrará esta ventana)</div>' +
+'</div>' +
+'<script>' +
+'    const WORKER_URL = "' + WORKER_URL + '";' +
+'    let usaData = [], europeData = [];' +
+'    function getMarketStatus() {' +
+'        const now = new Date();' +
+'        const h = now.getHours();' +
+'        const m = now.getMinutes();' +
+'        const d = now.getDay();' +
+'        const tm = h * 60 + m;' +
+'        if (d === 0 || d === 6) return { usa: "closed", europe: "closed" };' +
+'        return { usa: (tm >= 930 && tm < 1320) ? "open" : "closed", europe: (tm >= 540 && tm < 1050) ? "open" : "closed" };' +
+'    }' +
+'    async function loadUSA() {' +
+'        try {' +
+'            const res = await fetch(WORKER_URL + "/api/scan/usa");' +
+'            const data = await res.json();' +
+'            if (Array.isArray(data)) {' +
+'                usaData = data;' +
+'                const container = document.getElementById("marketsUsaTable");' +
+'                if (usaData.length === 0) { container.innerHTML = "<div class=\"loading\">Cargando...</div>"; return; }' +
+'                let html = "<table><thead><tr><th>Símbolo</th><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>";' +
+'                for (let i = 0; i < usaData.length; i++) {' +
+'                    const s = usaData[i];' +
+'                    const cls = s.change >= 0 ? "positive" : "negative";' +
+'                    const sym = s.change >= 0 ? "▲" : "▼";' +
+'                    let sigCls = "signal-observar";' +
+'                    if (s.signal === "COMPRA FUERTE" || s.signal === "COMPRA") sigCls = "signal-compra";' +
+'                    else if (s.signal === "NO COMPRA" || s.signal === "NO COMPRA FUERTE") sigCls = "signal-no-compra";' +
+'                    html += "<tr onclick=\"window.opener.analyzeStockFromMarkets(\'" + s.ticker + "\'); window.close();\">";' +
+'                    html += "<td><strong>" + s.ticker + "</strong></td>";' +
+'                    html += "<td>" + s.name + "</td>";' +
+'                    html += "<td>$" + s.price.toFixed(2) + "</td>";' +
+'                    html += "<td class=\"" + cls + "\">" + sym + " " + Math.abs(s.change).toFixed(2) + "%</td>";' +
+'                    html += "<td>" + s.rsi + "</td>";' +
+'                    html += "<td><span class=\"signal-badge " + sigCls + "\">" + s.signal + "</span></td>";' +
+'                    html += "</tr>";' +
+'                }' +
+'                html += "</tbody></table>";' +
+'                container.innerHTML = html;' +
+'                const status = getMarketStatus();' +
+'                const statusEl = document.getElementById("marketsUsaStatus");' +
+'                statusEl.textContent = status.usa === "open" ? "🟢 ABIERTO" : "🔴 CERRADO";' +
+'                statusEl.className = "market-status " + (status.usa === "open" ? "status-open" : "status-closed");' +
+'                document.getElementById("marketsUsaUpdate").textContent = "🕐 " + new Date().toLocaleTimeString();' +
+'            }' +
+'        } catch(e) {}' +
+'    }' +
+'    async function loadEurope() {' +
+'        try {' +
+'            const res = await fetch(WORKER_URL + "/api/scan/europe");' +
+'            const data = await res.json();' +
+'            if (Array.isArray(data)) {' +
+'                europeData = data;' +
+'                const container = document.getElementById("marketsEuropaTable");' +
+'                if (europeData.length === 0) { container.innerHTML = "<div class=\"loading\">Cargando...</div>"; return; }' +
+'                let html = "<table><thead><tr><th>Símbolo</th><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>";' +
+'                for (let i = 0; i < europeData.length; i++) {' +
+'                    const s = europeData[i];' +
+'                    const cls = s.change >= 0 ? "positive" : "negative";' +
+'                    const sym = s.change >= 0 ? "▲" : "▼";' +
+'                    let sigCls = "signal-observar";' +
+'                    if (s.signal === "COMPRA FUERTE" || s.signal === "COMPRA") sigCls = "signal-compra";' +
+'                    else if (s.signal === "NO COMPRA" || s.signal === "NO COMPRA FUERTE") sigCls = "signal-no-compra";' +
+'                    html += "<tr onclick=\"window.opener.analyzeStockFromMarkets(\'" + s.ticker + "\'); window.close();\">";' +
+'                    html += "<td><strong>" + s.ticker + "</strong></td>";' +
+'                    html += "<td>" + s.name + "</td>";' +
+'                    html += "<td>€" + s.price.toFixed(2) + "</td>";' +
+'                    html += "<td class=\"" + cls + "\">" + sym + " " + Math.abs(s.change).toFixed(2) + "%</td>";' +
+'                    html += "<td>" + s.rsi + "</td>";' +
+'                    html += "<td><span class=\"signal-badge " + sigCls + "\">" + s.signal + "</span></td>";' +
+'                    html += "</tr>";' +
+'                }' +
+'                html += "</tbody></table>";' +
+'                container.innerHTML = html;' +
+'                const status = getMarketStatus();' +
+'                const statusEl = document.getElementById("marketsEuropaStatus");' +
+'                statusEl.textContent = status.europe === "open" ? "🟢 ABIERTO" : "🔴 CERRADO";' +
+'                statusEl.className = "market-status " + (status.europe === "open" ? "status-open" : "status-closed");' +
+'                document.getElementById("marketsEuropaUpdate").textContent = "🕐 " + new Date().toLocaleTimeString();' +
+'            }' +
+'        } catch(e) {}' +
+'    }' +
+'    loadUSA();' +
+'    loadEurope();' +
+'    setInterval(function() { loadUSA(); loadEurope(); }, 10000);' +
+'<\/script>' +
+'</body>' +
 '</html>';
         
         marketsWindow.document.write(htmlContent);
