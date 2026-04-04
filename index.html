@@ -18,7 +18,6 @@
             padding: 20px;
         }
 
-        /* Pantalla de Login */
         .login-container {
             max-width: 400px;
             margin: 0 auto;
@@ -87,16 +86,12 @@
             font-size: 1rem;
             transition: all 0.2s ease;
             outline: none;
+            text-transform: none;
         }
 
         .input-group input:focus {
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        /* Quitar mayúscula inicial en campos de texto */
-        .input-group input {
-            text-transform: none;
         }
 
         .checkbox-group {
@@ -148,7 +143,6 @@
             margin-top: 20px;
         }
 
-        /* Chat Container */
         .chat-container {
             max-width: 1400px;
             margin: 0 auto;
@@ -161,7 +155,6 @@
             display: none;
         }
 
-        /* Header */
         .chat-header {
             background: white;
             padding: 16px 24px;
@@ -221,42 +214,6 @@
             background: #cbd5e0;
         }
 
-        /* Panel de botones */
-        .scan-panel {
-            background: #f7fafc;
-            padding: 16px 24px;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .scan-panel button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.85rem;
-        }
-
-        .btn-europe {
-            background: #3498db;
-            color: white;
-        }
-
-        .btn-usa {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .btn-tickers {
-            background: #27ae60;
-            color: white;
-        }
-
-        /* Tablas de tiempo real */
         .realtime-panel {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -319,7 +276,7 @@
 
         .market-table {
             width: 100%;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             border-collapse: collapse;
         }
 
@@ -350,17 +307,51 @@
         }
 
         .signal-badge {
-            font-size: 0.7rem;
-            padding: 2px 8px;
+            font-size: 0.65rem;
+            padding: 2px 6px;
             border-radius: 40px;
             font-weight: 500;
+            display: inline-block;
         }
 
         .signal-compra { background: #c6f6d5; color: #22543d; }
         .signal-no-compra { background: #fed7d7; color: #742a2a; }
         .signal-observar { background: #feebc8; color: #7b4c1a; }
 
-        /* Mensajes del chat */
+        .scan-panel {
+            background: #f7fafc;
+            padding: 16px 24px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .scan-panel button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .btn-europe {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-usa {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-tickers {
+            background: #27ae60;
+            color: white;
+        }
+
         .messages-area {
             flex: 1;
             overflow-y: auto;
@@ -463,7 +454,7 @@
         
         <div class="input-group">
             <label>USUARIO</label>
-            <input type="text" id="loginUser" placeholder="usuario" autocomplete="off" autocapitalize="none" autocomplete="off">
+            <input type="text" id="loginUser" placeholder="usuario" autocomplete="off" autocapitalize="none">
         </div>
         
         <div class="input-group">
@@ -496,7 +487,6 @@
     
     <!-- PANEL DE TIEMPO REAL -->
     <div class="realtime-panel">
-        <!-- USA -->
         <div class="market-card" id="usaCard">
             <div class="market-header">
                 <span class="market-title">🇺🇸 MERCADO USA</span>
@@ -506,7 +496,6 @@
             <div id="usaTableContainer">Cargando datos...</div>
         </div>
         
-        <!-- EUROPA -->
         <div class="market-card" id="europaCard">
             <div class="market-header">
                 <span class="market-title">🌍 MERCADO EUROPA</span>
@@ -554,7 +543,7 @@
     let europeData = [];
     
     // ========================================
-    // FUNCIONES DE LOGIN
+    // FUNCIONES DE LOGIN (CORREGIDAS)
     // ========================================
     
     function checkSession() {
@@ -589,7 +578,7 @@
             
             const result = await response.json();
             
-            if (result.success) {
+            if (result.success === true) {
                 if (remember) {
                     localStorage.setItem('santisystems_user', username);
                     localStorage.setItem('santisystems_pass', password);
@@ -611,6 +600,7 @@
                 errorDiv.innerText = '❌ Usuario o contraseña incorrectos';
             }
         } catch (error) {
+            console.error('Login error:', error);
             errorDiv.style.display = 'block';
             errorDiv.innerText = '❌ Error de conexión con el servidor. Verifica que el Worker esté activo.';
         }
@@ -658,12 +648,9 @@
         const day = now.getDay();
         const totalMinutes = hour * 60 + minutes;
         
-        // Fin de semana
         if (day === 0 || day === 6) return { usa: 'closed', europe: 'closed' };
         
-        // Horario Europa: 9:00 - 17:30
         const europeOpen = totalMinutes >= 540 && totalMinutes < 1050;
-        // Horario USA: 15:30 - 22:00
         const usaOpen = totalMinutes >= 930 && totalMinutes < 1320;
         
         return {
@@ -717,11 +704,7 @@
             return;
         }
         
-        let html = `<table class="market-table">
-            <thead>
-                <tr><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr>
-            </thead>
-            <tbody>`;
+        let html = `<table class="market-table"><thead><tr><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>`;
         
         usaData.slice(0, 10).forEach(stock => {
             const changeClass = stock.change >= 0 ? 'positive' : 'negative';
@@ -740,8 +723,7 @@
             </tr>`;
         });
         
-        html += `</tbody></table>`;
-        html += `<div style="font-size:0.7rem; color:#718096; margin-top:8px; text-align:center;">💡 Haz clic en cualquier fila para análisis profundo</div>`;
+        html += `</tbody></table><div style="font-size:0.7rem; color:#718096; margin-top:8px; text-align:center;">💡 Haz clic en cualquier fila para análisis profundo</div>`;
         container.innerHTML = html;
     }
     
@@ -752,11 +734,7 @@
             return;
         }
         
-        let html = `<table class="market-table">
-            <thead>
-                <tr><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr>
-            </thead>
-            <tbody>`;
+        let html = `<table class="market-table"><thead><tr><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>`;
         
         europeData.slice(0, 10).forEach(stock => {
             const changeClass = stock.change >= 0 ? 'positive' : 'negative';
@@ -775,8 +753,7 @@
             </tr>`;
         });
         
-        html += `</tbody></table>`;
-        html += `<div style="font-size:0.7rem; color:#718096; margin-top:8px; text-align:center;">💡 Haz clic en cualquier fila para análisis profundo</div>`;
+        html += `</tbody></table><div style="font-size:0.7rem; color:#718096; margin-top:8px; text-align:center;">💡 Haz clic en cualquier fila para análisis profundo</div>`;
         container.innerHTML = html;
     }
     
@@ -921,4 +898,15 @@
         }
     }
     
-    // Inicial
+    // Inicializar
+    checkSession();
+    
+    document.getElementById('loginPass').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') doLogin();
+    });
+    document.getElementById('loginUser').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') doLogin();
+    });
+</script>
+</body>
+</html>
