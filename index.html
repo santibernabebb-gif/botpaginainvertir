@@ -583,6 +583,14 @@
             html += '💰 ' + currency + (data.price || 'N/A') + ' &nbsp;|&nbsp; ';
             html += '📉 ' + (data.change > 0 ? '+' : '') + (data.change || 0).toFixed(2) + '%<br><br>';
 
+            // Explicación de Claude en lenguaje normal — lo más importante, arriba del todo
+            if (data.claudeExplanation) {
+                html += '<div style="background:#f0f4ff;border-left:4px solid #667eea;padding:12px 14px;border-radius:0 12px 12px 0;margin-bottom:14px;">';
+                html += '<strong>🤖 Análisis en lenguaje normal:</strong><br><br>';
+                html += data.claudeExplanation.replace(/\n/g, '<br>');
+                html += '</div>';
+            }
+
             // RSI
             html += '📊 RSI: <strong>' + rsi + '</strong>';
             if (rsi < 35) html += ' 🟢 sobreventa';
