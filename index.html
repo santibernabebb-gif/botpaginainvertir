@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>SANTISYSTEMS - Bot Inversor IA</title>
     <style>
         * {
@@ -12,81 +12,78 @@
         }
 
         body {
-            font-family: 'Segoe UI', 'Roboto', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #0a0f1e 0%, #0a1a2f 100%);
+            font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f2f5;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
 
+        /* Pantalla de Login */
         .login-container {
-            width: 100%;
-            max-width: 420px;
+            max-width: 400px;
+            margin: 0 auto;
+            padding-top: 50px;
         }
 
         .login-card {
-            background: rgba(18, 25, 45, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 28px;
-            padding: 40px 32px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(66, 153, 225, 0.2);
-            border: 1px solid rgba(66, 153, 225, 0.3);
+            background: white;
+            border-radius: 24px;
+            padding: 32px 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0e0e0;
         }
 
         .login-header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
 
         .login-header h1 {
-            font-size: 2rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            font-size: 1.8rem;
+            color: #1a1a2e;
             letter-spacing: -0.5px;
+        }
+
+        .login-header h1 span {
+            color: #667eea;
         }
 
         .login-header .badge {
             display: inline-block;
-            background: rgba(66, 153, 225, 0.2);
+            background: #e8ecf1;
             padding: 6px 14px;
             border-radius: 40px;
             font-size: 0.75rem;
-            color: #90cdf4;
+            color: #4a5568;
             margin-top: 12px;
-            border: 1px solid rgba(66, 153, 225, 0.4);
         }
 
         .login-subtitle {
             text-align: center;
-            color: #a0aec0;
+            color: #718096;
             font-size: 0.85rem;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
 
         .input-group {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .input-group label {
             display: block;
-            color: #cbd5e0;
+            color: #4a5568;
             font-size: 0.8rem;
             margin-bottom: 8px;
             font-weight: 500;
-            letter-spacing: 0.5px;
         }
 
         .input-group input {
             width: 100%;
-            padding: 14px 18px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid #2d3748;
-            border-radius: 16px;
-            color: white;
+            padding: 14px 16px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            color: #1a202c;
             font-size: 1rem;
             transition: all 0.2s ease;
             outline: none;
@@ -94,14 +91,19 @@
 
         .input-group input:focus {
             border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Quitar mayúscula inicial en campos de texto */
+        .input-group input {
+            text-transform: none;
         }
 
         .checkbox-group {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .checkbox-group input {
@@ -112,7 +114,7 @@
         }
 
         .checkbox-group label {
-            color: #a0aec0;
+            color: #4a5568;
             font-size: 0.85rem;
             cursor: pointer;
         }
@@ -120,25 +122,25 @@
         .login-btn {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: #667eea;
             border: none;
             border-radius: 40px;
             color: white;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
         }
 
         .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.4);
+            background: #5a67d8;
+            transform: translateY(-1px);
         }
 
         .error-message {
-            background: rgba(229, 62, 62, 0.2);
-            border: 1px solid rgba(229, 62, 62, 0.5);
-            color: #fc8181;
+            background: #fed7d7;
+            border: 1px solid #feb2b2;
+            color: #c53030;
             padding: 12px;
             border-radius: 12px;
             font-size: 0.85rem;
@@ -146,89 +148,83 @@
             margin-top: 20px;
         }
 
+        /* Chat Container */
         .chat-container {
-            width: 90%;
-            max-width: 1300px;
-            height: 90vh;
+            max-width: 1400px;
+            margin: 0 auto;
             background: white;
-            border-radius: 28px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             display: flex;
             flex-direction: column;
             overflow: hidden;
             display: none;
         }
 
+        /* Header */
         .chat-header {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: white;
-            padding: 18px 24px;
+            background: white;
+            padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .header-title h1 {
             font-size: 1.3rem;
-            letter-spacing: -0.3px;
+            color: #1a1a2e;
         }
 
         .header-title h1 span {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: #667eea;
         }
 
         .header-title p {
             font-size: 0.7rem;
-            opacity: 0.7;
+            color: #718096;
             margin-top: 4px;
         }
 
         .header-buttons {
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
         .header-buttons button {
-            padding: 8px 18px;
+            padding: 8px 16px;
             border: none;
             border-radius: 40px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 500;
             font-size: 0.8rem;
             transition: all 0.2s;
         }
 
         .btn-clear {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
+            background: #e2e8f0;
+            color: #4a5568;
         }
 
         .btn-clear:hover {
-            background: rgba(229, 62, 62, 0.7);
-            border-color: #e53e3e;
+            background: #cbd5e0;
         }
 
         .btn-logout {
-            background: rgba(255,255,255,0.1);
-            color: #cbd5e0;
-            border: 1px solid rgba(255,255,255,0.2);
+            background: #e2e8f0;
+            color: #4a5568;
         }
 
         .btn-logout:hover {
-            background: rgba(255,255,255,0.2);
-            color: white;
+            background: #cbd5e0;
         }
 
+        /* Panel de botones */
         .scan-panel {
-            background: #f1f5f9;
-            padding: 15px 24px;
+            background: #f7fafc;
+            padding: 16px 24px;
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
@@ -241,12 +237,8 @@
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.2s;
             font-size: 0.85rem;
-        }
-
-        .scan-panel button:hover {
-            transform: translateY(-2px);
         }
 
         .btn-europe {
@@ -264,40 +256,143 @@
             color: white;
         }
 
+        /* Tablas de tiempo real */
+        .realtime-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px 24px;
+            background: #f7fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .realtime-panel {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+        }
+
+        .market-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .market-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .market-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .market-status {
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+
+        .status-open {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status-closed {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .market-update {
+            font-size: 0.7rem;
+            color: #718096;
+            margin-bottom: 12px;
+        }
+
+        .market-table {
+            width: 100%;
+            font-size: 0.8rem;
+            border-collapse: collapse;
+        }
+
+        .market-table th {
+            text-align: left;
+            padding: 8px 4px;
+            color: #4a5568;
+            font-weight: 600;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .market-table td {
+            padding: 8px 4px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .market-table tr:hover {
+            background: #f7fafc;
+            cursor: pointer;
+        }
+
+        .positive {
+            color: #27ae60;
+        }
+
+        .negative {
+            color: #e74c3c;
+        }
+
+        .signal-badge {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+
+        .signal-compra { background: #c6f6d5; color: #22543d; }
+        .signal-no-compra { background: #fed7d7; color: #742a2a; }
+        .signal-observar { background: #feebc8; color: #7b4c1a; }
+
+        /* Mensajes del chat */
         .messages-area {
             flex: 1;
             overflow-y: auto;
-            padding: 24px;
-            background: #f8fafc;
+            padding: 20px 24px;
+            background: white;
+            max-height: 400px;
         }
 
         .message {
             margin-bottom: 16px;
-            padding: 12px 18px;
-            border-radius: 20px;
+            padding: 12px 16px;
+            border-radius: 16px;
             max-width: 85%;
             word-wrap: break-word;
             line-height: 1.5;
         }
 
         .user-message {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: #667eea;
             color: white;
             margin-left: auto;
             text-align: right;
-            border-bottom-right-radius: 4px;
         }
 
         .bot-message {
-            background: white;
+            background: #f7fafc;
             border: 1px solid #e2e8f0;
             margin-right: auto;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
         .input-area {
-            padding: 20px 24px;
+            padding: 16px 24px;
             background: white;
             border-top: 1px solid #e2e8f0;
             display: flex;
@@ -306,32 +401,26 @@
 
         .input-area input {
             flex: 1;
-            padding: 14px 18px;
-            border: 1px solid #cbd5e0;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
             border-radius: 40px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             outline: none;
-            transition: all 0.2s;
         }
 
         .input-area input:focus {
             border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .input-area button {
-            padding: 12px 28px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 12px 24px;
+            background: #667eea;
             color: white;
             border: none;
             border-radius: 40px;
             cursor: pointer;
             font-weight: 600;
         }
-
-        .signal-compra { color: #27ae60; font-weight: bold; }
-        .signal-no-compra { color: #e74c3c; font-weight: bold; }
-        .signal-observar { color: #f39c12; font-weight: bold; }
 
         .stock-list {
             display: grid;
@@ -341,23 +430,23 @@
         }
 
         .stock-item {
-            background: #f1f5f9;
+            background: #f7fafc;
             padding: 12px;
-            border-radius: 16px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s;
             border: 1px solid #e2e8f0;
         }
 
         .stock-item:hover {
-            background: #e2e8f0;
-            transform: translateY(-2px);
+            background: #edf2f7;
         }
 
         @media (max-width: 768px) {
-            .chat-container { width: 95%; height: 95vh; }
             .message { max-width: 95%; }
             .scan-panel button { flex: 1; text-align: center; }
+            .chat-container { border-radius: 16px; }
+            body { padding: 10px; }
         }
     </style>
 </head>
@@ -367,14 +456,14 @@
 <div class="login-container" id="loginContainer">
     <div class="login-card">
         <div class="login-header">
-            <h1>SANTISYSTEMS</h1>
+            <h1>SANTI<span>SYSTEMS</span></h1>
             <div class="badge">Bot Inversor con IA - Paper Trading</div>
         </div>
         <div class="login-subtitle">Accede a tu dashboard de inversión</div>
         
         <div class="input-group">
             <label>USUARIO</label>
-            <input type="text" id="loginUser" placeholder="Tu usuario" autocomplete="off">
+            <input type="text" id="loginUser" placeholder="usuario" autocomplete="off" autocapitalize="none" autocomplete="off">
         </div>
         
         <div class="input-group">
@@ -396,12 +485,35 @@
 <div class="chat-container" id="chatContainer">
     <div class="chat-header">
         <div class="header-title">
-            <h1>⚡ SANTISYSTEMS <span>| Bot Inversor IA</span></h1>
-            <p>🇺🇸 USA: Finnhub (tiempo real) | 🌍 Europa: Yahoo Finance</p>
+            <h1>⚡ SANTI<span>SYSTEMS</span> <span style="font-size:0.8rem;">| Bot Inversor IA</span></h1>
+            <p>🇺🇸 USA: Finnhub + iTick | 🌍 Europa: WebSocket + REST</p>
         </div>
         <div class="header-buttons">
             <button class="btn-clear" onclick="clearChat()">🗑️ Limpiar chat</button>
             <button class="btn-logout" onclick="logout()">🚪 Salir</button>
+        </div>
+    </div>
+    
+    <!-- PANEL DE TIEMPO REAL -->
+    <div class="realtime-panel">
+        <!-- USA -->
+        <div class="market-card" id="usaCard">
+            <div class="market-header">
+                <span class="market-title">🇺🇸 MERCADO USA</span>
+                <span class="market-status" id="usaStatus">⏳ Cargando...</span>
+            </div>
+            <div class="market-update" id="usaUpdate">Actualizando...</div>
+            <div id="usaTableContainer">Cargando datos...</div>
+        </div>
+        
+        <!-- EUROPA -->
+        <div class="market-card" id="europaCard">
+            <div class="market-header">
+                <span class="market-title">🌍 MERCADO EUROPA</span>
+                <span class="market-status" id="europaStatus">⏳ Cargando...</span>
+            </div>
+            <div class="market-update" id="europaUpdate">Actualizando...</div>
+            <div id="europaTableContainer">Cargando datos...</div>
         </div>
     </div>
     
@@ -416,14 +528,14 @@
             🤖 <strong>SANTISYSTEMS AI</strong><br><br>
             Bienvenido al Bot Inversor con IA.<br><br>
             📊 <strong>Mercados disponibles:</strong><br>
-            • 🇺🇸 USA: 20 empresas (tiempo real vía Finnhub)<br>
-            • 🌍 Europa: 20 empresas (Yahoo Finance)<br><br>
+            • 🇺🇸 USA: 20 empresas (tiempo real vía WebSocket)<br>
+            • 🌍 Europa: 20 empresas (tiempo real vía WebSocket)<br><br>
             <strong>Comandos rápidos:</strong><br>
             • "escanea europa" - Oportunidades europeas<br>
             • "escanea usa" - Oportunidades USA<br>
             • "analiza AAPL" - Análisis profundo<br>
             • "lista" - Ver todas las empresas<br><br>
-            ⚠️ <em>Análisis técnico + IA. No es consejo financiero garantizado.</em>
+            ⚠️ <em>Análisis técnico. No es consejo financiero garantizado.</em>
         </div>
     </div>
     
@@ -437,7 +549,14 @@
     // 🔴 CONFIGURACIÓN - CAMBIA LA URL DE TU WORKER
     const WORKER_URL = "https://botinvertir.santibernabebb.workers.dev";
     
-    // Verificar sesión guardada
+    let realtimeInterval = null;
+    let usaData = [];
+    let europeData = [];
+    
+    // ========================================
+    // FUNCIONES DE LOGIN
+    // ========================================
+    
     function checkSession() {
         const savedUser = localStorage.getItem('santisystems_user');
         const savedPass = localStorage.getItem('santisystems_pass');
@@ -449,7 +568,6 @@
         }
     }
     
-    // Función de login
     async function doLogin(silent = false) {
         const username = document.getElementById('loginUser').value.trim();
         const password = document.getElementById('loginPass').value;
@@ -483,6 +601,8 @@
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('chatContainer').style.display = 'flex';
                 
+                startRealtimeUpdates();
+                
                 if (!silent) {
                     addMessage('✅ Login exitoso. Bienvenido al Bot Inversor SANTISYSTEMS.', false);
                 }
@@ -497,6 +617,7 @@
     }
     
     function logout() {
+        if (realtimeInterval) clearInterval(realtimeInterval);
         localStorage.removeItem('santisystems_user');
         localStorage.removeItem('santisystems_pass');
         document.getElementById('chatContainer').style.display = 'none';
@@ -526,101 +647,189 @@
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
     
-    async function scanMarket(market) {
-    addMessage(`🔍 Escaneando mercado ${market === 'europe' ? 'Europeo' : 'USA'}...`, true);
-    try {
-        const endpoint = market === 'europe' ? '/api/scan/europe' : '/api/scan/usa';
-        const response = await fetch(`${WORKER_URL}${endpoint}`);
-        const stocks = await response.json();
+    // ========================================
+    // TIEMPO REAL
+    // ========================================
+    
+    function getMarketStatus() {
+        const now = new Date();
+        const hour = now.getHours();
+        const minutes = now.getMinutes();
+        const day = now.getDay();
+        const totalMinutes = hour * 60 + minutes;
         
-        if (!Array.isArray(stocks) || stocks.length === 0) {
-            addMessage(`⚠️ No se encontraron oportunidades en ${market === 'europe' ? 'Europa' : 'USA'} en este momento.`);
+        // Fin de semana
+        if (day === 0 || day === 6) return { usa: 'closed', europe: 'closed' };
+        
+        // Horario Europa: 9:00 - 17:30
+        const europeOpen = totalMinutes >= 540 && totalMinutes < 1050;
+        // Horario USA: 15:30 - 22:00
+        const usaOpen = totalMinutes >= 930 && totalMinutes < 1320;
+        
+        return {
+            usa: usaOpen ? 'open' : 'closed',
+            europe: europeOpen ? 'open' : 'closed'
+        };
+    }
+    
+    async function loadRealtimeUSA() {
+        try {
+            const response = await fetch(`${WORKER_URL}/api/scan/usa`);
+            const data = await response.json();
+            if (Array.isArray(data)) {
+                usaData = data;
+                updateUSATable();
+                const status = getMarketStatus();
+                const statusElement = document.getElementById('usaStatus');
+                const updateElement = document.getElementById('usaUpdate');
+                statusElement.textContent = status.usa === 'open' ? '🟢 MERCADO ABIERTO' : '🔴 MERCADO CERRADO';
+                statusElement.className = `market-status ${status.usa === 'open' ? 'status-open' : 'status-closed'}`;
+                updateElement.textContent = `🕐 Última actualización: ${new Date().toLocaleTimeString()}`;
+            }
+        } catch (e) {
+            console.error('Error cargando USA:', e);
+        }
+    }
+    
+    async function loadRealtimeEurope() {
+        try {
+            const response = await fetch(`${WORKER_URL}/api/scan/europe`);
+            const data = await response.json();
+            if (Array.isArray(data)) {
+                europeData = data;
+                updateEuropeTable();
+                const status = getMarketStatus();
+                const statusElement = document.getElementById('europaStatus');
+                const updateElement = document.getElementById('europaUpdate');
+                statusElement.textContent = status.europe === 'open' ? '🟢 MERCADO ABIERTO' : '🔴 MERCADO CERRADO';
+                statusElement.className = `market-status ${status.europe === 'open' ? 'status-open' : 'status-closed'}`;
+                updateElement.textContent = `🕐 Última actualización: ${new Date().toLocaleTimeString()}`;
+            }
+        } catch (e) {
+            console.error('Error cargando Europa:', e);
+        }
+    }
+    
+    function updateUSATable() {
+        const container = document.getElementById('usaTableContainer');
+        if (!usaData.length) {
+            container.innerHTML = '<div style="text-align:center; padding:20px;">Cargando datos...</div>';
             return;
         }
         
-        let html = `<strong>📊 ${market === 'europe' ? 'EUROPA' : 'USA'} - Oportunidades (${new Date().toLocaleTimeString()})</strong><br><br>`;
+        let html = `<table class="market-table">
+            <thead>
+                <tr><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr>
+            </thead>
+            <tbody>`;
         
-        // Separar por tipo de recomendación
-        const compras = stocks.filter(s => s.signal === 'COMPRA FUERTE' || s.signal === 'COMPRA');
-        const considerar = stocks.filter(s => s.signal === 'CONSIDERAR');
-        const observar = stocks.filter(s => s.signal === 'OBSERVAR');
-        const noCompras = stocks.filter(s => s.signal === 'NO COMPRA' || s.signal === 'NO COMPRA FUERTE');
+        usaData.slice(0, 10).forEach(stock => {
+            const changeClass = stock.change >= 0 ? 'positive' : 'negative';
+            const changeSymbol = stock.change >= 0 ? '▲' : '▼';
+            let signalClass = '';
+            if (stock.signal === 'COMPRA FUERTE' || stock.signal === 'COMPRA') signalClass = 'signal-compra';
+            else if (stock.signal === 'NO COMPRA' || stock.signal === 'NO COMPRA FUERTE') signalClass = 'signal-no-compra';
+            else signalClass = 'signal-observar';
+            
+            html += `<tr onclick="analyzeStock('${stock.ticker}')">
+                <td><strong>${stock.ticker}</strong></td>
+                <td>$${stock.price.toFixed(2)}</td>
+                <td class="${changeClass}">${changeSymbol} ${Math.abs(stock.change).toFixed(2)}%</td>
+                <td>${stock.rsi}</td>
+                <td><span class="signal-badge ${signalClass}">${stock.signal}</span></td>
+            </tr>`;
+        });
         
-        // Mostrar COMPRAS primero (verde)
-        if (compras.length > 0) {
-            html += `<span style="background:#27ae60; color:white; padding:4px 12px; border-radius:20px; display:inline-block; margin-bottom:10px;">✅ RECOMENDACIÓN: COMPRA (${compras.length})</span><br><br>`;
-            html += `<div class="stock-list">`;
-            compras.forEach(stock => {
-                html += `
-                    <div class="stock-item" style="border-left:4px solid #27ae60;" onclick="analyzeStock('${stock.ticker}')">
-                        <strong>${stock.ticker}</strong><br>
-                        ${stock.name}<br>
-                        💰 ${stock.price}${stock.market === 'Europa' ? '€' : '$'} | RSI: ${stock.rsi}<br>
-                        <span style="color:#27ae60; font-weight:bold;">🟢 ${stock.signal}</span>
-                    </div>
-                `;
-            });
-            html += `</div><br>`;
-        }
-        
-        // Mostrar CONSIDERAR (amarillo)
-        if (considerar.length > 0) {
-            html += `<span style="background:#f39c12; color:white; padding:4px 12px; border-radius:20px; display:inline-block; margin-bottom:10px;">⚠️ RECOMENDACIÓN: CONSIDERAR (${considerar.length})</span><br><br>`;
-            html += `<div class="stock-list">`;
-            considerar.forEach(stock => {
-                html += `
-                    <div class="stock-item" style="border-left:4px solid #f39c12;" onclick="analyzeStock('${stock.ticker}')">
-                        <strong>${stock.ticker}</strong><br>
-                        ${stock.name}<br>
-                        💰 ${stock.price}${stock.market === 'Europa' ? '€' : '$'} | RSI: ${stock.rsi}<br>
-                        <span style="color:#f39c12; font-weight:bold;">🟡 ${stock.signal}</span>
-                    </div>
-                `;
-            });
-            html += `</div><br>`;
-        }
-        
-        // Mostrar OBSERVAR (gris)
-        if (observar.length > 0) {
-            html += `<span style="background:#95a5a6; color:white; padding:4px 12px; border-radius:20px; display:inline-block; margin-bottom:10px;">⚪ RECOMENDACIÓN: OBSERVAR (${observar.length})</span><br><br>`;
-            html += `<div class="stock-list">`;
-            observar.forEach(stock => {
-                html += `
-                    <div class="stock-item" style="border-left:4px solid #95a5a6;" onclick="analyzeStock('${stock.ticker}')">
-                        <strong>${stock.ticker}</strong><br>
-                        ${stock.name}<br>
-                        💰 ${stock.price}${stock.market === 'Europa' ? '€' : '$'} | RSI: ${stock.rsi}<br>
-                        <span style="color:#7f8c8d; font-weight:bold;">⚪ ${stock.signal}</span>
-                    </div>
-                `;
-            });
-            html += `</div><br>`;
-        }
-        
-        // Mostrar NO COMPRA (rojo)
-        if (noCompras.length > 0) {
-            html += `<span style="background:#e74c3c; color:white; padding:4px 12px; border-radius:20px; display:inline-block; margin-bottom:10px;">❌ RECOMENDACIÓN: NO COMPRA (${noCompras.length})</span><br><br>`;
-            html += `<div class="stock-list">`;
-            noCompras.forEach(stock => {
-                html += `
-                    <div class="stock-item" style="border-left:4px solid #e74c3c;" onclick="analyzeStock('${stock.ticker}')">
-                        <strong>${stock.ticker}</strong><br>
-                        ${stock.name}<br>
-                        💰 ${stock.price}${stock.market === 'Europa' ? '€' : '$'} | RSI: ${stock.rsi}<br>
-                        <span style="color:#e74c3c; font-weight:bold;">🔴 ${stock.signal}</span>
-                    </div>
-                `;
-            });
-            html += `</div><br>`;
-        }
-        
-        html += `<small>💡 Haz clic en cualquier acción para análisis profundo</small>`;
-        addMessage(html);
-        
-    } catch(e) {
-        addMessage(`❌ Error al escanear: ${e.message}`);
+        html += `</tbody></table>`;
+        html += `<div style="font-size:0.7rem; color:#718096; margin-top:8px; text-align:center;">💡 Haz clic en cualquier fila para análisis profundo</div>`;
+        container.innerHTML = html;
     }
-}
+    
+    function updateEuropeTable() {
+        const container = document.getElementById('europaTableContainer');
+        if (!europeData.length) {
+            container.innerHTML = '<div style="text-align:center; padding:20px;">Cargando datos...</div>';
+            return;
+        }
+        
+        let html = `<table class="market-table">
+            <thead>
+                <tr><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr>
+            </thead>
+            <tbody>`;
+        
+        europeData.slice(0, 10).forEach(stock => {
+            const changeClass = stock.change >= 0 ? 'positive' : 'negative';
+            const changeSymbol = stock.change >= 0 ? '▲' : '▼';
+            let signalClass = '';
+            if (stock.signal === 'COMPRA FUERTE' || stock.signal === 'COMPRA') signalClass = 'signal-compra';
+            else if (stock.signal === 'NO COMPRA' || stock.signal === 'NO COMPRA FUERTE') signalClass = 'signal-no-compra';
+            else signalClass = 'signal-observar';
+            
+            html += `<tr onclick="analyzeStock('${stock.ticker}')">
+                <td><strong>${stock.ticker}</strong></td>
+                <td>€${stock.price.toFixed(2)}</td>
+                <td class="${changeClass}">${changeSymbol} ${Math.abs(stock.change).toFixed(2)}%</td>
+                <td>${stock.rsi}</td>
+                <td><span class="signal-badge ${signalClass}">${stock.signal}</span></td>
+            </tr>`;
+        });
+        
+        html += `</tbody></table>`;
+        html += `<div style="font-size:0.7rem; color:#718096; margin-top:8px; text-align:center;">💡 Haz clic en cualquier fila para análisis profundo</div>`;
+        container.innerHTML = html;
+    }
+    
+    function startRealtimeUpdates() {
+        loadRealtimeUSA();
+        loadRealtimeEurope();
+        if (realtimeInterval) clearInterval(realtimeInterval);
+        realtimeInterval = setInterval(() => {
+            loadRealtimeUSA();
+            loadRealtimeEurope();
+        }, 10000);
+    }
+    
+    // ========================================
+    // FUNCIONES DEL CHAT
+    // ========================================
+    
+    async function scanMarket(market) {
+        addMessage(`🔍 Escaneando mercado ${market === 'europe' ? 'Europeo' : 'USA'}...`, true);
+        try {
+            const endpoint = market === 'europe' ? '/api/scan/europe' : '/api/scan/usa';
+            const response = await fetch(`${WORKER_URL}${endpoint}`);
+            const stocks = await response.json();
+            
+            if (!Array.isArray(stocks) || stocks.length === 0) {
+                addMessage(`⚠️ No se encontraron oportunidades en ${market === 'europe' ? 'Europa' : 'USA'} en este momento.`);
+                return;
+            }
+            
+            let html = `<strong>📊 ${market === 'europe' ? 'EUROPA' : 'USA'} - Oportunidades (${new Date().toLocaleTimeString()})</strong><br><br>`;
+            html += `<div class="stock-list">`;
+            stocks.slice(0, 15).forEach(stock => {
+                let signalClass = '';
+                if (stock.signal === 'COMPRA FUERTE' || stock.signal === 'COMPRA') signalClass = 'signal-compra';
+                if (stock.signal === 'NO COMPRA FUERTE' || stock.signal === 'NO COMPRA') signalClass = 'signal-no-compra';
+                if (stock.signal === 'CONSIDERAR' || stock.signal === 'OBSERVAR') signalClass = 'signal-observar';
+                
+                html += `
+                    <div class="stock-item" onclick="analyzeStock('${stock.ticker}')">
+                        <strong>${stock.ticker}</strong><br>
+                        ${stock.name}<br>
+                        Precio: ${stock.price}${stock.market === 'Europa' ? '€' : '$'}<br>
+                        RSI: ${stock.rsi}<br>
+                        <span class="${signalClass}">${stock.signal}</span>
+                    </div>
+                `;
+            });
+            html += `</div><br><small>💡 Haz clic en cualquier acción para análisis profundo</small>`;
+            addMessage(html);
+        } catch(e) {
+            addMessage(`❌ Error al escanear: ${e.message}`);
+        }
+    }
     
     async function analyzeStock(ticker) {
         addMessage(`🔍 Analizando ${ticker}...`, true);
@@ -662,13 +871,13 @@
             
             let html = `<strong>📋 Empresas disponibles (${data.total} en total)</strong><br><br>`;
             html += `<strong>🇺🇸 USA (${data.usa.length}):</strong><br>`;
-            html += `<div style="background:#f1f5f9; padding:12px; border-radius:16px; margin:8px 0; max-height:200px; overflow-y:auto;">`;
+            html += `<div style="background:#f7fafc; padding:12px; border-radius:12px; margin:8px 0; max-height:200px; overflow-y:auto;">`;
             data.usa.forEach(empresa => {
                 html += `<div><strong>${empresa.ticker}</strong> - ${empresa.name}</div>`;
             });
             html += `</div><br>`;
             html += `<strong>🌍 Europa (${data.europe.length}):</strong><br>`;
-            html += `<div style="background:#f1f5f9; padding:12px; border-radius:16px; margin:8px 0; max-height:200px; overflow-y:auto;">`;
+            html += `<div style="background:#f7fafc; padding:12px; border-radius:12px; margin:8px 0; max-height:200px; overflow-y:auto;">`;
             data.europe.forEach(empresa => {
                 html += `<div><strong>${empresa.ticker}</strong> - ${empresa.name}</div>`;
             });
@@ -712,15 +921,4 @@
         }
     }
     
-    // Inicializar
-    checkSession();
-    
-    document.getElementById('loginPass').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') doLogin();
-    });
-    document.getElementById('loginUser').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') doLogin();
-    });
-</script>
-</body>
-</html>
+    // Inicial
