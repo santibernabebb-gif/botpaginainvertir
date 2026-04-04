@@ -479,14 +479,15 @@
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
 
-    // Carga de datos completos (40 empresas) - ordenados por RSI (mejores primero)
+    // Carga de datos completos (40 empresas) - ordenados por señal (mejores primero)
     async function loadFullUSA() {
         try {
             var res = await fetch(WORKER_URL + '/api/scan/usa');
             var data = await res.json();
             if (Array.isArray(data)) {
-                // Ordenar por RSI (menor primero = mejor oportunidad)
-                data.sort(function(a, b) { return a.rsi - b.rsi; });
+                // Ordenar por señal (COMPRA FUERTE > COMPRA > CONSIDERAR > OBSERVAR > NO COMPRA)
+                var order = { 'COMPRA FUERTE': 1, 'COMPRA': 2, 'CONSIDERAR': 3, 'OBSERVAR': 4, 'NO COMPRA': 5, 'NO COMPRA FUERTE': 6 };
+                data.sort(function(a, b) { return (order[a.signal] || 4) - (order[b.signal] || 4); });
                 fullUsaData = data;
                 var container = document.getElementById('fullUsaTable');
                 if (fullUsaData.length === 0) {
@@ -505,7 +506,7 @@
                     html += '<td><strong>' + s.ticker + '</strong></td>';
                     html += '<td>' + s.name + '</td>';
                     html += '<td>$' + s.price.toFixed(2) + '</td>';
-                    html += '<td class="' + cls + '">' + sym + ' ' + Math.abs(s.change).toFixed(2) + '%</td>';
+                    html += '<td class="' + cls + '">' + sym + ' ' + Math.abs(s.change).toFixed(2) + '%<\/td>';
                     html += '<td>' + s.rsi + '</td>';
                     html += '<td><span class="signal-badge ' + sigCls + '">' + s.signal + '</span></td>';
                     html += '</tr>';
@@ -522,8 +523,8 @@
             var res = await fetch(WORKER_URL + '/api/scan/europe');
             var data = await res.json();
             if (Array.isArray(data)) {
-                // Ordenar por RSI (menor primero = mejor oportunidad)
-                data.sort(function(a, b) { return a.rsi - b.rsi; });
+                var order = { 'COMPRA FUERTE': 1, 'COMPRA': 2, 'CONSIDERAR': 3, 'OBSERVAR': 4, 'NO COMPRA': 5, 'NO COMPRA FUERTE': 6 };
+                data.sort(function(a, b) { return (order[a.signal] || 4) - (order[b.signal] || 4); });
                 fullEuropeData = data;
                 var container = document.getElementById('fullEuropeTable');
                 if (fullEuropeData.length === 0) {
@@ -542,7 +543,7 @@
                     html += '<td><strong>' + s.ticker + '</strong></td>';
                     html += '<td>' + s.name + '</td>';
                     html += '<td>€' + s.price.toFixed(2) + '</td>';
-                    html += '<td class="' + cls + '">' + sym + ' ' + Math.abs(s.change).toFixed(2) + '%</td>';
+                    html += '<td class="' + cls + '">' + sym + ' ' + Math.abs(s.change).toFixed(2) + '%<\/td>';
                     html += '<td>' + s.rsi + '</td>';
                     html += '<td><span class="signal-badge ' + sigCls + '">' + s.signal + '</span></td>';
                     html += '</tr>';
@@ -565,7 +566,7 @@
         }, 30000);
     }
 
-    // Funciones del Chat (ordenadas por RSI - mejores primero)
+    // Funciones del Chat
     async function scanMarket(market) {
         addMessage('🔍 Escaneando mercado ' + (market === 'europe' ? 'Europeo' : 'USA') + '...', true);
         try {
@@ -576,8 +577,9 @@
                 addMessage('⚠️ No se encontraron oportunidades.', false);
                 return;
             }
-            // Ordenar por RSI (menor primero = mejor oportunidad)
-            stocks.sort(function(a, b) { return a.rsi - b.rsi; });
+            // Ordenar por señal (mejores primero)
+            var order = { 'COMPRA FUERTE': 1, 'COMPRA': 2, 'CONSIDERAR': 3, 'OBSERVAR': 4, 'NO COMPRA': 5, 'NO COMPRA FUERTE': 6 };
+            stocks.sort(function(a, b) { return (order[a.signal] || 4) - (order[b.signal] || 4); });
             
             var html = '<strong>📊 ' + (market === 'europe' ? 'EUROPA' : 'USA') + ' - Oportunidades (' + new Date().toLocaleTimeString() + ')</strong><br><br><div class="stock-list">';
             for (var i = 0; i < Math.min(stocks.length, 20); i++) {
@@ -609,23 +611,53 @@
                 return;
             }
             var sigCls = 'signal-observar';
-            if (data.recommendation === 'COMPRA FUERTE' || data.recommendation === 'COMPRA') sigCls = 'signal-compra';
-            else if (data.recommendation === 'NO COMPRA' || data.recommendation === 'NO COMPRA FUERTE') sigCls = 'signal-no-compra';
-            var html = '<strong>📈 ANÁLISIS: ' + data.ticker + '</strong><br><br>';
-            html += '📍 Mercado: ' + data.market + '<br>';
-            html += '💰 Precio: ' + (data.market === 'Europa' ? '€' : '$') + data.price + '<br>';
-            html += '📉 Cambio: ' + (data.change > 0 ? '+' : '') + data.change + '%<br><br>';
-            html += '📊 RSI: ' + data.rsi;
-            if (data.rsi < 35) html += ' (sobreventa)';
-            else if (data.rsi > 70) html += ' (sobrecompra)';
+            var rec = data.recommendation || 'OBSERVAR';
+            if (rec === 'COMPRA FUERTE' || rec === 'COMPRA') sigCls = 'signal-compra';
+            else if (rec === 'NO COMPRA' || rec === 'NO COMPRA FUERTE') sigCls = 'signal-no-compra';
+            
+            var confidence = data.confidence || '50%';
+            
+            var html = '<strong>📈 ANÁLISIS: ' + (data.ticker || ticker) + '</strong><br><br>';
+            html += '📍 Mercado: ' + (data.market || 'USA') + '<br>';
+            html += '💰 Precio: ' + (data.market === 'Europa' ? '€' : '$') + (data.price || 'N/A') + '<br>';
+            html += '📉 Cambio: ' + (data.change > 0 ? '+' : '') + (data.change || 0) + '%<br><br>';
+            
+            var rsi = data.rsi || data.indicators?.rsi || 50;
+            html += '📊 RSI: ' + rsi;
+            if (rsi < 35) html += ' (sobreventa)';
+            else if (rsi > 70) html += ' (sobrecompra)';
             else html += ' (neutral)';
             html += '<br><br>';
-            html += '🎯 <span class="' + sigCls + '">' + data.recommendation + '</span><br>';
-            html += '📊 Confianza: ' + data.confidence + '<br><br>';
-            html += '<small>⏰ ' + new Date(data.timestamp).toLocaleString() + '<br>⚠️ ' + data.disclaimer + '</small>';
+            
+            // Mostrar nuevos indicadores si existen
+            if (data.indicators) {
+                html += '<strong>📊 INDICADORES AVANZADOS:</strong><br>';
+                if (data.indicators.adx) html += '• ADX: ' + data.indicators.adx + (data.indicators.adx > 25 ? ' (tendencia fuerte)' : ' (tendencia débil)') + '<br>';
+                if (data.indicators.superTrend) html += '• SuperTrend: ' + (data.indicators.superTrend === 'bullish' ? '🟢 ALCISTA' : '🔴 BAJISTA') + '<br>';
+                if (data.indicators.ema200) html += '• EMA200: ' + data.indicators.ema200 + (data.price > data.indicators.ema200 ? ' (precio por encima)' : ' (precio por debajo)') + '<br>';
+                if (data.indicators.multiTimeframe) html += '• Multi-timeframe: ' + (data.indicators.multiTimeframe === 'bullish' ? '🟢 ALCISTA' : (data.indicators.multiTimeframe === 'bearish' ? '🔴 BAJISTA' : '⚪ MIXTO')) + '<br>';
+                html += '<br>';
+            }
+            
+            html += '🎯 <span class="' + sigCls + '">' + rec + '</span><br>';
+            html += '📊 Confianza: ' + confidence + '<br><br>';
+            
+            if (data.reasons || data.recommendationDetails?.reasons) {
+                var reasons = data.reasons || data.recommendationDetails?.reasons;
+                if (reasons && reasons.length) {
+                    html += '<strong>🔍 RAZONES:</strong><br>';
+                    for (var j = 0; j < Math.min(reasons.length, 5); j++) {
+                        html += '• ' + reasons[j] + '<br>';
+                    }
+                    html += '<br>';
+                }
+            }
+            
+            html += '<small>⏰ ' + new Date(data.timestamp).toLocaleString() + '<br>⚠️ ' + (data.disclaimer || 'Análisis informativo. No es consejo financiero.') + '</small>';
             addMessage(html, false);
         } catch(e) {
-            addMessage('❌ Error: ' + e.message, false);
+            console.error('Error en analyzeStock:', e);
+            addMessage('❌ Error en el análisis: ' + e.message, false);
         }
     }
     
