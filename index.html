@@ -461,7 +461,11 @@
 
     // ── Tablas de mercados completos
     function buildMarketTable(data, currency) {
-        data.sort(function(a, b) { return (SIGNAL_ORDER[a.signal] || 4) - (SIGNAL_ORDER[b.signal] || 4); });
+        data.sort(function(a, b) {
+            var sigDiff = (SIGNAL_ORDER[a.signal] || 4) - (SIGNAL_ORDER[b.signal] || 4);
+            if (sigDiff !== 0) return sigDiff;
+            return (parseInt(b.confidence) || 0) - (parseInt(a.confidence) || 0);
+        });
         var html = '<table class="full-market-table"><thead><tr><th>Símbolo</th><th>Empresa</th><th>Precio</th><th>Cambio</th><th>Confianza</th><th>Señal</th></tr></thead><tbody>';
         for (var i = 0; i < data.length; i++) {
             var s = data[i];
@@ -527,7 +531,7 @@
             stocks.sort(function(a, b) {
                 var sigDiff = (SIGNAL_ORDER[a.signal] || 4) - (SIGNAL_ORDER[b.signal] || 4);
                 if (sigDiff !== 0) return sigDiff;
-                return (b.confidence || 0) - (a.confidence || 0);
+                return (parseInt(b.confidence) || 0) - (parseInt(a.confidence) || 0);
             });
             var html = '<strong>📂 CRON ' + (market === 'europe' ? 'EUROPA' : 'USA') + ' — Guardado: ' + ts + '</strong><br><br><div class="stock-list">';
             for (var i = 0; i < Math.min(stocks.length, 20); i++) {
@@ -555,7 +559,7 @@
             stocks.sort(function(a, b) {
                 var sigDiff = (SIGNAL_ORDER[a.signal] || 4) - (SIGNAL_ORDER[b.signal] || 4);
                 if (sigDiff !== 0) return sigDiff;
-                return (b.confidence || 0) - (a.confidence || 0);
+                return (parseInt(b.confidence) || 0) - (parseInt(a.confidence) || 0);
             });
             var html = '<strong>📊 ' + (market === 'europe' ? 'EUROPA' : 'USA') + ' (' + new Date().toLocaleTimeString() + ')</strong><br><br><div class="stock-list">';
             for (var i = 0; i < Math.min(stocks.length, 20); i++) {
@@ -737,3 +741,4 @@
 </script>
 </body>
 </html>
+
