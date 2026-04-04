@@ -21,7 +21,6 @@
             padding: 20px;
         }
 
-        /* Pantalla de Login */
         .login-container {
             width: 100%;
             max-width: 420px;
@@ -147,7 +146,6 @@
             margin-top: 20px;
         }
 
-        /* Chat Container (oculto hasta login) */
         .chat-container {
             width: 90%;
             max-width: 1300px;
@@ -399,7 +397,7 @@
     <div class="chat-header">
         <div class="header-title">
             <h1>⚡ SANTISYSTEMS <span>| Bot Inversor IA</span></h1>
-            <p>7 indicadores técnicos + IA (Claude) | Mercados USA y Europa</p>
+            <p>🇺🇸 USA: Finnhub (tiempo real) | 🌍 Europa: Yahoo Finance</p>
         </div>
         <div class="header-buttons">
             <button class="btn-clear" onclick="clearChat()">🗑️ Limpiar chat</button>
@@ -408,9 +406,9 @@
     </div>
     
     <div class="scan-panel">
-        <button class="btn-europe" onclick="scanMarket('europe')">🌍 Escáner Europa (8:30)</button>
-        <button class="btn-usa" onclick="scanMarket('usa')">🇺🇸 Escáner USA (15:30)</button>
-        <button class="btn-tickers" onclick="showTickers()">📋 Ver 80 empresas</button>
+        <button class="btn-europe" onclick="scanMarket('europe')">🌍 Escáner Europa</button>
+        <button class="btn-usa" onclick="scanMarket('usa')">🇺🇸 Escáner USA</button>
+        <button class="btn-tickers" onclick="showTickers()">📋 Ver empresas</button>
     </div>
     
     <div class="messages-area" id="messages">
@@ -418,12 +416,12 @@
             🤖 <strong>SANTISYSTEMS AI</strong><br><br>
             Bienvenido al Bot Inversor con IA.<br><br>
             📊 <strong>Mercados disponibles:</strong><br>
-            • 🇺🇸 USA: 40 empresas (tiempo real vía Alpaca)<br>
-            • 🌍 Europa: 40 empresas (Yahoo Finance)<br><br>
+            • 🇺🇸 USA: 20 empresas (tiempo real vía Finnhub)<br>
+            • 🌍 Europa: 20 empresas (Yahoo Finance)<br><br>
             <strong>Comandos rápidos:</strong><br>
             • "escanea europa" - Oportunidades europeas<br>
             • "escanea usa" - Oportunidades USA<br>
-            • "analiza AAPL" - Análisis con 7 indicadores + IA<br>
+            • "analiza AAPL" - Análisis profundo<br>
             • "lista" - Ver todas las empresas<br><br>
             ⚠️ <em>Análisis técnico + IA. No es consejo financiero garantizado.</em>
         </div>
@@ -447,7 +445,6 @@
             document.getElementById('loginUser').value = savedUser;
             document.getElementById('loginPass').value = savedPass;
             document.getElementById('rememberCheck').checked = true;
-            // Intentar login automático
             doLogin(true);
         }
     }
@@ -466,7 +463,6 @@
         }
         
         try {
-            // Llamar al worker para validar credenciales
             const response = await fetch(`${WORKER_URL}/api/auth`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -476,7 +472,6 @@
             const result = await response.json();
             
             if (result.success) {
-                // Guardar sesión si "Mantener sesión" está activado
                 if (remember) {
                     localStorage.setItem('santisystems_user', username);
                     localStorage.setItem('santisystems_pass', password);
@@ -485,25 +480,22 @@
                     localStorage.removeItem('santisystems_pass');
                 }
                 
-                // Mostrar chat, ocultar login
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('chatContainer').style.display = 'flex';
                 
                 if (!silent) {
-                    addSystemMessage('✅ Login exitoso. Bienvenido al Bot Inversor SANTISYSTEMS.');
+                    addMessage('✅ Login exitoso. Bienvenido al Bot Inversor SANTISYSTEMS.', false);
                 }
             } else {
                 errorDiv.style.display = 'block';
                 errorDiv.innerText = '❌ Usuario o contraseña incorrectos';
             }
         } catch (error) {
-            console.error('Error de autenticación:', error);
             errorDiv.style.display = 'block';
             errorDiv.innerText = '❌ Error de conexión con el servidor. Verifica que el Worker esté activo.';
         }
     }
     
-    // Cerrar sesión
     function logout() {
         localStorage.removeItem('santisystems_user');
         localStorage.removeItem('santisystems_pass');
@@ -514,7 +506,6 @@
         document.getElementById('loginError').style.display = 'none';
     }
     
-    // Limpiar chat
     function clearChat() {
         const messagesDiv = document.getElementById('messages');
         messagesDiv.innerHTML = `
@@ -524,15 +515,6 @@
                 📊 Comandos: "escanea europa", "escanea usa", "analiza AAPL", "lista"
             </div>
         `;
-    }
-    
-    function addSystemMessage(text) {
-        const messagesDiv = document.getElementById('messages');
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message bot-message';
-        messageDiv.innerHTML = text;
-        messagesDiv.appendChild(messageDiv);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
     
     function addMessage(text, isUser = false) {
@@ -547,120 +529,97 @@
     async function scanMarket(market) {
         addMessage(`🔍 Escaneando mercado ${market === 'europe' ? 'Europeo' : 'USA'}...`, true);
         try {
-            const response = await fetch(`${WORKER_URL}/api/scan`);
+            const endpoint = market === 'europe' ? '/api/scan/europe' : '/api/scan/usa';
+            const response = await fetch(`${WORKER_URL}${endpoint}`);
             const stocks = await response.json();
             
-            if (!Array.isArray(stocks)) {
-                throw new Error("El escáner no devolvió datos válidos");
-            }
-            
-            const filtered = market === 'europe' ? stocks.filter(s => s.market === 'Europa') : stocks.filter(s => s.market === 'USA');
-            const topStocks = filtered.slice(0, 15);
-            
-            if (topStocks.length === 0) {
+            if (!Array.isArray(stocks) || stocks.length === 0) {
                 addMessage(`⚠️ No se encontraron oportunidades en ${market === 'europe' ? 'Europa' : 'USA'} en este momento.`);
                 return;
             }
             
-            let html = `<strong>📊 ${market === 'europe' ? 'EUROPA' : 'USA'} - Top oportunidades (${new Date().toLocaleTimeString()})</strong><br><br>`;
+            let html = `<strong>📊 ${market === 'europe' ? 'EUROPA' : 'USA'} - Oportunidades (${new Date().toLocaleTimeString()})</strong><br><br>`;
             html += `<div class="stock-list">`;
-            topStocks.forEach(stock => {
+            stocks.slice(0, 15).forEach(stock => {
                 let signalClass = '';
-                let signalText = stock.signal;
-                if (stock.signal.includes('OPORTUNIDAD')) signalClass = 'signal-compra';
-                if (stock.signal.includes('SOBRECOMPRADO')) signalClass = 'signal-no-compra';
+                if (stock.signal === 'COMPRA FUERTE' || stock.signal === 'COMPRA') signalClass = 'signal-compra';
+                if (stock.signal === 'NO COMPRA FUERTE' || stock.signal === 'NO COMPRA') signalClass = 'signal-no-compra';
+                if (stock.signal === 'CONSIDERAR' || stock.signal === 'OBSERVAR') signalClass = 'signal-observar';
+                
                 html += `
                     <div class="stock-item" onclick="analyzeStock('${stock.ticker}')">
                         <strong>${stock.ticker}</strong><br>
+                        ${stock.name}<br>
                         Precio: ${stock.price}${stock.market === 'Europa' ? '€' : '$'}<br>
                         RSI: ${stock.rsi}<br>
                         <span class="${signalClass}">${stock.signal}</span>
                     </div>
                 `;
             });
-            html += `</div><br><small>💡 Haz clic en cualquier acción para análisis profundo con IA (7 indicadores)</small>`;
+            html += `</div><br><small>💡 Haz clic en cualquier acción para análisis profundo</small>`;
             addMessage(html);
         } catch(e) {
             addMessage(`❌ Error al escanear: ${e.message}`);
         }
     }
     
-   async function analyzeStock(ticker) {
-    addMessage(`🔍 Analizando ${ticker} con indicadores...`, true);
-    try {
-        const response = await fetch(`${WORKER_URL}/api/analyze?ticker=${ticker}`);
-        const data = await response.json();
-        
-        if (data.error) {
-            addMessage(`❌ ${data.error}`);
-            return;
+    async function analyzeStock(ticker) {
+        addMessage(`🔍 Analizando ${ticker}...`, true);
+        try {
+            const response = await fetch(`${WORKER_URL}/api/analyze?ticker=${ticker}`);
+            const data = await response.json();
+            
+            if (data.error) {
+                addMessage(`❌ ${data.error}`);
+                return;
+            }
+            
+            let signalClass = '';
+            if (data.recommendation === 'COMPRA FUERTE' || data.recommendation === 'COMPRA') signalClass = 'signal-compra';
+            if (data.recommendation === 'NO COMPRA FUERTE' || data.recommendation === 'NO COMPRA') signalClass = 'signal-no-compra';
+            if (data.recommendation === 'CONSIDERAR' || data.recommendation === 'OBSERVAR') signalClass = 'signal-observar';
+            
+            let html = `<strong>📈 ANÁLISIS COMPLETO: ${data.ticker}</strong><br><br>`;
+            html += `📍 Mercado: ${data.market}<br>`;
+            html += `💰 Precio: ${data.price}${data.market === 'Europa' ? '€' : '$'}<br>`;
+            html += `📉 Cambio día: ${data.change > 0 ? '+' : ''}${data.change}%<br><br>`;
+            html += `<strong>📊 INDICADORES TÉCNICOS:</strong><br>`;
+            html += `• RSI: ${data.rsi} ${data.rsi < 35 ? '(sobreventa - señal de compra)' : (data.rsi > 70 ? '(sobrecompra - señal de venta)' : '(neutral)')}<br><br>`;
+            html += `<strong>🎯 RECOMENDACIÓN:</strong> <span class="${signalClass}">${data.recommendation}</span><br>`;
+            html += `📊 Confianza: ${data.confidence}<br><br>`;
+            html += `<small>⏰ ${new Date(data.timestamp).toLocaleString()}<br>⚠️ ${data.disclaimer}</small>`;
+            
+            addMessage(html);
+        } catch(e) {
+            addMessage(`❌ Error en el análisis: ${e.message}`);
         }
-        
-        // Determinar clase CSS para la recomendación
-        let recClass = '';
-        if (data.recommendation === 'COMPRA') recClass = 'signal-compra';
-        if (data.recommendation === 'NO COMPRA') recClass = 'signal-no-compra';
-        if (data.recommendation === 'CONSIDERAR') recClass = 'signal-observar';
-        if (data.recommendation === 'OBSERVAR') recClass = 'signal-observar';
-        
-        let html = `<strong>📈 ANÁLISIS COMPLETO: ${data.ticker}</strong><br><br>`;
-        html += `📍 Mercado: ${data.market}<br>`;
-        html += `💰 Precio: ${data.price}${data.market === 'Europa' ? '€' : '$'}<br>`;
-        html += `📉 Cambio día: ${data.change}%<br><br>`;
-        
-        html += `<strong>📊 INDICADORES TÉCNICOS:</strong><br>`;
-        html += `• RSI: ${data.rsi}<br><br>`;
-        
-        html += `<strong>🎯 RECOMENDACIÓN:</strong> <span class="${recClass}">${data.recommendation}</span><br>`;
-        html += `📊 Confianza: ${data.confidence}<br><br>`;
-        
-        if (data.disclaimer) {
-            html += `<small>⚠️ ${data.disclaimer}</small><br>`;
-        }
-        
-        html += `<small>⏰ ${new Date(data.timestamp).toLocaleString()}</small>`;
-        
-        addMessage(html);
-    } catch(e) {
-        console.error("Error en análisis:", e);
-        addMessage(`❌ Error en el análisis: ${e.message}`);
     }
-}
     
-   async function showTickers() {
-    addMessage("📋 Cargando lista de 80 empresas...", false);
-    try {
-        const response = await fetch(`${WORKER_URL}/api/tickers`);
-        const data = await response.json();
-        
-        console.log("Datos recibidos:", data); // Para depurar
-        
-        let html = `<strong>📋 SANTISYSTEMS - Empresas disponibles (${data.total} en total)</strong><br><br>`;
-        
-        // USA
-        html += `<strong>🇺🇸 USA (${data.usa.length} empresas):</strong><br>`;
-        html += `<div style="background:#f1f5f9; padding:12px; border-radius:16px; margin:8px 0; max-height:200px; overflow-y:auto;">`;
-        data.usa.forEach(empresa => {
-            html += `<div style="margin:5px 0;"><strong>${empresa.ticker}</strong> - ${empresa.name}</div>`;
-        });
-        html += `</div><br>`;
-        
-        // Europa
-        html += `<strong>🌍 Europa (${data.europe.length} empresas):</strong><br>`;
-        html += `<div style="background:#f1f5f9; padding:12px; border-radius:16px; margin:8px 0; max-height:200px; overflow-y:auto;">`;
-        data.europe.forEach(empresa => {
-            html += `<div style="margin:5px 0;"><strong>${empresa.ticker}</strong> - ${empresa.name}</div>`;
-        });
-        html += `</div><br>`;
-        
-        html += `<small>💡 Escribe "analiza TICKER" para análisis completo (ej: "analiza AAPL")</small>`;
-        addMessage(html);
-        
-    } catch(e) {
-        console.error("Error:", e);
-        addMessage(`❌ Error al cargar empresas: ${e.message}`);
+    async function showTickers() {
+        addMessage("📋 Cargando lista de empresas...", false);
+        try {
+            const response = await fetch(`${WORKER_URL}/api/tickers`);
+            const data = await response.json();
+            
+            let html = `<strong>📋 Empresas disponibles (${data.total} en total)</strong><br><br>`;
+            html += `<strong>🇺🇸 USA (${data.usa.length}):</strong><br>`;
+            html += `<div style="background:#f1f5f9; padding:12px; border-radius:16px; margin:8px 0; max-height:200px; overflow-y:auto;">`;
+            data.usa.forEach(empresa => {
+                html += `<div><strong>${empresa.ticker}</strong> - ${empresa.name}</div>`;
+            });
+            html += `</div><br>`;
+            html += `<strong>🌍 Europa (${data.europe.length}):</strong><br>`;
+            html += `<div style="background:#f1f5f9; padding:12px; border-radius:16px; margin:8px 0; max-height:200px; overflow-y:auto;">`;
+            data.europe.forEach(empresa => {
+                html += `<div><strong>${empresa.ticker}</strong> - ${empresa.name}</div>`;
+            });
+            html += `</div><br>`;
+            html += `<small>💡 Escribe "analiza TICKER" para análisis completo (ej: "analiza AAPL")</small>`;
+            addMessage(html);
+        } catch(e) {
+            addMessage(`❌ Error: ${e.message}`);
+        }
     }
-}
     
     async function sendMessage() {
         const input = document.getElementById('userInput');
@@ -690,14 +649,13 @@
             • "escanea europa" - Oportunidades Europa<br>
             • "escanea usa" - Oportunidades USA<br>
             • "analiza AAPL" - Análisis profundo<br>
-            • "lista" - Ver 80 empresas`);
+            • "lista" - Ver empresas`);
         }
     }
     
-    // Inicializar: comprobar sesión al cargar
+    // Inicializar
     checkSession();
     
-    // Permitir login con Enter
     document.getElementById('loginPass').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') doLogin();
     });
