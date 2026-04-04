@@ -44,12 +44,8 @@
             color: #1a202c;
             font-size: 1rem;
             outline: none;
-            text-transform: none;
         }
         .input-group input:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
-        .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
-        .checkbox-group input { width: 18px; height: 18px; cursor: pointer; accent-color: #667eea; }
-        .checkbox-group label { color: #4a5568; font-size: 0.85rem; cursor: pointer; }
         .login-btn {
             width: 100%;
             padding: 14px;
@@ -61,6 +57,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            margin-top: 8px;
         }
         .login-btn:hover { background: #5a67d8; transform: translateY(-1px); }
         .error-message {
@@ -142,9 +139,9 @@
             margin-bottom: 16px;
             padding: 12px 16px;
             border-radius: 16px;
-            max-width: 85%;
+            max-width: 90%;
             word-wrap: break-word;
-            line-height: 1.5;
+            line-height: 1.6;
         }
         .user-message { background: #667eea; color: white; margin-left: auto; text-align: right; }
         .bot-message { background: #f7fafc; border: 1px solid #e2e8f0; margin-right: auto; }
@@ -188,7 +185,24 @@
             border: 1px solid #e2e8f0;
         }
         .stock-item:hover { background: #edf2f7; }
-        
+        /* Bloques de análisis */
+        .block-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 8px;
+            margin: 8px 0;
+        }
+        .block-card {
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            border: 1px solid #e2e8f0;
+        }
+        .block-card .block-name { font-weight: 600; color: #4a5568; margin-bottom: 2px; }
+        .block-card .block-score { font-size: 1rem; font-weight: 700; }
+        .block-bull { background: #f0fff4; border-color: #9ae6b4; }
+        .block-bear { background: #fff5f5; border-color: #feb2b2; }
+        .block-neutral { background: #fffbf0; border-color: #fbd38d; }
         /* Sección de mercados completos */
         .markets-full-container {
             background: #f7fafc;
@@ -205,10 +219,7 @@
             background: #e2e8f0;
             border-radius: 12px;
         }
-        .markets-full-header h3 {
-            font-size: 1.2rem;
-            color: #1a1a2e;
-        }
+        .markets-full-header h3 { font-size: 1.2rem; color: #1a1a2e; }
         .markets-full-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -241,38 +252,22 @@
         }
         .status-open { background: #c6f6d5; color: #22543d; }
         .status-closed { background: #fed7d7; color: #742a2a; }
-        .full-market-table {
-            width: 100%;
-            font-size: 0.7rem;
-            border-collapse: collapse;
-        }
-        .full-market-table th, .full-market-table td {
-            padding: 8px 4px;
-            text-align: left;
-            border-bottom: 1px solid #f0f2f5;
-        }
-        .full-market-table tr:hover {
-            background: #f7fafc;
-            cursor: pointer;
-        }
+        .full-market-table { width: 100%; font-size: 0.7rem; border-collapse: collapse; }
+        .full-market-table th, .full-market-table td { padding: 8px 4px; text-align: left; border-bottom: 1px solid #f0f2f5; }
+        .full-market-table tr:hover { background: #f7fafc; cursor: pointer; }
         .positive { color: #27ae60; }
         .negative { color: #e74c3c; }
-        .signal-badge {
-            font-size: 0.65rem;
-            padding: 2px 6px;
-            border-radius: 40px;
-            font-weight: 500;
-            display: inline-block;
-        }
+        .signal-badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 40px; font-weight: 500; display: inline-block; }
         .signal-compra { background: #c6f6d5; color: #22543d; }
         .signal-no-compra { background: #fed7d7; color: #742a2a; }
         .signal-observar { background: #feebc8; color: #7b4c1a; }
         .hidden { display: none; }
         .rotate { transform: rotate(180deg); }
         .arrow { font-size: 1.2rem; transition: transform 0.3s; }
-        
+        .conflict-tag { display: inline-block; background: #fff5f5; border: 1px solid #feb2b2; color: #c53030; padding: 2px 8px; border-radius: 20px; font-size: 0.7rem; margin: 2px; }
+        .weak-tag { display: inline-block; background: #fffbf0; border: 1px solid #fbd38d; color: #7b4c1a; padding: 2px 8px; border-radius: 20px; font-size: 0.7rem; margin: 2px; }
         @media (max-width: 768px) {
-            .message { max-width: 95%; }
+            .message { max-width: 98%; }
             .scan-panel button { flex: 1; text-align: center; }
             .chat-container { border-radius: 16px; }
             body { padding: 10px; }
@@ -285,7 +280,7 @@
     <div class="login-card">
         <div class="login-header">
             <h1>SANTI<span>SYSTEMS</span></h1>
-            <div class="badge">Bot Inversor con IA - Paper Trading</div>
+            <div class="badge">Bot Inversor con IA - V3</div>
         </div>
         <div class="login-subtitle">Accede a tu dashboard de inversión</div>
         <div class="input-group">
@@ -296,10 +291,6 @@
             <label>CONTRASEÑA</label>
             <input type="password" id="loginPass" placeholder="••••••••">
         </div>
-        <div class="checkbox-group">
-            <input type="checkbox" id="rememberCheck">
-            <label>Mantener sesión</label>
-        </div>
         <button class="login-btn" onclick="doLogin()">Entrar →</button>
         <div id="loginError" class="error-message"></div>
     </div>
@@ -308,15 +299,15 @@
 <div class="chat-container" id="chatContainer">
     <div class="chat-header">
         <div class="header-title">
-            <h1>⚡ SANTI<span>SYSTEMS</span> <span style="font-size:0.8rem;">| Bot Inversor IA</span></h1>
-            <p>🇺🇸 USA: 40 empresas | 🌍 Europa: 40 empresas | Tiempo real</p>
+            <h1>⚡ SANTI<span>SYSTEMS</span> <span style="font-size:0.8rem;">| Bot Inversor IA V3</span></h1>
+            <p>🇺🇸 USA: 40 empresas | 🌍 Europa: 40 empresas | Scoring por bloques + Noticias</p>
         </div>
         <div class="header-buttons">
-            <button class="btn-clear" onclick="clearChat()">🗑️ Limpiar chat</button>
+            <button class="btn-clear" onclick="clearChat()">🗑️ Limpiar</button>
             <button class="btn-logout" onclick="logout()">🚪 Salir</button>
         </div>
     </div>
-    
+
     <div class="scan-panel">
         <button class="btn-europe" onclick="scanMarket('europe')">🌍 Escáner Europa</button>
         <button class="btn-usa" onclick="scanMarket('usa')">🇺🇸 Escáner USA</button>
@@ -324,29 +315,27 @@
         <button onclick="showLastScan('europe')" style="background:#8e44ad;color:white;padding:10px 20px;border:none;border-radius:40px;font-weight:600;cursor:pointer;font-size:0.85rem;">🕒 Último CRON Europa</button>
         <button onclick="showLastScan('usa')" style="background:#d35400;color:white;padding:10px 20px;border:none;border-radius:40px;font-weight:600;cursor:pointer;font-size:0.85rem;">🕒 Último CRON USA</button>
     </div>
-    
+
     <div class="messages-area" id="messages">
         <div class="message bot-message">
-            🤖 <strong>SANTISYSTEMS AI</strong><br><br>
-            Bienvenido al Bot Inversor con IA.<br><br>
+            🤖 <strong>SANTISYSTEMS AI V3</strong><br><br>
+            Bienvenido. Sistema actualizado con scoring por bloques y análisis de noticias.<br><br>
             📊 <strong>Mercados disponibles:</strong><br>
             • 🇺🇸 USA: 40 empresas (tiempo real)<br>
             • 🌍 Europa: 40 empresas (tiempo real)<br><br>
-            <strong>Comandos rápidos:</strong><br>
-            • "escanea europa" - Oportunidades europeas<br>
-            • "escanea usa" - Oportunidades USA<br>
-            • "analiza AAPL" - Análisis profundo<br>
-            • "lista" - Ver todas las empresas<br><br>
-            ⚠️ <em>Análisis técnico. No es consejo financiero garantizado.</em>
+            <strong>Comandos:</strong><br>
+            • "escanea europa" / "escanea usa"<br>
+            • "analiza AAPL" — análisis profundo con noticias<br>
+            • "lista" — todas las empresas<br><br>
+            ⚠️ <em>Análisis técnico estimado. No es consejo financiero.</em>
         </div>
     </div>
-    
+
     <div class="input-area">
         <input type="text" id="userInput" placeholder="Ej: analiza AAPL, escanea europa, lista..." onkeypress="if(event.key==='Enter') sendMessage()">
         <button onclick="sendMessage()">Enviar 📤</button>
     </div>
 
-    <!-- SECCIÓN DE MERCADOS COMPLETOS (40 empresas cada uno) -->
     <div class="markets-full-container">
         <div class="markets-full-header" onclick="toggleFullMarkets()">
             <h3>📊 MERCADOS COMPLETOS (40 USA + 40 Europa)</h3>
@@ -369,64 +358,61 @@
     const WORKER_URL = "https://botinvertir.santibernabebb.workers.dev";
     let fullMarketsInterval = null;
     let fullUsaData = [], fullEuropeData = [];
+    const SIGNAL_ORDER = { 'COMPRA FUERTE': 1, 'COMPRA': 2, 'CONSIDERAR': 3, 'OBSERVAR': 4, 'CONSIDERAR VENTA': 5, 'NO COMPRA': 6, 'NO COMPRA FUERTE': 7 };
+
+    function sigClass(signal) {
+        if (signal === 'COMPRA FUERTE' || signal === 'COMPRA') return 'signal-compra';
+        if (signal === 'NO COMPRA' || signal === 'NO COMPRA FUERTE' || signal === 'CONSIDERAR VENTA') return 'signal-no-compra';
+        return 'signal-observar';
+    }
 
     function toggleFullMarkets() {
         var content = document.getElementById('fullMarketsContent');
         var arrow = document.getElementById('fullMarketsArrow');
-        if (content.classList.contains('hidden')) {
-            content.classList.remove('hidden');
-            arrow.classList.remove('rotate');
-        } else {
-            content.classList.add('hidden');
-            arrow.classList.add('rotate');
-        }
+        content.classList.toggle('hidden');
+        arrow.classList.toggle('rotate');
     }
 
     function getMarketStatus() {
         var now = new Date();
-        var h = now.getHours();
-        var m = now.getMinutes();
+        var tm = now.getHours() * 60 + now.getMinutes();
         var d = now.getDay();
-        var tm = h * 60 + m;
         if (d === 0 || d === 6) return { usa: 'closed', europe: 'closed' };
-        var usaOpen = (tm >= 930 && tm < 1320);
-        var europeOpen = (tm >= 540 && tm < 1050);
-        return { usa: usaOpen ? 'open' : 'closed', europe: europeOpen ? 'open' : 'closed' };
+        return { usa: (tm >= 930 && tm < 1320) ? 'open' : 'closed', europe: (tm >= 540 && tm < 1050) ? 'open' : 'closed' };
     }
 
     function updateMarketStatus() {
         var status = getMarketStatus();
-        var usaStatusEl = document.getElementById('fullUsaStatus');
-        var europeStatusEl = document.getElementById('fullEuropeStatus');
-        usaStatusEl.textContent = status.usa === 'open' ? '🟢 ABIERTO' : '🔴 CERRADO';
-        usaStatusEl.className = 'full-market-status ' + (status.usa === 'open' ? 'status-open' : 'status-closed');
-        europeStatusEl.textContent = status.europe === 'open' ? '🟢 ABIERTO' : '🔴 CERRADO';
-        europeStatusEl.className = 'full-market-status ' + (status.europe === 'open' ? 'status-open' : 'status-closed');
+        ['usa', 'europe'].forEach(function(m) {
+            var el = document.getElementById('full' + (m === 'usa' ? 'Usa' : 'Europe') + 'Status');
+            el.textContent = status[m] === 'open' ? '🟢 ABIERTO' : '🔴 CERRADO';
+            el.className = 'full-market-status ' + (status[m] === 'open' ? 'status-open' : 'status-closed');
+        });
     }
 
+    // ── Sesión: solo guardamos flag, nunca la contraseña
     function checkSession() {
-        var savedUser = localStorage.getItem('santisystems_user');
-        var savedPass = localStorage.getItem('santisystems_pass');
-        if (savedUser && savedPass) {
-            document.getElementById('loginUser').value = savedUser;
-            document.getElementById('loginPass').value = savedPass;
-            document.getElementById('rememberCheck').checked = true;
-            doLogin(true);
+        var loggedIn = sessionStorage.getItem('ss_logged');
+        if (loggedIn === '1') {
+            showApp();
         }
     }
-    
-    async function doLogin(silent) {
+
+    function showApp() {
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('chatContainer').style.display = 'flex';
+        startUpdates();
+    }
+
+    async function doLogin() {
         var username = document.getElementById('loginUser').value.trim();
         var password = document.getElementById('loginPass').value;
-        var remember = document.getElementById('rememberCheck').checked;
         var errorDiv = document.getElementById('loginError');
-        
         if (!username || !password) {
             errorDiv.style.display = 'block';
             errorDiv.innerText = '❌ Usuario y contraseña requeridos';
             return;
         }
-        
         try {
             var response = await fetch(WORKER_URL + '/api/auth', {
                 method: 'POST',
@@ -434,19 +420,12 @@
                 body: JSON.stringify({ username: username, password: password })
             });
             var result = await response.json();
-            
             if (result.success === true) {
-                if (remember) {
-                    localStorage.setItem('santisystems_user', username);
-                    localStorage.setItem('santisystems_pass', password);
-                } else {
-                    localStorage.removeItem('santisystems_user');
-                    localStorage.removeItem('santisystems_pass');
-                }
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('chatContainer').style.display = 'flex';
-                startUpdates();
-                if (!silent) addMessage('✅ Login exitoso. Bienvenido.', false);
+                // Solo guardamos un flag de sesión, nunca la contraseña
+                sessionStorage.setItem('ss_logged', '1');
+                errorDiv.style.display = 'none';
+                showApp();
+                addMessage('✅ Sesión iniciada. Bienvenido.', false);
             } else {
                 errorDiv.style.display = 'block';
                 errorDiv.innerText = '❌ Usuario o contraseña incorrectos';
@@ -456,246 +435,245 @@
             errorDiv.innerText = '❌ Error de conexión. Verifica el Worker.';
         }
     }
-    
+
     function logout() {
         if (fullMarketsInterval) clearInterval(fullMarketsInterval);
-        localStorage.removeItem('santisystems_user');
-        localStorage.removeItem('santisystems_pass');
+        sessionStorage.removeItem('ss_logged');
         document.getElementById('chatContainer').style.display = 'none';
         document.getElementById('loginContainer').style.display = 'flex';
         document.getElementById('loginUser').value = '';
         document.getElementById('loginPass').value = '';
         document.getElementById('loginError').style.display = 'none';
     }
-    
+
     function clearChat() {
-        document.getElementById('messages').innerHTML = '<div class="message bot-message">🤖 <strong>SANTISYSTEMS AI</strong><br><br>Chat limpiado.</div>';
-    }
-    
-    function addMessage(text, isUser) {
-        var messagesDiv = document.getElementById('messages');
-        var messageDiv = document.createElement('div');
-        messageDiv.className = 'message ' + (isUser ? 'user-message' : 'bot-message');
-        messageDiv.innerHTML = text;
-        messagesDiv.appendChild(messageDiv);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        document.getElementById('messages').innerHTML = '<div class="message bot-message">🤖 Chat limpiado.</div>';
     }
 
-    // Carga de datos completos (40 empresas) - ordenados por señal (mejores primero)
+    function addMessage(text, isUser) {
+        var d = document.createElement('div');
+        d.className = 'message ' + (isUser ? 'user-message' : 'bot-message');
+        d.innerHTML = text;
+        var area = document.getElementById('messages');
+        area.appendChild(d);
+        area.scrollTop = area.scrollHeight;
+    }
+
+    // ── Tablas de mercados completos
+    function buildMarketTable(data, currency) {
+        data.sort(function(a, b) { return (SIGNAL_ORDER[a.signal] || 4) - (SIGNAL_ORDER[b.signal] || 4); });
+        var html = '<table class="full-market-table"><thead><tr><th>Símbolo</th><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>';
+        for (var i = 0; i < data.length; i++) {
+            var s = data[i];
+            var cls = s.change >= 0 ? 'positive' : 'negative';
+            var sym = s.change >= 0 ? '▲' : '▼';
+            html += '<tr onclick="analyzeStock(\'' + s.ticker + '\')">';
+            html += '<td><strong>' + s.ticker + '</strong></td>';
+            html += '<td>' + s.name + '</td>';
+            html += '<td>' + currency + s.price.toFixed(2) + '</td>';
+            html += '<td class="' + cls + '">' + sym + ' ' + Math.abs(s.change).toFixed(2) + '%</td>';
+            html += '<td>' + s.rsi + '</td>';
+            html += '<td><span class="signal-badge ' + sigClass(s.signal) + '">' + s.signal + '</span></td>';
+            html += '</tr>';
+        }
+        html += '</tbody></table>';
+        return html;
+    }
+
     async function loadFullUSA() {
         try {
             var res = await fetch(WORKER_URL + '/api/scan/usa');
             var data = await res.json();
             if (Array.isArray(data)) {
-                // Ordenar por señal (COMPRA FUERTE > COMPRA > CONSIDERAR > OBSERVAR > NO COMPRA)
-                var order = { 'COMPRA FUERTE': 1, 'COMPRA': 2, 'CONSIDERAR': 3, 'OBSERVAR': 4, 'CONSIDERAR VENTA': 5, 'NO COMPRA': 6, 'NO COMPRA FUERTE': 7 };
-                data.sort(function(a, b) { return (order[a.signal] || 4) - (order[b.signal] || 4); });
                 fullUsaData = data;
-                var container = document.getElementById('fullUsaTable');
-                if (fullUsaData.length === 0) {
-                    container.innerHTML = '<div>Cargando...</div>';
-                    return;
-                }
-                var html = '<table class="full-market-table"><thead><tr><th>Símbolo</th><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>';
-                for (var i = 0; i < fullUsaData.length; i++) {
-                    var s = fullUsaData[i];
-                    var cls = s.change >= 0 ? 'positive' : 'negative';
-                    var sym = s.change >= 0 ? '▲' : '▼';
-                    var sigCls = 'signal-observar';
-                    if (s.signal === 'COMPRA FUERTE' || s.signal === 'COMPRA') sigCls = 'signal-compra';
-                    else if (s.signal === 'NO COMPRA' || s.signal === 'NO COMPRA FUERTE' || s.signal === 'CONSIDERAR VENTA') sigCls = 'signal-no-compra';
-                    html += '<tr onclick="analyzeStock(\'' + s.ticker + '\')">';
-                    html += '<td><strong>' + s.ticker + '</strong></td>';
-                    html += '<td>' + s.name + '</td>';
-                    html += '<td>$' + s.price.toFixed(2) + '</td>';
-                    html += '<td class="' + cls + '">' + sym + ' ' + Math.abs(s.change).toFixed(2) + '%<\/td>';
-                    html += '<td>' + s.rsi + '</td>';
-                    html += '<td><span class="signal-badge ' + sigCls + '">' + s.signal + '</span></td>';
-                    html += '</tr>';
-                }
-                html += '</tbody></table>';
-                container.innerHTML = html;
+                document.getElementById('fullUsaTable').innerHTML = buildMarketTable(data, '$');
                 updateMarketStatus();
             }
         } catch(e) { console.error(e); }
     }
-    
+
     async function loadFullEurope() {
         try {
             var res = await fetch(WORKER_URL + '/api/scan/europe');
             var data = await res.json();
             if (Array.isArray(data)) {
-                var order = { 'COMPRA FUERTE': 1, 'COMPRA': 2, 'CONSIDERAR': 3, 'OBSERVAR': 4, 'CONSIDERAR VENTA': 5, 'NO COMPRA': 6, 'NO COMPRA FUERTE': 7 };
-                data.sort(function(a, b) { return (order[a.signal] || 4) - (order[b.signal] || 4); });
                 fullEuropeData = data;
-                var container = document.getElementById('fullEuropeTable');
-                if (fullEuropeData.length === 0) {
-                    container.innerHTML = '<div>Cargando...</div>';
-                    return;
-                }
-                var html = '<table class="full-market-table"><thead><tr><th>Símbolo</th><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>';
-                for (var i = 0; i < fullEuropeData.length; i++) {
-                    var s = fullEuropeData[i];
-                    var cls = s.change >= 0 ? 'positive' : 'negative';
-                    var sym = s.change >= 0 ? '▲' : '▼';
-                    var sigCls = 'signal-observar';
-                    if (s.signal === 'COMPRA FUERTE' || s.signal === 'COMPRA') sigCls = 'signal-compra';
-                    else if (s.signal === 'NO COMPRA' || s.signal === 'NO COMPRA FUERTE' || s.signal === 'CONSIDERAR VENTA') sigCls = 'signal-no-compra';
-                    html += '<tr onclick="analyzeStock(\'' + s.ticker + '\')">';
-                    html += '<td><strong>' + s.ticker + '</strong></td>';
-                    html += '<td>' + s.name + '</td>';
-                    html += '<td>€' + s.price.toFixed(2) + '</td>';
-                    html += '<td class="' + cls + '">' + sym + ' ' + Math.abs(s.change).toFixed(2) + '%<\/td>';
-                    html += '<td>' + s.rsi + '</td>';
-                    html += '<td><span class="signal-badge ' + sigCls + '">' + s.signal + '</span></td>';
-                    html += '</tr>';
-                }
-                html += '</tbody></table>';
-                container.innerHTML = html;
+                document.getElementById('fullEuropeTable').innerHTML = buildMarketTable(data, '€');
                 updateMarketStatus();
             }
         } catch(e) { console.error(e); }
     }
-    
+
     function startUpdates() {
         loadFullUSA();
         loadFullEurope();
         updateMarketStatus();
         if (fullMarketsInterval) clearInterval(fullMarketsInterval);
-        fullMarketsInterval = setInterval(function() {
-            loadFullUSA();
-            loadFullEurope();
-        }, 30000);
+        fullMarketsInterval = setInterval(function() { loadFullUSA(); loadFullEurope(); }, 30000);
     }
 
-    // Funciones del Chat
+    // ── Último CRON
     async function showLastScan(market) {
         addMessage('📂 Cargando último análisis CRON de ' + (market === 'europe' ? 'Europa' : 'USA') + '...', true);
         try {
             var res = await fetch(WORKER_URL + '/api/last-scan/' + market);
             var data = await res.json();
             if (data.error) {
-                addMessage('⚠️ ' + data.error + '<br><small>El CRON guarda datos a las ' + (market === 'europe' ? '9:00 AM' : '15:10 PM') + ' en días laborables.</small>', false);
+                addMessage('⚠️ ' + data.error + '<br><small>El CRON guarda a las ' + (market === 'europe' ? '9:00' : '15:10') + ' en días laborables.</small>', false);
                 return;
             }
             var stocks = data.results || [];
             var ts = data.timestamp ? new Date(data.timestamp).toLocaleString() : 'desconocido';
-            var order = { 'COMPRA FUERTE': 1, 'COMPRA': 2, 'CONSIDERAR': 3, 'OBSERVAR': 4, 'CONSIDERAR VENTA': 5, 'NO COMPRA': 6, 'NO COMPRA FUERTE': 7 };
-            stocks.sort(function(a, b) { return (order[a.signal] || 4) - (order[b.signal] || 4); });
-            var html = '<strong>📂 CRON ' + (market === 'europe' ? 'EUROPA' : 'USA') + ' - Guardado: ' + ts + '</strong><br><br><div class="stock-list">';
+            stocks.sort(function(a, b) { return (SIGNAL_ORDER[a.signal] || 4) - (SIGNAL_ORDER[b.signal] || 4); });
+            var html = '<strong>📂 CRON ' + (market === 'europe' ? 'EUROPA' : 'USA') + ' — Guardado: ' + ts + '</strong><br><br><div class="stock-list">';
             for (var i = 0; i < Math.min(stocks.length, 20); i++) {
                 var s = stocks[i];
-                var sigCls = 'signal-observar';
-                if (s.signal === 'COMPRA FUERTE' || s.signal === 'COMPRA') sigCls = 'signal-compra';
-                else if (s.signal === 'NO COMPRA' || s.signal === 'NO COMPRA FUERTE' || s.signal === 'CONSIDERAR VENTA') sigCls = 'signal-no-compra';
                 html += '<div class="stock-item" onclick="analyzeStock(\'' + s.ticker + '\')">';
                 html += '<strong>' + s.ticker + '</strong><br>' + s.name + '<br>';
-                html += 'Precio: ' + (s.market === 'Europa' ? '€' : '$') + s.price + '<br>';
+                html += (s.market === 'Europa' ? '€' : '$') + s.price + '<br>';
                 html += 'RSI: ' + s.rsi + '<br>';
-                html += '<span class="' + sigCls + '">' + s.signal + '</span>';
+                html += '<span class="' + sigClass(s.signal) + '">' + s.signal + '</span>';
                 html += '</div>';
             }
-            html += '</div><br><small>💡 Haz clic para análisis profundo | Total: ' + stocks.length + ' empresas</small>';
+            html += '</div><br><small>💡 Clic para análisis profundo | Total: ' + stocks.length + ' empresas</small>';
             addMessage(html, false);
-        } catch(e) {
-            addMessage('❌ Error: ' + e.message, false);
-        }
+        } catch(e) { addMessage('❌ Error: ' + e.message, false); }
     }
-    
+
+    // ── Escáner en tiempo real
     async function scanMarket(market) {
         addMessage('🔍 Escaneando mercado ' + (market === 'europe' ? 'Europeo' : 'USA') + '...', true);
         try {
             var endpoint = market === 'europe' ? '/api/scan/europe' : '/api/scan/usa';
             var res = await fetch(WORKER_URL + endpoint);
             var stocks = await res.json();
-            if (stocks.length === 0) {
-                addMessage('⚠️ No se encontraron oportunidades.', false);
-                return;
-            }
-            // Ordenar por señal (mejores primero)
-            var order = { 'COMPRA FUERTE': 1, 'COMPRA': 2, 'CONSIDERAR': 3, 'OBSERVAR': 4, 'CONSIDERAR VENTA': 5, 'NO COMPRA': 6, 'NO COMPRA FUERTE': 7 };
-            stocks.sort(function(a, b) { return (order[a.signal] || 4) - (order[b.signal] || 4); });
-            
-            var html = '<strong>📊 ' + (market === 'europe' ? 'EUROPA' : 'USA') + ' - Oportunidades (' + new Date().toLocaleTimeString() + ')</strong><br><br><div class="stock-list">';
+            if (!stocks.length) { addMessage('⚠️ Sin resultados.', false); return; }
+            stocks.sort(function(a, b) { return (SIGNAL_ORDER[a.signal] || 4) - (SIGNAL_ORDER[b.signal] || 4); });
+            var html = '<strong>📊 ' + (market === 'europe' ? 'EUROPA' : 'USA') + ' (' + new Date().toLocaleTimeString() + ')</strong><br><br><div class="stock-list">';
             for (var i = 0; i < Math.min(stocks.length, 20); i++) {
                 var s = stocks[i];
-                var sigCls = 'signal-observar';
-                if (s.signal === 'COMPRA FUERTE' || s.signal === 'COMPRA') sigCls = 'signal-compra';
-                else if (s.signal === 'NO COMPRA' || s.signal === 'NO COMPRA FUERTE' || s.signal === 'CONSIDERAR VENTA') sigCls = 'signal-no-compra';
                 html += '<div class="stock-item" onclick="analyzeStock(\'' + s.ticker + '\')">';
                 html += '<strong>' + s.ticker + '</strong><br>' + s.name + '<br>';
-                html += 'Precio: ' + (s.market === 'Europa' ? '€' : '$') + s.price + '<br>';
+                html += (s.market === 'Europa' ? '€' : '$') + s.price + '<br>';
                 html += 'RSI: ' + s.rsi + '<br>';
-                html += '<span class="' + sigCls + '">' + s.signal + '</span>';
+                html += '<span class="' + sigClass(s.signal) + '">' + s.signal + '</span>';
                 html += '</div>';
             }
-            html += '</div><br><small>💡 Haz clic para análisis profundo</small>';
+            html += '</div><br><small>💡 Clic para análisis profundo</small>';
             addMessage(html, false);
-        } catch(e) {
-            addMessage('❌ Error: ' + e.message, false);
-        }
+        } catch(e) { addMessage('❌ Error: ' + e.message, false); }
     }
-    
+
+    // ── Análisis profundo
     async function analyzeStock(ticker) {
-        addMessage('🔍 Analizando ' + ticker + '...', true);
+        addMessage('🔍 Analizando ' + ticker + ' (incluyendo noticias)...', true);
         try {
             var res = await fetch(WORKER_URL + '/api/analyze?ticker=' + ticker);
             var data = await res.json();
-            if (data.error) {
-                addMessage('❌ ' + data.error, false);
-                return;
-            }
-            var sigCls = 'signal-observar';
+            if (data.error) { addMessage('❌ ' + data.error, false); return; }
+
             var rec = data.recommendation || 'OBSERVAR';
-            if (rec === 'COMPRA FUERTE' || rec === 'COMPRA') sigCls = 'signal-compra';
-            else if (rec === 'NO COMPRA' || rec === 'NO COMPRA FUERTE') sigCls = 'signal-no-compra';
-            
+            var scls = sigClass(rec);
             var confidence = data.confidence || '50%';
-            
-            var html = '<strong>📈 ANÁLISIS: ' + (data.ticker || ticker) + '</strong><br><br>';
-            html += '📍 Mercado: ' + (data.market || 'USA') + '<br>';
-            html += '💰 Precio: ' + (data.market === 'Europa' ? '€' : '$') + (data.price || 'N/A') + '<br>';
-            html += '📉 Cambio: ' + (data.change > 0 ? '+' : '') + (data.change || 0) + '%<br><br>';
-            
+            var currency = data.market === 'Europa' ? '€' : '$';
             var rsi = data.rsi || data.indicators?.rsi || 50;
-            html += '📊 RSI: ' + rsi;
-            if (rsi < 35) html += ' (sobreventa)';
-            else if (rsi > 70) html += ' (sobrecompra)';
-            else html += ' (neutral)';
+
+            var html = '<strong>📈 ANÁLISIS: ' + (data.ticker || ticker) + ' — ' + data.name + '</strong><br><br>';
+            html += '📍 ' + (data.market || 'USA') + ' &nbsp;|&nbsp; ';
+            html += '💰 ' + currency + (data.price || 'N/A') + ' &nbsp;|&nbsp; ';
+            html += '📉 ' + (data.change > 0 ? '+' : '') + (data.change || 0).toFixed(2) + '%<br><br>';
+
+            // RSI
+            html += '📊 RSI: <strong>' + rsi + '</strong>';
+            if (rsi < 35) html += ' 🟢 sobreventa';
+            else if (rsi > 70) html += ' 🔴 sobrecompra';
+            else html += ' ⚪ neutral';
             html += '<br><br>';
-            
-            // Mostrar nuevos indicadores si existen
+
+            // Indicadores clave
             if (data.indicators) {
-                html += '<strong>📊 INDICADORES AVANZADOS:</strong><br>';
-                if (data.indicators.adx) html += '• ADX: ' + data.indicators.adx + (data.indicators.adx > 25 ? ' (tendencia fuerte)' : ' (tendencia débil)') + '<br>';
-                if (data.indicators.superTrend) html += '• SuperTrend: ' + (data.indicators.superTrend === 'bullish' ? '🟢 ALCISTA' : '🔴 BAJISTA') + '<br>';
-                if (data.indicators.ema200) html += '• EMA200: ' + data.indicators.ema200 + (data.price > data.indicators.ema200 ? ' (precio por encima)' : ' (precio por debajo)') + '<br>';
-                if (data.indicators.multiTimeframe) html += '• Multi-timeframe: ' + (data.indicators.multiTimeframe === 'bullish' ? '🟢 ALCISTA' : (data.indicators.multiTimeframe === 'bearish' ? '🔴 BAJISTA' : '⚪ MIXTO')) + '<br>';
+                var ind = data.indicators;
+                html += '<strong>🔬 INDICADORES:</strong><br>';
+                if (ind.adx !== null && ind.adx !== undefined) html += '• ADX: ' + ind.adx + (ind.adx > 25 ? ' (tendencia fuerte)' : ' (mercado lateral)') + '<br>';
+                if (ind.superTrend) html += '• SuperTrend: ' + (ind.superTrend === 'bullish' ? '🟢 ALCISTA' : '🔴 BAJISTA') + '<br>';
+                if (ind.ema200) html += '• EMA200: ' + ind.ema200 + ' — precio ' + (data.price > ind.ema200 ? '🟢 por encima' : '🔴 por debajo') + '<br>';
+                if (ind.trendConfirmation) html += '• Confirmación tendencia: ' + (ind.trendConfirmation.signal === 'bullish' ? '🟢' : ind.trendConfirmation.signal === 'bearish' ? '🔴' : '⚪') + ' ' + (ind.trendConfirmation.note || ind.trendConfirmation.signal) + '<br>';
+                if (ind.volumeRatio) html += '• Volumen relativo: ' + ind.volumeRatio + 'x<br>';
                 html += '<br>';
-            }
-            
-            html += '🎯 <span class="' + sigCls + '">' + rec + '</span><br>';
-            html += '📊 Confianza: ' + confidence + '<br><br>';
-            
-            if (data.reasons || data.recommendationDetails?.reasons) {
-                var reasons = data.reasons || data.recommendationDetails?.reasons;
-                if (reasons && reasons.length) {
-                    html += '<strong>🔍 RAZONES:</strong><br>';
-                    for (var j = 0; j < Math.min(reasons.length, 5); j++) {
-                        html += '• ' + reasons[j] + '<br>';
+
+                // Noticias / Sentimiento
+                if (ind.newsSentiment) {
+                    var ns = ind.newsSentiment;
+                    var nsEmoji = ns.label === 'positivo' ? '🟢' : ns.label === 'negativo' ? '🔴' : '⚪';
+                    html += '<strong>📰 NOTICIAS (' + ns.count + ' artículos):</strong> ' + nsEmoji + ' ' + ns.label.toUpperCase() + ' (score: ' + ns.score + ')<br>';
+                    if (ns.headlines && ns.headlines.length) {
+                        for (var h = 0; h < ns.headlines.length; h++) {
+                            if (ns.headlines[h]) html += '<small>• ' + ns.headlines[h] + '...</small><br>';
+                        }
                     }
                     html += '<br>';
                 }
             }
-            
-            html += '<small>⏰ ' + new Date(data.timestamp).toLocaleString() + '<br>⚠️ ' + (data.disclaimer || 'Análisis informativo. No es consejo financiero.') + '</small>';
+
+            // Puntuación por bloques
+            if (data.blockScores) {
+                html += '<strong>🧱 PUNTUACIÓN POR BLOQUES:</strong><br>';
+                html += '<div class="block-grid">';
+                for (var key in data.blockScores) {
+                    var b = data.blockScores[key];
+                    var bClass = b.score > 0.15 ? 'block-bull' : b.score < -0.15 ? 'block-bear' : 'block-neutral';
+                    var bEmoji = b.score > 0.15 ? '🟢' : b.score < -0.15 ? '🔴' : '⚪';
+                    html += '<div class="block-card ' + bClass + '">';
+                    html += '<div class="block-name">' + b.name + '</div>';
+                    html += '<div class="block-score">' + bEmoji + ' ' + (b.score > 0 ? '+' : '') + b.score + '</div>';
+                    html += '</div>';
+                }
+                html += '</div><br>';
+            }
+
+            // Resultado final
+            html += '🎯 <strong>Señal: <span class="' + scls + '">' + rec + '</span></strong><br>';
+            html += '📊 Confianza estimada: <strong>' + confidence + '</strong><br><br>';
+
+            // Desglose de confianza
+            if (data.confidenceBreakdown && data.confidenceBreakdown.length) {
+                html += '<strong>📋 DESGLOSE CONFIANZA:</strong><br>';
+                for (var cb = 0; cb < data.confidenceBreakdown.length; cb++) {
+                    html += '<small>• ' + data.confidenceBreakdown[cb] + '</small><br>';
+                }
+                html += '<br>';
+            }
+
+            // Conflictos y puntos débiles
+            if (data.conflicts && data.conflicts.length) {
+                html += '⚠️ <strong>Conflictos:</strong> ';
+                for (var c = 0; c < data.conflicts.length; c++) html += '<span class="conflict-tag">' + data.conflicts[c] + '</span>';
+                html += '<br>';
+            }
+            if (data.weakPoints && data.weakPoints.length) {
+                html += '🔸 <strong>Datos débiles:</strong> ';
+                for (var w = 0; w < data.weakPoints.length; w++) html += '<span class="weak-tag">' + data.weakPoints[w] + '</span>';
+                html += '<br>';
+            }
+
+            // Razones principales
+            if (data.recommendationDetails?.reasons && data.recommendationDetails.reasons.length) {
+                html += '<br><strong>🔍 RAZONES PRINCIPALES:</strong><br>';
+                var reasons = data.recommendationDetails.reasons;
+                for (var j = 0; j < Math.min(reasons.length, 6); j++) {
+                    html += '<small>• ' + reasons[j] + '</small><br>';
+                }
+            }
+
+            html += '<br><small>⏰ ' + new Date(data.timestamp).toLocaleString() + '<br>⚠️ ' + (data.disclaimer || 'Análisis estimado. No es consejo financiero.') + '</small>';
             addMessage(html, false);
         } catch(e) {
-            console.error('Error en analyzeStock:', e);
+            console.error(e);
             addMessage('❌ Error en el análisis: ' + e.message, false);
         }
     }
-    
+
+    // ── Lista de empresas
     async function showTickers() {
         addMessage('📋 Cargando lista...', false);
         try {
@@ -704,57 +682,42 @@
             var html = '<strong>📋 Empresas (' + data.total + ')</strong><br><br>';
             html += '<strong>🇺🇸 USA (' + data.usa.length + '):</strong><br>';
             html += '<div style="background:#f7fafc;padding:12px;border-radius:12px;max-height:150px;overflow-y:auto;">';
-            for (var i = 0; i < data.usa.length; i++) {
-                html += '<div><strong>' + data.usa[i].ticker + '</strong> - ' + data.usa[i].name + '</div>';
-            }
+            for (var i = 0; i < data.usa.length; i++) html += '<div><strong>' + data.usa[i].ticker + '</strong> — ' + data.usa[i].name + '</div>';
             html += '</div><br>';
             html += '<strong>🌍 Europa (' + data.europe.length + '):</strong><br>';
             html += '<div style="background:#f7fafc;padding:12px;border-radius:12px;max-height:150px;overflow-y:auto;">';
-            for (var i = 0; i < data.europe.length; i++) {
-                html += '<div><strong>' + data.europe[i].ticker + '</strong> - ' + data.europe[i].name + '</div>';
-            }
+            for (var i = 0; i < data.europe.length; i++) html += '<div><strong>' + data.europe[i].ticker + '</strong> — ' + data.europe[i].name + '</div>';
             html += '</div><br>';
             html += '<small>💡 Escribe "analiza TICKER"</small>';
             addMessage(html, false);
-        } catch(e) {
-            addMessage('❌ Error: ' + e.message, false);
-        }
+        } catch(e) { addMessage('❌ Error: ' + e.message, false); }
     }
-    
+
+    // ── Envío de mensajes de texto
     async function sendMessage() {
         var input = document.getElementById('userInput');
         var text = input.value.trim();
-        if (text === '') return;
+        if (!text) return;
         addMessage(text, true);
         input.value = '';
         var lower = text.toLowerCase();
-        if (lower.includes('escanea europa')) {
-            await scanMarket('europe');
-        } else if (lower.includes('escanea usa')) {
-            await scanMarket('usa');
-        } else if (lower.includes('analiza ')) {
-            var parts = text.split('analiza ');
+        if (lower.includes('escanea europa')) { await scanMarket('europe'); }
+        else if (lower.includes('escanea usa')) { await scanMarket('usa'); }
+        else if (lower.includes('analiza ')) {
+            var parts = text.split(/analiza /i);
             if (parts.length > 1) {
                 var ticker = parts[1].split(' ')[0].toUpperCase();
                 if (ticker) await analyzeStock(ticker);
                 else addMessage('❌ Especifica un ticker. Ej: analiza AAPL', false);
-            } else {
-                addMessage('❌ Especifica un ticker. Ej: analiza AAPL', false);
             }
-        } else if (lower.includes('lista') || lower.includes('tickers')) {
-            await showTickers();
-        } else {
-            addMessage('📝 Comandos: "escanea europa", "escanea usa", "analiza AAPL", "lista"', false);
-        }
+        } else if (lower.includes('lista') || lower.includes('tickers')) { await showTickers(); }
+        else { addMessage('📝 Comandos: "escanea europa", "escanea usa", "analiza AAPL", "lista"', false); }
     }
-    
+
+    // ── Inicialización
     checkSession();
-    document.getElementById('loginPass').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') doLogin(false);
-    });
-    document.getElementById('loginUser').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') doLogin(false);
-    });
+    document.getElementById('loginPass').addEventListener('keypress', function(e) { if (e.key === 'Enter') doLogin(); });
+    document.getElementById('loginUser').addEventListener('keypress', function(e) { if (e.key === 'Enter') doLogin(); });
 </script>
 </body>
 </html>
