@@ -462,7 +462,7 @@
     // ── Tablas de mercados completos
     function buildMarketTable(data, currency) {
         data.sort(function(a, b) { return (SIGNAL_ORDER[a.signal] || 4) - (SIGNAL_ORDER[b.signal] || 4); });
-        var html = '<table class="full-market-table"><thead><tr><th>Símbolo</th><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>';
+        var html = '<table class="full-market-table"><thead><tr><th>Símbolo</th><th>Empresa</th><th>Precio</th><th>Cambio</th><th>Confianza</th><th>Señal</th></tr></thead><tbody>';
         for (var i = 0; i < data.length; i++) {
             var s = data[i];
             var cls = s.change >= 0 ? 'positive' : 'negative';
@@ -472,7 +472,7 @@
             html += '<td>' + s.name + '</td>';
             html += '<td>' + currency + s.price.toFixed(2) + '</td>';
             html += '<td class="' + cls + '">' + sym + ' ' + Math.abs(s.change).toFixed(2) + '%</td>';
-            html += '<td>' + s.rsi + '</td>';
+            html += '<td><strong>' + (s.confidence || '—') + '%</strong></td>';
             html += '<td><span class="signal-badge ' + sigClass(s.signal) + '">' + s.signal + '</span></td>';
             html += '</tr>';
         }
@@ -524,14 +524,18 @@
             }
             var stocks = data.results || [];
             var ts = data.timestamp ? new Date(data.timestamp).toLocaleString() : 'desconocido';
-            stocks.sort(function(a, b) { return (SIGNAL_ORDER[a.signal] || 4) - (SIGNAL_ORDER[b.signal] || 4); });
+            stocks.sort(function(a, b) {
+                var sigDiff = (SIGNAL_ORDER[a.signal] || 4) - (SIGNAL_ORDER[b.signal] || 4);
+                if (sigDiff !== 0) return sigDiff;
+                return (b.confidence || 0) - (a.confidence || 0);
+            });
             var html = '<strong>📂 CRON ' + (market === 'europe' ? 'EUROPA' : 'USA') + ' — Guardado: ' + ts + '</strong><br><br><div class="stock-list">';
             for (var i = 0; i < Math.min(stocks.length, 20); i++) {
                 var s = stocks[i];
                 html += '<div class="stock-item" onclick="analyzeStock(\'' + s.ticker + '\')">';
                 html += '<strong>' + s.ticker + '</strong><br>' + s.name + '<br>';
                 html += (s.market === 'Europa' ? '€' : '$') + s.price + '<br>';
-                html += 'RSI: ' + s.rsi + '<br>';
+                html += '<strong>Confianza: ' + (s.confidence || '—') + '%</strong><br>';
                 html += '<span class="' + sigClass(s.signal) + '">' + s.signal + '</span>';
                 html += '</div>';
             }
@@ -548,14 +552,18 @@
             var res = await fetch(WORKER_URL + endpoint);
             var stocks = await res.json();
             if (!stocks.length) { addMessage('⚠️ Sin resultados.', false); return; }
-            stocks.sort(function(a, b) { return (SIGNAL_ORDER[a.signal] || 4) - (SIGNAL_ORDER[b.signal] || 4); });
+            stocks.sort(function(a, b) {
+                var sigDiff = (SIGNAL_ORDER[a.signal] || 4) - (SIGNAL_ORDER[b.signal] || 4);
+                if (sigDiff !== 0) return sigDiff;
+                return (b.confidence || 0) - (a.confidence || 0);
+            });
             var html = '<strong>📊 ' + (market === 'europe' ? 'EUROPA' : 'USA') + ' (' + new Date().toLocaleTimeString() + ')</strong><br><br><div class="stock-list">';
             for (var i = 0; i < Math.min(stocks.length, 20); i++) {
                 var s = stocks[i];
                 html += '<div class="stock-item" onclick="analyzeStock(\'' + s.ticker + '\')">';
                 html += '<strong>' + s.ticker + '</strong><br>' + s.name + '<br>';
                 html += (s.market === 'Europa' ? '€' : '$') + s.price + '<br>';
-                html += 'RSI: ' + s.rsi + '<br>';
+                html += '<strong>Confianza: ' + (s.confidence || '—') + '%</strong><br>';
                 html += '<span class="' + sigClass(s.signal) + '">' + s.signal + '</span>';
                 html += '</div>';
             }
