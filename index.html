@@ -585,65 +585,47 @@
         }
     }
     
-    async function analyzeStock(ticker) {
-        addMessage(`🔍 Analizando ${ticker} con 7 indicadores + IA...`, true);
-        try {
-            const response = await fetch(`${WORKER_URL}/api/analyze?ticker=${ticker}`);
-            const data = await response.json();
-            
-            if (data.error) {
-                addMessage(`❌ ${data.error}`);
-                return;
-            }
-            
-            let recClass = '';
-            if (data.recommendation && data.recommendation.verdict) {
-                const verdict = data.recommendation.verdict;
-                if (verdict.includes('COMPRA')) recClass = 'signal-compra';
-                if (verdict.includes('NO COMPRA')) recClass = 'signal-no-compra';
-                if (verdict.includes('OBSERVAR')) recClass = 'signal-observar';
-            }
-            
-            let html = `<strong>📈 ANÁLISIS COMPLETO: ${data.ticker}</strong><br><br>`;
-            html += `📍 Mercado: ${data.market}<br>`;
-            html += `💰 Precio: ${data.price}${data.market === 'Europa' ? '€' : '$'}<br>`;
-            html += `📉 Cambio día: ${data.change?.toFixed(2) || 0}%<br><br>`;
-            
-            if (data.indicators) {
-                html += `<strong>📊 INDICADORES TÉCNICOS (7):</strong><br>`;
-                html += `• RSI: ${data.indicators.rsi}<br>`;
-                if (data.indicators.sma20) html += `• SMA20: ${data.indicators.sma20} | SMA50: ${data.indicators.sma50}<br>`;
-                if (data.indicators.macd) html += `• MACD: ${data.indicators.macd.cross} (fuerza: ${data.indicators.macd.strength}%)<br>`;
-                if (data.indicators.bollinger) html += `• Bollinger: ${data.indicators.bollinger.position}<br>`;
-                if (data.indicators.supportResistance && data.indicators.supportResistance.support) {
-                    html += `• Soporte: ${data.indicators.supportResistance.support} | Resistencia: ${data.indicators.supportResistance.resistance}<br>`;
-                }
-                html += `• Volumen relativo: ${data.indicators.volumeRatio}x<br><br>`;
-            }
-            
-            if (data.recommendation) {
-                html += `<strong>🎯 RECOMENDACIÓN:</strong> <span class="${recClass}">${data.recommendation.verdict}</span><br>`;
-                html += `📊 Confianza: ${data.recommendation.confidence}<br>`;
-                html += `📈 Puntuación: ${data.recommendation.score} puntos<br><br>`;
-                
-                if (data.recommendation.reasons && data.recommendation.reasons.length) {
-                    html += `<strong>🔍 RAZONES:</strong><br>`;
-                    data.recommendation.reasons.forEach(r => { html += `• ${r}<br>`; });
-                    html += `<br>`;
-                }
-            }
-            
-            if (data.iaAnalysis) {
-                html += `<strong>🤖 ANÁLISIS IA (Claude):</strong><br>`;
-                html += `${data.iaAnalysis}<br><br>`;
-            }
-            
-            html += `<small>⏰ ${new Date(data.timestamp).toLocaleString()}<br>⚠️ ${data.disclaimer || 'Análisis informativo. No es consejo financiero.'}</small>`;
-            addMessage(html);
-        } catch(e) {
-            addMessage(`❌ Error en análisis: ${e.message}`);
+   async function analyzeStock(ticker) {
+    addMessage(`🔍 Analizando ${ticker} con indicadores...`, true);
+    try {
+        const response = await fetch(`${WORKER_URL}/api/analyze?ticker=${ticker}`);
+        const data = await response.json();
+        
+        if (data.error) {
+            addMessage(`❌ ${data.error}`);
+            return;
         }
+        
+        // Determinar clase CSS para la recomendación
+        let recClass = '';
+        if (data.recommendation === 'COMPRA') recClass = 'signal-compra';
+        if (data.recommendation === 'NO COMPRA') recClass = 'signal-no-compra';
+        if (data.recommendation === 'CONSIDERAR') recClass = 'signal-observar';
+        if (data.recommendation === 'OBSERVAR') recClass = 'signal-observar';
+        
+        let html = `<strong>📈 ANÁLISIS COMPLETO: ${data.ticker}</strong><br><br>`;
+        html += `📍 Mercado: ${data.market}<br>`;
+        html += `💰 Precio: ${data.price}${data.market === 'Europa' ? '€' : '$'}<br>`;
+        html += `📉 Cambio día: ${data.change}%<br><br>`;
+        
+        html += `<strong>📊 INDICADORES TÉCNICOS:</strong><br>`;
+        html += `• RSI: ${data.rsi}<br><br>`;
+        
+        html += `<strong>🎯 RECOMENDACIÓN:</strong> <span class="${recClass}">${data.recommendation}</span><br>`;
+        html += `📊 Confianza: ${data.confidence}<br><br>`;
+        
+        if (data.disclaimer) {
+            html += `<small>⚠️ ${data.disclaimer}</small><br>`;
+        }
+        
+        html += `<small>⏰ ${new Date(data.timestamp).toLocaleString()}</small>`;
+        
+        addMessage(html);
+    } catch(e) {
+        console.error("Error en análisis:", e);
+        addMessage(`❌ Error en el análisis: ${e.message}`);
     }
+}
     
    async function showTickers() {
     addMessage("📋 Cargando lista de 80 empresas...", false);
