@@ -527,41 +527,100 @@
     }
     
     async function scanMarket(market) {
-        addMessage(`🔍 Escaneando mercado ${market === 'europe' ? 'Europeo' : 'USA'}...`, true);
-        try {
-            const endpoint = market === 'europe' ? '/api/scan/europe' : '/api/scan/usa';
-            const response = await fetch(`${WORKER_URL}${endpoint}`);
-            const stocks = await response.json();
-            
-            if (!Array.isArray(stocks) || stocks.length === 0) {
-                addMessage(`⚠️ No se encontraron oportunidades en ${market === 'europe' ? 'Europa' : 'USA'} en este momento.`);
-                return;
-            }
-            
-            let html = `<strong>📊 ${market === 'europe' ? 'EUROPA' : 'USA'} - Oportunidades (${new Date().toLocaleTimeString()})</strong><br><br>`;
+    addMessage(`🔍 Escaneando mercado ${market === 'europe' ? 'Europeo' : 'USA'}...`, true);
+    try {
+        const endpoint = market === 'europe' ? '/api/scan/europe' : '/api/scan/usa';
+        const response = await fetch(`${WORKER_URL}${endpoint}`);
+        const stocks = await response.json();
+        
+        if (!Array.isArray(stocks) || stocks.length === 0) {
+            addMessage(`⚠️ No se encontraron oportunidades en ${market === 'europe' ? 'Europa' : 'USA'} en este momento.`);
+            return;
+        }
+        
+        let html = `<strong>📊 ${market === 'europe' ? 'EUROPA' : 'USA'} - Oportunidades (${new Date().toLocaleTimeString()})</strong><br><br>`;
+        
+        // Separar por tipo de recomendación
+        const compras = stocks.filter(s => s.signal === 'COMPRA FUERTE' || s.signal === 'COMPRA');
+        const considerar = stocks.filter(s => s.signal === 'CONSIDERAR');
+        const observar = stocks.filter(s => s.signal === 'OBSERVAR');
+        const noCompras = stocks.filter(s => s.signal === 'NO COMPRA' || s.signal === 'NO COMPRA FUERTE');
+        
+        // Mostrar COMPRAS primero (verde)
+        if (compras.length > 0) {
+            html += `<span style="background:#27ae60; color:white; padding:4px 12px; border-radius:20px; display:inline-block; margin-bottom:10px;">✅ RECOMENDACIÓN: COMPRA (${compras.length})</span><br><br>`;
             html += `<div class="stock-list">`;
-            stocks.slice(0, 15).forEach(stock => {
-                let signalClass = '';
-                if (stock.signal === 'COMPRA FUERTE' || stock.signal === 'COMPRA') signalClass = 'signal-compra';
-                if (stock.signal === 'NO COMPRA FUERTE' || stock.signal === 'NO COMPRA') signalClass = 'signal-no-compra';
-                if (stock.signal === 'CONSIDERAR' || stock.signal === 'OBSERVAR') signalClass = 'signal-observar';
-                
+            compras.forEach(stock => {
                 html += `
-                    <div class="stock-item" onclick="analyzeStock('${stock.ticker}')">
+                    <div class="stock-item" style="border-left:4px solid #27ae60;" onclick="analyzeStock('${stock.ticker}')">
                         <strong>${stock.ticker}</strong><br>
                         ${stock.name}<br>
-                        Precio: ${stock.price}${stock.market === 'Europa' ? '€' : '$'}<br>
-                        RSI: ${stock.rsi}<br>
-                        <span class="${signalClass}">${stock.signal}</span>
+                        💰 ${stock.price}${stock.market === 'Europa' ? '€' : '$'} | RSI: ${stock.rsi}<br>
+                        <span style="color:#27ae60; font-weight:bold;">🟢 ${stock.signal}</span>
                     </div>
                 `;
             });
-            html += `</div><br><small>💡 Haz clic en cualquier acción para análisis profundo</small>`;
-            addMessage(html);
-        } catch(e) {
-            addMessage(`❌ Error al escanear: ${e.message}`);
+            html += `</div><br>`;
         }
+        
+        // Mostrar CONSIDERAR (amarillo)
+        if (considerar.length > 0) {
+            html += `<span style="background:#f39c12; color:white; padding:4px 12px; border-radius:20px; display:inline-block; margin-bottom:10px;">⚠️ RECOMENDACIÓN: CONSIDERAR (${considerar.length})</span><br><br>`;
+            html += `<div class="stock-list">`;
+            considerar.forEach(stock => {
+                html += `
+                    <div class="stock-item" style="border-left:4px solid #f39c12;" onclick="analyzeStock('${stock.ticker}')">
+                        <strong>${stock.ticker}</strong><br>
+                        ${stock.name}<br>
+                        💰 ${stock.price}${stock.market === 'Europa' ? '€' : '$'} | RSI: ${stock.rsi}<br>
+                        <span style="color:#f39c12; font-weight:bold;">🟡 ${stock.signal}</span>
+                    </div>
+                `;
+            });
+            html += `</div><br>`;
+        }
+        
+        // Mostrar OBSERVAR (gris)
+        if (observar.length > 0) {
+            html += `<span style="background:#95a5a6; color:white; padding:4px 12px; border-radius:20px; display:inline-block; margin-bottom:10px;">⚪ RECOMENDACIÓN: OBSERVAR (${observar.length})</span><br><br>`;
+            html += `<div class="stock-list">`;
+            observar.forEach(stock => {
+                html += `
+                    <div class="stock-item" style="border-left:4px solid #95a5a6;" onclick="analyzeStock('${stock.ticker}')">
+                        <strong>${stock.ticker}</strong><br>
+                        ${stock.name}<br>
+                        💰 ${stock.price}${stock.market === 'Europa' ? '€' : '$'} | RSI: ${stock.rsi}<br>
+                        <span style="color:#7f8c8d; font-weight:bold;">⚪ ${stock.signal}</span>
+                    </div>
+                `;
+            });
+            html += `</div><br>`;
+        }
+        
+        // Mostrar NO COMPRA (rojo)
+        if (noCompras.length > 0) {
+            html += `<span style="background:#e74c3c; color:white; padding:4px 12px; border-radius:20px; display:inline-block; margin-bottom:10px;">❌ RECOMENDACIÓN: NO COMPRA (${noCompras.length})</span><br><br>`;
+            html += `<div class="stock-list">`;
+            noCompras.forEach(stock => {
+                html += `
+                    <div class="stock-item" style="border-left:4px solid #e74c3c;" onclick="analyzeStock('${stock.ticker}')">
+                        <strong>${stock.ticker}</strong><br>
+                        ${stock.name}<br>
+                        💰 ${stock.price}${stock.market === 'Europa' ? '€' : '$'} | RSI: ${stock.rsi}<br>
+                        <span style="color:#e74c3c; font-weight:bold;">🔴 ${stock.signal}</span>
+                    </div>
+                `;
+            });
+            html += `</div><br>`;
+        }
+        
+        html += `<small>💡 Haz clic en cualquier acción para análisis profundo</small>`;
+        addMessage(html);
+        
+    } catch(e) {
+        addMessage(`❌ Error al escanear: ${e.message}`);
     }
+}
     
     async function analyzeStock(ticker) {
         addMessage(`🔍 Analizando ${ticker}...`, true);
