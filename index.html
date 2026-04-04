@@ -111,110 +111,6 @@
         .btn-clear:hover { background: #cbd5e0; }
         .btn-logout { background: #e2e8f0; color: #4a5568; }
         .btn-logout:hover { background: #cbd5e0; }
-        .realtime-panel {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            padding: 20px 24px;
-            background: #f7fafc;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        @media (max-width: 768px) { .realtime-panel { grid-template-columns: 1fr; } }
-        .market-card {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .market-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #e2e8f0;
-            cursor: pointer;
-        }
-        .market-title { font-size: 1.1rem; font-weight: bold; }
-        .market-status {
-            font-size: 0.7rem;
-            padding: 4px 10px;
-            border-radius: 40px;
-            font-weight: 500;
-        }
-        .status-open { background: #c6f6d5; color: #22543d; }
-        .status-closed { background: #fed7d7; color: #742a2a; }
-        .market-update { font-size: 0.7rem; color: #718096; margin-bottom: 12px; }
-        .market-table { width: 100%; font-size: 0.75rem; border-collapse: collapse; }
-        .market-table th { text-align: left; padding: 8px 4px; color: #4a5568; font-weight: 600; border-bottom: 1px solid #e2e8f0; }
-        .market-table td { padding: 8px 4px; border-bottom: 1px solid #f0f2f5; }
-        .market-table tr:hover { background: #f7fafc; cursor: pointer; }
-        .positive { color: #27ae60; }
-        .negative { color: #e74c3c; }
-        .signal-badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 40px; font-weight: 500; display: inline-block; }
-        .signal-compra { background: #c6f6d5; color: #22543d; }
-        .signal-no-compra { background: #fed7d7; color: #742a2a; }
-        .signal-observar { background: #feebc8; color: #7b4c1a; }
-        .markets-full-container {
-            background: #f7fafc;
-            border-top: 1px solid #e2e8f0;
-            padding: 20px 24px;
-        }
-        .markets-full-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            cursor: pointer;
-            padding: 10px;
-            background: #e2e8f0;
-            border-radius: 12px;
-        }
-        .markets-full-header h3 {
-            font-size: 1.2rem;
-            color: #1a1a2e;
-        }
-        .markets-full-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
-        @media (max-width: 768px) {
-            .markets-full-content { grid-template-columns: 1fr; }
-        }
-        .full-market-card {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .full-market-card h4 {
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #e2e8f0;
-        }
-        .full-market-table {
-            width: 100%;
-            font-size: 0.7rem;
-            border-collapse: collapse;
-        }
-        .full-market-table th, .full-market-table td {
-            padding: 8px 4px;
-            text-align: left;
-            border-bottom: 1px solid #f0f2f5;
-        }
-        .full-market-table tr:hover {
-            background: #f7fafc;
-            cursor: pointer;
-        }
-        .hidden { display: none; }
-        .rotate { transform: rotate(180deg); }
-        .arrow {
-            font-size: 1.2rem;
-            transition: transform 0.3s;
-        }
         .scan-panel {
             background: #f7fafc;
             padding: 16px 24px;
@@ -292,6 +188,89 @@
             border: 1px solid #e2e8f0;
         }
         .stock-item:hover { background: #edf2f7; }
+        
+        /* Sección de mercados completos */
+        .markets-full-container {
+            background: #f7fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 20px 24px;
+        }
+        .markets-full-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            padding: 10px;
+            background: #e2e8f0;
+            border-radius: 12px;
+        }
+        .markets-full-header h3 {
+            font-size: 1.2rem;
+            color: #1a1a2e;
+        }
+        .markets-full-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        @media (max-width: 768px) {
+            .markets-full-content { grid-template-columns: 1fr; }
+        }
+        .full-market-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .full-market-card h4 {
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .full-market-status {
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+        .status-open { background: #c6f6d5; color: #22543d; }
+        .status-closed { background: #fed7d7; color: #742a2a; }
+        .full-market-table {
+            width: 100%;
+            font-size: 0.7rem;
+            border-collapse: collapse;
+        }
+        .full-market-table th, .full-market-table td {
+            padding: 8px 4px;
+            text-align: left;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .full-market-table tr:hover {
+            background: #f7fafc;
+            cursor: pointer;
+        }
+        .positive { color: #27ae60; }
+        .negative { color: #e74c3c; }
+        .signal-badge {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 40px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        .signal-compra { background: #c6f6d5; color: #22543d; }
+        .signal-no-compra { background: #fed7d7; color: #742a2a; }
+        .signal-observar { background: #feebc8; color: #7b4c1a; }
+        .hidden { display: none; }
+        .rotate { transform: rotate(180deg); }
+        .arrow { font-size: 1.2rem; transition: transform 0.3s; }
+        
         @media (max-width: 768px) {
             .message { max-width: 95%; }
             .scan-panel button { flex: 1; text-align: center; }
@@ -338,25 +317,6 @@
         </div>
     </div>
     
-    <div class="realtime-panel">
-        <div class="market-card">
-            <div class="market-header" onclick="toggleRealtime('usaRealtime')">
-                <span class="market-title">🇺🇸 MERCADO USA</span>
-                <span class="market-status" id="usaStatus">⏳ Cargando...</span>
-            </div>
-            <div class="market-update" id="usaUpdate">Actualizando...</div>
-            <div id="usaTableContainer">Cargando datos...</div>
-        </div>
-        <div class="market-card">
-            <div class="market-header" onclick="toggleRealtime('europaRealtime')">
-                <span class="market-title">🌍 MERCADO EUROPA</span>
-                <span class="market-status" id="europaStatus">⏳ Cargando...</span>
-            </div>
-            <div class="market-update" id="europaUpdate">Actualizando...</div>
-            <div id="europaTableContainer">Cargando datos...</div>
-        </div>
-    </div>
-    
     <div class="scan-panel">
         <button class="btn-europe" onclick="scanMarket('europe')">🌍 Escáner Europa</button>
         <button class="btn-usa" onclick="scanMarket('usa')">🇺🇸 Escáner USA</button>
@@ -392,11 +352,11 @@
         </div>
         <div id="fullMarketsContent" class="markets-full-content">
             <div class="full-market-card">
-                <h4>🇺🇸 MERCADO USA (40 empresas)</h4>
+                <h4>🇺🇸 MERCADO USA (40 empresas) <span id="fullUsaStatus" class="full-market-status">⏳</span></h4>
                 <div id="fullUsaTable">Cargando datos...</div>
             </div>
             <div class="full-market-card">
-                <h4>🌍 MERCADO EUROPA (40 empresas)</h4>
+                <h4>🌍 MERCADO EUROPA (40 empresas) <span id="fullEuropeStatus" class="full-market-status">⏳</span></h4>
                 <div id="fullEuropeTable">Cargando datos...</div>
             </div>
         </div>
@@ -405,16 +365,9 @@
 
 <script>
     const WORKER_URL = "https://botinvertir.santibernabebb.workers.dev";
-    let realtimeInterval = null;
     let fullMarketsInterval = null;
-    let usaData = [], europeData = [];
     let fullUsaData = [], fullEuropeData = [];
 
-    // Funciones de UI
-    function toggleRealtime(sectionId) {
-        // Esta función se puede expandir si se quiere minimizar las tablas de tiempo real
-    }
-    
     function toggleFullMarkets() {
         var content = document.getElementById('fullMarketsContent');
         var arrow = document.getElementById('fullMarketsArrow');
@@ -425,6 +378,28 @@
             content.classList.add('hidden');
             arrow.classList.add('rotate');
         }
+    }
+
+    function getMarketStatus() {
+        var now = new Date();
+        var h = now.getHours();
+        var m = now.getMinutes();
+        var d = now.getDay();
+        var tm = h * 60 + m;
+        if (d === 0 || d === 6) return { usa: 'closed', europe: 'closed' };
+        var usaOpen = (tm >= 930 && tm < 1320);
+        var europeOpen = (tm >= 540 && tm < 1050);
+        return { usa: usaOpen ? 'open' : 'closed', europe: europeOpen ? 'open' : 'closed' };
+    }
+
+    function updateMarketStatus() {
+        var status = getMarketStatus();
+        var usaStatusEl = document.getElementById('fullUsaStatus');
+        var europeStatusEl = document.getElementById('fullEuropeStatus');
+        usaStatusEl.textContent = status.usa === 'open' ? '🟢 ABIERTO' : '🔴 CERRADO';
+        usaStatusEl.className = 'full-market-status ' + (status.usa === 'open' ? 'status-open' : 'status-closed');
+        europeStatusEl.textContent = status.europe === 'open' ? '🟢 ABIERTO' : '🔴 CERRADO';
+        europeStatusEl.className = 'full-market-status ' + (status.europe === 'open' ? 'status-open' : 'status-closed');
     }
 
     function checkSession() {
@@ -468,7 +443,7 @@
                 }
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('chatContainer').style.display = 'flex';
-                startAllUpdates();
+                startUpdates();
                 if (!silent) addMessage('✅ Login exitoso. Bienvenido.', false);
             } else {
                 errorDiv.style.display = 'block';
@@ -481,7 +456,6 @@
     }
     
     function logout() {
-        if (realtimeInterval) clearInterval(realtimeInterval);
         if (fullMarketsInterval) clearInterval(fullMarketsInterval);
         localStorage.removeItem('santisystems_user');
         localStorage.removeItem('santisystems_pass');
@@ -505,101 +479,14 @@
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
 
-    function getMarketStatus() {
-        var now = new Date();
-        var h = now.getHours();
-        var m = now.getMinutes();
-        var d = now.getDay();
-        var tm = h * 60 + m;
-        if (d === 0 || d === 6) return { usa: 'closed', europe: 'closed' };
-        var usaOpen = (tm >= 930 && tm < 1320);
-        var europeOpen = (tm >= 540 && tm < 1050);
-        return { usa: usaOpen ? 'open' : 'closed', europe: europeOpen ? 'open' : 'closed' };
-    }
-    
-    // Carga de datos para el resumen (top 10)
-    async function loadRealtimeUSA() {
-        try {
-            var res = await fetch(WORKER_URL + '/api/scan/usa');
-            var data = await res.json();
-            if (Array.isArray(data)) {
-                usaData = data;
-                var container = document.getElementById('usaTableContainer');
-                if (usaData.length === 0) {
-                    container.innerHTML = '<div>Cargando...</div>';
-                    return;
-                }
-                var html = '<table class="market-table"><thead><tr><th>Símbolo</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>';
-                for (var i = 0; i < Math.min(usaData.length, 10); i++) {
-                    var s = usaData[i];
-                    var cls = s.change >= 0 ? 'positive' : 'negative';
-                    var sym = s.change >= 0 ? '▲' : '▼';
-                    var sigCls = 'signal-observar';
-                    if (s.signal === 'COMPRA FUERTE' || s.signal === 'COMPRA') sigCls = 'signal-compra';
-                    else if (s.signal === 'NO COMPRA' || s.signal === 'NO COMPRA FUERTE') sigCls = 'signal-no-compra';
-                    html += '<tr onclick="analyzeStock(\'' + s.ticker + '\')">';
-                    html += '<td><strong>' + s.ticker + '</strong></td>';
-                    html += '<td>$' + s.price.toFixed(2) + '</td>';
-                    html += '<td class="' + cls + '">' + sym + ' ' + Math.abs(s.change).toFixed(2) + '%</td>';
-                    html += '<td>' + s.rsi + '</td>';
-                    html += '<td><span class="signal-badge ' + sigCls + '">' + s.signal + '</span></td>';
-                    html += '</tr>';
-                }
-                html += '</tbody></table><div style="font-size:0.7rem; margin-top:8px;">💡 Haz clic para análisis</div>';
-                container.innerHTML = html;
-                var status = getMarketStatus();
-                var statusEl = document.getElementById('usaStatus');
-                statusEl.textContent = status.usa === 'open' ? '🟢 ABIERTO' : '🔴 CERRADO';
-                statusEl.className = 'market-status ' + (status.usa === 'open' ? 'status-open' : 'status-closed');
-                document.getElementById('usaUpdate').textContent = '🕐 ' + new Date().toLocaleTimeString();
-            }
-        } catch(e) { console.error(e); }
-    }
-    
-    async function loadRealtimeEurope() {
-        try {
-            var res = await fetch(WORKER_URL + '/api/scan/europe');
-            var data = await res.json();
-            if (Array.isArray(data)) {
-                europeData = data;
-                var container = document.getElementById('europaTableContainer');
-                if (europeData.length === 0) {
-                    container.innerHTML = '<div>Cargando...</div>';
-                    return;
-                }
-                var html = '<table class="market-table"><thead><tr><th>Símbolo</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>';
-                for (var i = 0; i < Math.min(europeData.length, 10); i++) {
-                    var s = europeData[i];
-                    var cls = s.change >= 0 ? 'positive' : 'negative';
-                    var sym = s.change >= 0 ? '▲' : '▼';
-                    var sigCls = 'signal-observar';
-                    if (s.signal === 'COMPRA FUERTE' || s.signal === 'COMPRA') sigCls = 'signal-compra';
-                    else if (s.signal === 'NO COMPRA' || s.signal === 'NO COMPRA FUERTE') sigCls = 'signal-no-compra';
-                    html += '<tr onclick="analyzeStock(\'' + s.ticker + '\')">';
-                    html += '<td><strong>' + s.ticker + '</strong></td>';
-                    html += '<td>€' + s.price.toFixed(2) + '</td>';
-                    html += '<td class="' + cls + '">' + sym + ' ' + Math.abs(s.change).toFixed(2) + '%</td>';
-                    html += '<td>' + s.rsi + '</td>';
-                    html += '<td><span class="signal-badge ' + sigCls + '">' + s.signal + '</span></td>';
-                    html += '</tr>';
-                }
-                html += '</tbody></table><div style="font-size:0.7rem; margin-top:8px;">💡 Haz clic para análisis</div>';
-                container.innerHTML = html;
-                var status = getMarketStatus();
-                var statusEl = document.getElementById('europaStatus');
-                statusEl.textContent = status.europe === 'open' ? '🟢 ABIERTO' : '🔴 CERRADO';
-                statusEl.className = 'market-status ' + (status.europe === 'open' ? 'status-open' : 'status-closed');
-                document.getElementById('europaUpdate').textContent = '🕐 ' + new Date().toLocaleTimeString();
-            }
-        } catch(e) { console.error(e); }
-    }
-    
-    // Carga de datos completos (40 empresas)
+    // Carga de datos completos (40 empresas) - ordenados por RSI (mejores primero)
     async function loadFullUSA() {
         try {
             var res = await fetch(WORKER_URL + '/api/scan/usa');
             var data = await res.json();
             if (Array.isArray(data)) {
+                // Ordenar por RSI (menor primero = mejor oportunidad)
+                data.sort(function(a, b) { return a.rsi - b.rsi; });
                 fullUsaData = data;
                 var container = document.getElementById('fullUsaTable');
                 if (fullUsaData.length === 0) {
@@ -625,6 +512,7 @@
                 }
                 html += '</tbody></table>';
                 container.innerHTML = html;
+                updateMarketStatus();
             }
         } catch(e) { console.error(e); }
     }
@@ -634,6 +522,8 @@
             var res = await fetch(WORKER_URL + '/api/scan/europe');
             var data = await res.json();
             if (Array.isArray(data)) {
+                // Ordenar por RSI (menor primero = mejor oportunidad)
+                data.sort(function(a, b) { return a.rsi - b.rsi; });
                 fullEuropeData = data;
                 var container = document.getElementById('fullEuropeTable');
                 if (fullEuropeData.length === 0) {
@@ -659,23 +549,15 @@
                 }
                 html += '</tbody></table>';
                 container.innerHTML = html;
+                updateMarketStatus();
             }
         } catch(e) { console.error(e); }
     }
     
-    function startAllUpdates() {
-        // Resumen (top 10)
-        loadRealtimeUSA();
-        loadRealtimeEurope();
-        if (realtimeInterval) clearInterval(realtimeInterval);
-        realtimeInterval = setInterval(function() {
-            loadRealtimeUSA();
-            loadRealtimeEurope();
-        }, 10000);
-        
-        // Completos (40 empresas)
+    function startUpdates() {
         loadFullUSA();
         loadFullEurope();
+        updateMarketStatus();
         if (fullMarketsInterval) clearInterval(fullMarketsInterval);
         fullMarketsInterval = setInterval(function() {
             loadFullUSA();
@@ -683,7 +565,7 @@
         }, 30000);
     }
 
-    // Funciones del Chat
+    // Funciones del Chat (ordenadas por RSI - mejores primero)
     async function scanMarket(market) {
         addMessage('🔍 Escaneando mercado ' + (market === 'europe' ? 'Europeo' : 'USA') + '...', true);
         try {
@@ -694,8 +576,11 @@
                 addMessage('⚠️ No se encontraron oportunidades.', false);
                 return;
             }
+            // Ordenar por RSI (menor primero = mejor oportunidad)
+            stocks.sort(function(a, b) { return a.rsi - b.rsi; });
+            
             var html = '<strong>📊 ' + (market === 'europe' ? 'EUROPA' : 'USA') + ' - Oportunidades (' + new Date().toLocaleTimeString() + ')</strong><br><br><div class="stock-list">';
-            for (var i = 0; i < Math.min(stocks.length, 15); i++) {
+            for (var i = 0; i < Math.min(stocks.length, 20); i++) {
                 var s = stocks[i];
                 var sigCls = 'signal-observar';
                 if (s.signal === 'COMPRA FUERTE' || s.signal === 'COMPRA') sigCls = 'signal-compra';
