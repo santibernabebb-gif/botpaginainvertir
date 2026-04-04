@@ -5,48 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>SANTISYSTEMS - Bot Inversor IA</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
             background: #f0f2f5;
             min-height: 100vh;
             padding: 20px;
         }
-
-        .login-container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding-top: 50px;
-        }
-
+        .login-container { max-width: 400px; margin: 0 auto; padding-top: 50px; }
         .login-card {
             background: white;
             border-radius: 24px;
             padding: 32px 24px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             border: 1px solid #e0e0e0;
         }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        .login-header h1 {
-            font-size: 1.8rem;
-            color: #1a1a2e;
-            letter-spacing: -0.5px;
-        }
-
-        .login-header h1 span {
-            color: #667eea;
-        }
-
+        .login-header { text-align: center; margin-bottom: 32px; }
+        .login-header h1 { font-size: 1.8rem; color: #1a1a2e; }
+        .login-header h1 span { color: #667eea; }
         .login-header .badge {
             display: inline-block;
             background: #e8ecf1;
@@ -56,26 +32,9 @@
             color: #4a5568;
             margin-top: 12px;
         }
-
-        .login-subtitle {
-            text-align: center;
-            color: #718096;
-            font-size: 0.85rem;
-            margin-bottom: 24px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-group label {
-            display: block;
-            color: #4a5568;
-            font-size: 0.8rem;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
+        .login-subtitle { text-align: center; color: #718096; font-size: 0.85rem; margin-bottom: 24px; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; color: #4a5568; font-size: 0.8rem; margin-bottom: 8px; font-weight: 500; }
         .input-group input {
             width: 100%;
             padding: 14px 16px;
@@ -84,36 +43,13 @@
             border-radius: 12px;
             color: #1a202c;
             font-size: 1rem;
-            transition: all 0.2s ease;
             outline: none;
             text-transform: none;
         }
-
-        .input-group input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 24px;
-        }
-
-        .checkbox-group input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #667eea;
-        }
-
-        .checkbox-group label {
-            color: #4a5568;
-            font-size: 0.85rem;
-            cursor: pointer;
-        }
-
+        .input-group input:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+        .checkbox-group input { width: 18px; height: 18px; cursor: pointer; accent-color: #667eea; }
+        .checkbox-group label { color: #4a5568; font-size: 0.85rem; cursor: pointer; }
         .login-btn {
             width: 100%;
             padding: 14px;
@@ -126,12 +62,7 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-
-        .login-btn:hover {
-            background: #5a67d8;
-            transform: translateY(-1px);
-        }
-
+        .login-btn:hover { background: #5a67d8; transform: translateY(-1px); }
         .error-message {
             background: #fed7d7;
             border: 1px solid #feb2b2;
@@ -141,20 +72,18 @@
             font-size: 0.85rem;
             text-align: center;
             margin-top: 20px;
+            display: none;
         }
-
         .chat-container {
             max-width: 1400px;
             margin: 0 auto;
             background: white;
             border-radius: 24px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            display: flex;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: none;
             flex-direction: column;
             overflow: hidden;
-            display: none;
         }
-
         .chat-header {
             background: white;
             padding: 16px 24px;
@@ -165,27 +94,10 @@
             gap: 15px;
             border-bottom: 1px solid #e2e8f0;
         }
-
-        .header-title h1 {
-            font-size: 1.3rem;
-            color: #1a1a2e;
-        }
-
-        .header-title h1 span {
-            color: #667eea;
-        }
-
-        .header-title p {
-            font-size: 0.7rem;
-            color: #718096;
-            margin-top: 4px;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
+        .header-title h1 { font-size: 1.3rem; color: #1a1a2e; }
+        .header-title h1 span { color: #667eea; }
+        .header-title p { font-size: 0.7rem; color: #718096; margin-top: 4px; }
+        .header-buttons { display: flex; gap: 10px; }
         .header-buttons button {
             padding: 8px 16px;
             border: none;
@@ -195,25 +107,12 @@
             font-size: 0.8rem;
             transition: all 0.2s;
         }
-
-        .btn-clear {
-            background: #e2e8f0;
-            color: #4a5568;
-        }
-
-        .btn-clear:hover {
-            background: #cbd5e0;
-        }
-
-        .btn-logout {
-            background: #e2e8f0;
-            color: #4a5568;
-        }
-
-        .btn-logout:hover {
-            background: #cbd5e0;
-        }
-
+        .btn-clear { background: #e2e8f0; color: #4a5568; }
+        .btn-clear:hover { background: #cbd5e0; }
+        .btn-logout { background: #e2e8f0; color: #4a5568; }
+        .btn-logout:hover { background: #cbd5e0; }
+        .btn-markets { background: #27ae60; color: white; }
+        .btn-markets:hover { background: #219653; }
         .realtime-panel {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -222,21 +121,13 @@
             background: #f7fafc;
             border-bottom: 1px solid #e2e8f0;
         }
-
-        @media (max-width: 768px) {
-            .realtime-panel {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-        }
-
+        @media (max-width: 768px) { .realtime-panel { grid-template-columns: 1fr; } }
         .market-card {
             background: white;
             border-radius: 16px;
             padding: 16px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-
         .market-header {
             display: flex;
             justify-content: space-between;
@@ -245,79 +136,26 @@
             padding-bottom: 8px;
             border-bottom: 2px solid #e2e8f0;
         }
-
-        .market-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-
+        .market-title { font-size: 1.1rem; font-weight: bold; }
         .market-status {
             font-size: 0.7rem;
             padding: 4px 10px;
             border-radius: 40px;
             font-weight: 500;
         }
-
-        .status-open {
-            background: #c6f6d5;
-            color: #22543d;
-        }
-
-        .status-closed {
-            background: #fed7d7;
-            color: #742a2a;
-        }
-
-        .market-update {
-            font-size: 0.7rem;
-            color: #718096;
-            margin-bottom: 12px;
-        }
-
-        .market-table {
-            width: 100%;
-            font-size: 0.75rem;
-            border-collapse: collapse;
-        }
-
-        .market-table th {
-            text-align: left;
-            padding: 8px 4px;
-            color: #4a5568;
-            font-weight: 600;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .market-table td {
-            padding: 8px 4px;
-            border-bottom: 1px solid #f0f2f5;
-        }
-
-        .market-table tr:hover {
-            background: #f7fafc;
-            cursor: pointer;
-        }
-
-        .positive {
-            color: #27ae60;
-        }
-
-        .negative {
-            color: #e74c3c;
-        }
-
-        .signal-badge {
-            font-size: 0.65rem;
-            padding: 2px 6px;
-            border-radius: 40px;
-            font-weight: 500;
-            display: inline-block;
-        }
-
+        .status-open { background: #c6f6d5; color: #22543d; }
+        .status-closed { background: #fed7d7; color: #742a2a; }
+        .market-update { font-size: 0.7rem; color: #718096; margin-bottom: 12px; }
+        .market-table { width: 100%; font-size: 0.75rem; border-collapse: collapse; }
+        .market-table th { text-align: left; padding: 8px 4px; color: #4a5568; font-weight: 600; border-bottom: 1px solid #e2e8f0; }
+        .market-table td { padding: 8px 4px; border-bottom: 1px solid #f0f2f5; }
+        .market-table tr:hover { background: #f7fafc; cursor: pointer; }
+        .positive { color: #27ae60; }
+        .negative { color: #e74c3c; }
+        .signal-badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 40px; font-weight: 500; display: inline-block; }
         .signal-compra { background: #c6f6d5; color: #22543d; }
         .signal-no-compra { background: #fed7d7; color: #742a2a; }
         .signal-observar { background: #feebc8; color: #7b4c1a; }
-
         .scan-panel {
             background: #f7fafc;
             padding: 16px 24px;
@@ -326,7 +164,6 @@
             flex-wrap: wrap;
             border-bottom: 1px solid #e2e8f0;
         }
-
         .scan-panel button {
             padding: 10px 20px;
             border: none;
@@ -336,22 +173,9 @@
             transition: all 0.2s;
             font-size: 0.85rem;
         }
-
-        .btn-europe {
-            background: #3498db;
-            color: white;
-        }
-
-        .btn-usa {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .btn-tickers {
-            background: #27ae60;
-            color: white;
-        }
-
+        .btn-europe { background: #3498db; color: white; }
+        .btn-usa { background: #e74c3c; color: white; }
+        .btn-tickers { background: #27ae60; color: white; }
         .messages-area {
             flex: 1;
             overflow-y: auto;
@@ -359,7 +183,6 @@
             background: white;
             max-height: 400px;
         }
-
         .message {
             margin-bottom: 16px;
             padding: 12px 16px;
@@ -368,20 +191,8 @@
             word-wrap: break-word;
             line-height: 1.5;
         }
-
-        .user-message {
-            background: #667eea;
-            color: white;
-            margin-left: auto;
-            text-align: right;
-        }
-
-        .bot-message {
-            background: #f7fafc;
-            border: 1px solid #e2e8f0;
-            margin-right: auto;
-        }
-
+        .user-message { background: #667eea; color: white; margin-left: auto; text-align: right; }
+        .bot-message { background: #f7fafc; border: 1px solid #e2e8f0; margin-right: auto; }
         .input-area {
             padding: 16px 24px;
             background: white;
@@ -389,7 +200,6 @@
             display: flex;
             gap: 12px;
         }
-
         .input-area input {
             flex: 1;
             padding: 12px 16px;
@@ -398,11 +208,7 @@
             font-size: 0.9rem;
             outline: none;
         }
-
-        .input-area input:focus {
-            border-color: #667eea;
-        }
-
+        .input-area input:focus { border-color: #667eea; }
         .input-area button {
             padding: 12px 24px;
             background: #667eea;
@@ -412,14 +218,12 @@
             cursor: pointer;
             font-weight: 600;
         }
-
         .stock-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 12px;
             margin-top: 12px;
         }
-
         .stock-item {
             background: #f7fafc;
             padding: 12px;
@@ -428,11 +232,7 @@
             transition: all 0.2s;
             border: 1px solid #e2e8f0;
         }
-
-        .stock-item:hover {
-            background: #edf2f7;
-        }
-
+        .stock-item:hover { background: #edf2f7; }
         @media (max-width: 768px) {
             .message { max-width: 95%; }
             .scan-panel button { flex: 1; text-align: center; }
@@ -443,7 +243,6 @@
 </head>
 <body>
 
-<!-- PANTALLA DE LOGIN -->
 <div class="login-container" id="loginContainer">
     <div class="login-card">
         <div class="login-header">
@@ -451,43 +250,38 @@
             <div class="badge">Bot Inversor con IA - Paper Trading</div>
         </div>
         <div class="login-subtitle">Accede a tu dashboard de inversión</div>
-        
         <div class="input-group">
             <label>USUARIO</label>
             <input type="text" id="loginUser" placeholder="usuario" autocomplete="off" autocapitalize="none">
         </div>
-        
         <div class="input-group">
             <label>CONTRASEÑA</label>
             <input type="password" id="loginPass" placeholder="••••••••">
         </div>
-        
         <div class="checkbox-group">
             <input type="checkbox" id="rememberCheck">
             <label>Mantener sesión</label>
         </div>
-        
         <button class="login-btn" onclick="doLogin()">Entrar →</button>
-        <div id="loginError" class="error-message" style="display: none;"></div>
+        <div id="loginError" class="error-message"></div>
     </div>
 </div>
 
-<!-- CHAT PRINCIPAL -->
 <div class="chat-container" id="chatContainer">
     <div class="chat-header">
         <div class="header-title">
             <h1>⚡ SANTI<span>SYSTEMS</span> <span style="font-size:0.8rem;">| Bot Inversor IA</span></h1>
-            <p>🇺🇸 USA: Finnhub + iTick | 🌍 Europa: WebSocket + REST</p>
+            <p>🇺🇸 USA: 40 empresas | 🌍 Europa: 40 empresas | Tiempo real</p>
         </div>
         <div class="header-buttons">
+            <button class="btn-markets" onclick="openMarketsPage()">📊 MERCADOS</button>
             <button class="btn-clear" onclick="clearChat()">🗑️ Limpiar chat</button>
             <button class="btn-logout" onclick="logout()">🚪 Salir</button>
         </div>
     </div>
     
-    <!-- PANEL DE TIEMPO REAL -->
     <div class="realtime-panel">
-        <div class="market-card" id="usaCard">
+        <div class="market-card">
             <div class="market-header">
                 <span class="market-title">🇺🇸 MERCADO USA</span>
                 <span class="market-status" id="usaStatus">⏳ Cargando...</span>
@@ -495,8 +289,7 @@
             <div class="market-update" id="usaUpdate">Actualizando...</div>
             <div id="usaTableContainer">Cargando datos...</div>
         </div>
-        
-        <div class="market-card" id="europaCard">
+        <div class="market-card">
             <div class="market-header">
                 <span class="market-title">🌍 MERCADO EUROPA</span>
                 <span class="market-status" id="europaStatus">⏳ Cargando...</span>
@@ -517,8 +310,8 @@
             🤖 <strong>SANTISYSTEMS AI</strong><br><br>
             Bienvenido al Bot Inversor con IA.<br><br>
             📊 <strong>Mercados disponibles:</strong><br>
-            • 🇺🇸 USA: 20 empresas (tiempo real vía WebSocket)<br>
-            • 🌍 Europa: 20 empresas (tiempo real vía WebSocket)<br><br>
+            • 🇺🇸 USA: 40 empresas (tiempo real)<br>
+            • 🌍 Europa: 40 empresas (tiempo real)<br><br>
             <strong>Comandos rápidos:</strong><br>
             • "escanea europa" - Oportunidades europeas<br>
             • "escanea usa" - Oportunidades USA<br>
@@ -535,17 +328,10 @@
 </div>
 
 <script>
-    // 🔴 CONFIGURACIÓN - CAMBIA LA URL DE TU WORKER
     const WORKER_URL = "https://botinvertir.santibernabebb.workers.dev";
-    
     let realtimeInterval = null;
-    let usaData = [];
-    let europeData = [];
-    
-    // ========================================
-    // FUNCIONES DE LOGIN (CORREGIDAS)
-    // ========================================
-    
+    let usaData = [], europeData = [];
+
     function checkSession() {
         const savedUser = localStorage.getItem('santisystems_user');
         const savedPass = localStorage.getItem('santisystems_pass');
@@ -557,7 +343,7 @@
         }
     }
     
-    async function doLogin(silent = false) {
+    async function doLogin(silent) {
         const username = document.getElementById('loginUser').value.trim();
         const password = document.getElementById('loginPass').value;
         const remember = document.getElementById('rememberCheck').checked;
@@ -570,12 +356,11 @@
         }
         
         try {
-            const response = await fetch(`${WORKER_URL}/api/auth`, {
+            const response = await fetch(WORKER_URL + '/api/auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ username: username, password: password })
             });
-            
             const result = await response.json();
             
             if (result.success === true) {
@@ -586,23 +371,17 @@
                     localStorage.removeItem('santisystems_user');
                     localStorage.removeItem('santisystems_pass');
                 }
-                
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('chatContainer').style.display = 'flex';
-                
                 startRealtimeUpdates();
-                
-                if (!silent) {
-                    addMessage('✅ Login exitoso. Bienvenido al Bot Inversor SANTISYSTEMS.', false);
-                }
+                if (!silent) addMessage('✅ Login exitoso. Bienvenido.', false);
             } else {
                 errorDiv.style.display = 'block';
                 errorDiv.innerText = '❌ Usuario o contraseña incorrectos';
             }
         } catch (error) {
-            console.error('Login error:', error);
             errorDiv.style.display = 'block';
-            errorDiv.innerText = '❌ Error de conexión con el servidor. Verifica que el Worker esté activo.';
+            errorDiv.innerText = '❌ Error de conexión. Verifica el Worker.';
         }
     }
     
@@ -618,294 +397,401 @@
     }
     
     function clearChat() {
-        const messagesDiv = document.getElementById('messages');
-        messagesDiv.innerHTML = `
-            <div class="message bot-message">
-                🤖 <strong>SANTISYSTEMS AI</strong><br><br>
-                Chat limpiado. ¿En qué puedo ayudarte?<br><br>
-                📊 Comandos: "escanea europa", "escanea usa", "analiza AAPL", "lista"
-            </div>
-        `;
+        document.getElementById('messages').innerHTML = '<div class="message bot-message">🤖 <strong>SANTISYSTEMS AI</strong><br><br>Chat limpiado.</div>';
     }
     
-    function addMessage(text, isUser = false) {
+    function addMessage(text, isUser) {
         const messagesDiv = document.getElementById('messages');
         const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+        messageDiv.className = 'message ' + (isUser ? 'user-message' : 'bot-message');
         messageDiv.innerHTML = text;
         messagesDiv.appendChild(messageDiv);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
-    
-    // ========================================
-    // TIEMPO REAL
-    // ========================================
-    
+
     function getMarketStatus() {
         const now = new Date();
-        const hour = now.getHours();
-        const minutes = now.getMinutes();
-        const day = now.getDay();
-        const totalMinutes = hour * 60 + minutes;
-        
-        if (day === 0 || day === 6) return { usa: 'closed', europe: 'closed' };
-        
-        const europeOpen = totalMinutes >= 540 && totalMinutes < 1050;
-        const usaOpen = totalMinutes >= 930 && totalMinutes < 1320;
-        
-        return {
-            usa: usaOpen ? 'open' : 'closed',
-            europe: europeOpen ? 'open' : 'closed'
-        };
+        const h = now.getHours();
+        const m = now.getMinutes();
+        const d = now.getDay();
+        const tm = h * 60 + m;
+        if (d === 0 || d === 6) return { usa: 'closed', europe: 'closed' };
+        const usaOpen = (tm >= 930 && tm < 1320);
+        const europeOpen = (tm >= 540 && tm < 1050);
+        return { usa: usaOpen ? 'open' : 'closed', europe: europeOpen ? 'open' : 'closed' };
     }
     
     async function loadRealtimeUSA() {
         try {
-            const response = await fetch(`${WORKER_URL}/api/scan/usa`);
-            const data = await response.json();
+            const res = await fetch(WORKER_URL + '/api/scan/usa');
+            const data = await res.json();
             if (Array.isArray(data)) {
                 usaData = data;
-                updateUSATable();
+                const container = document.getElementById('usaTableContainer');
+                if (usaData.length === 0) {
+                    container.innerHTML = '<div>Cargando...</div>';
+                    return;
+                }
+                let html = '<table class="market-table"><thead><tr><th>Símbolo</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>';
+                for (let i = 0; i < Math.min(usaData.length, 10); i++) {
+                    const s = usaData[i];
+                    const cls = s.change >= 0 ? 'positive' : 'negative';
+                    const sym = s.change >= 0 ? '▲' : '▼';
+                    let sigCls = 'signal-observar';
+                    if (s.signal === 'COMPRA FUERTE' || s.signal === 'COMPRA') sigCls = 'signal-compra';
+                    else if (s.signal === 'NO COMPRA' || s.signal === 'NO COMPRA FUERTE') sigCls = 'signal-no-compra';
+                    html += '<tr onclick="analyzeStock(\'' + s.ticker + '\')">';
+                    html += '<td><strong>' + s.ticker + '</strong></td>';
+                    html += '<td>$' + s.price.toFixed(2) + '</td>';
+                    html += '<td class="' + cls + '">' + sym + ' ' + Math.abs(s.change).toFixed(2) + '%</td>';
+                    html += '<td>' + s.rsi + '</td>';
+                    html += '<td><span class="signal-badge ' + sigCls + '">' + s.signal + '</span></td>';
+                    html += '</tr>';
+                }
+                html += '</tbody></table><div style="font-size:0.7rem; margin-top:8px;">💡 Haz clic para análisis</div>';
+                container.innerHTML = html;
                 const status = getMarketStatus();
-                const statusElement = document.getElementById('usaStatus');
-                const updateElement = document.getElementById('usaUpdate');
-                statusElement.textContent = status.usa === 'open' ? '🟢 MERCADO ABIERTO' : '🔴 MERCADO CERRADO';
-                statusElement.className = `market-status ${status.usa === 'open' ? 'status-open' : 'status-closed'}`;
-                updateElement.textContent = `🕐 Última actualización: ${new Date().toLocaleTimeString()}`;
+                const statusEl = document.getElementById('usaStatus');
+                statusEl.textContent = status.usa === 'open' ? '🟢 ABIERTO' : '🔴 CERRADO';
+                statusEl.className = 'market-status ' + (status.usa === 'open' ? 'status-open' : 'status-closed');
+                document.getElementById('usaUpdate').textContent = '🕐 ' + new Date().toLocaleTimeString();
             }
-        } catch (e) {
-            console.error('Error cargando USA:', e);
-        }
+        } catch(e) { console.error(e); }
     }
     
     async function loadRealtimeEurope() {
         try {
-            const response = await fetch(`${WORKER_URL}/api/scan/europe`);
-            const data = await response.json();
+            const res = await fetch(WORKER_URL + '/api/scan/europe');
+            const data = await res.json();
             if (Array.isArray(data)) {
                 europeData = data;
-                updateEuropeTable();
+                const container = document.getElementById('europaTableContainer');
+                if (europeData.length === 0) {
+                    container.innerHTML = '<div>Cargando...</div>';
+                    return;
+                }
+                let html = '<table class="market-table"><thead><tr><th>Símbolo</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>';
+                for (let i = 0; i < Math.min(europeData.length, 10); i++) {
+                    const s = europeData[i];
+                    const cls = s.change >= 0 ? 'positive' : 'negative';
+                    const sym = s.change >= 0 ? '▲' : '▼';
+                    let sigCls = 'signal-observar';
+                    if (s.signal === 'COMPRA FUERTE' || s.signal === 'COMPRA') sigCls = 'signal-compra';
+                    else if (s.signal === 'NO COMPRA' || s.signal === 'NO COMPRA FUERTE') sigCls = 'signal-no-compra';
+                    html += '<tr onclick="analyzeStock(\'' + s.ticker + '\')">';
+                    html += '<td><strong>' + s.ticker + '</strong></td>';
+                    html += '<td>€' + s.price.toFixed(2) + '</td>';
+                    html += '<td class="' + cls + '">' + sym + ' ' + Math.abs(s.change).toFixed(2) + '%</td>';
+                    html += '<td>' + s.rsi + '</td>';
+                    html += '<td><span class="signal-badge ' + sigCls + '">' + s.signal + '</span></td>';
+                    html += '</tr>';
+                }
+                html += '</tbody></table><div style="font-size:0.7rem; margin-top:8px;">💡 Haz clic para análisis</div>';
+                container.innerHTML = html;
                 const status = getMarketStatus();
-                const statusElement = document.getElementById('europaStatus');
-                const updateElement = document.getElementById('europaUpdate');
-                statusElement.textContent = status.europe === 'open' ? '🟢 MERCADO ABIERTO' : '🔴 MERCADO CERRADO';
-                statusElement.className = `market-status ${status.europe === 'open' ? 'status-open' : 'status-closed'}`;
-                updateElement.textContent = `🕐 Última actualización: ${new Date().toLocaleTimeString()}`;
+                const statusEl = document.getElementById('europaStatus');
+                statusEl.textContent = status.europe === 'open' ? '🟢 ABIERTO' : '🔴 CERRADO';
+                statusEl.className = 'market-status ' + (status.europe === 'open' ? 'status-open' : 'status-closed');
+                document.getElementById('europaUpdate').textContent = '🕐 ' + new Date().toLocaleTimeString();
             }
-        } catch (e) {
-            console.error('Error cargando Europa:', e);
-        }
-    }
-    
-    function updateUSATable() {
-        const container = document.getElementById('usaTableContainer');
-        if (!usaData.length) {
-            container.innerHTML = '<div style="text-align:center; padding:20px;">Cargando datos...</div>';
-            return;
-        }
-        
-        let html = `<table class="market-table"><thead><tr><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>`;
-        
-        usaData.slice(0, 10).forEach(stock => {
-            const changeClass = stock.change >= 0 ? 'positive' : 'negative';
-            const changeSymbol = stock.change >= 0 ? '▲' : '▼';
-            let signalClass = '';
-            if (stock.signal === 'COMPRA FUERTE' || stock.signal === 'COMPRA') signalClass = 'signal-compra';
-            else if (stock.signal === 'NO COMPRA' || stock.signal === 'NO COMPRA FUERTE') signalClass = 'signal-no-compra';
-            else signalClass = 'signal-observar';
-            
-            html += `<tr onclick="analyzeStock('${stock.ticker}')">
-                <td><strong>${stock.ticker}</strong></td>
-                <td>$${stock.price.toFixed(2)}</td>
-                <td class="${changeClass}">${changeSymbol} ${Math.abs(stock.change).toFixed(2)}%</td>
-                <td>${stock.rsi}</td>
-                <td><span class="signal-badge ${signalClass}">${stock.signal}</span></td>
-            </tr>`;
-        });
-        
-        html += `</tbody></table><div style="font-size:0.7rem; color:#718096; margin-top:8px; text-align:center;">💡 Haz clic en cualquier fila para análisis profundo</div>`;
-        container.innerHTML = html;
-    }
-    
-    function updateEuropeTable() {
-        const container = document.getElementById('europaTableContainer');
-        if (!europeData.length) {
-            container.innerHTML = '<div style="text-align:center; padding:20px;">Cargando datos...</div>';
-            return;
-        }
-        
-        let html = `<table class="market-table"><thead><tr><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>`;
-        
-        europeData.slice(0, 10).forEach(stock => {
-            const changeClass = stock.change >= 0 ? 'positive' : 'negative';
-            const changeSymbol = stock.change >= 0 ? '▲' : '▼';
-            let signalClass = '';
-            if (stock.signal === 'COMPRA FUERTE' || stock.signal === 'COMPRA') signalClass = 'signal-compra';
-            else if (stock.signal === 'NO COMPRA' || stock.signal === 'NO COMPRA FUERTE') signalClass = 'signal-no-compra';
-            else signalClass = 'signal-observar';
-            
-            html += `<tr onclick="analyzeStock('${stock.ticker}')">
-                <td><strong>${stock.ticker}</strong></td>
-                <td>€${stock.price.toFixed(2)}</td>
-                <td class="${changeClass}">${changeSymbol} ${Math.abs(stock.change).toFixed(2)}%</td>
-                <td>${stock.rsi}</td>
-                <td><span class="signal-badge ${signalClass}">${stock.signal}</span></td>
-            </tr>`;
-        });
-        
-        html += `</tbody></table><div style="font-size:0.7rem; color:#718096; margin-top:8px; text-align:center;">💡 Haz clic en cualquier fila para análisis profundo</div>`;
-        container.innerHTML = html;
+        } catch(e) { console.error(e); }
     }
     
     function startRealtimeUpdates() {
         loadRealtimeUSA();
         loadRealtimeEurope();
         if (realtimeInterval) clearInterval(realtimeInterval);
-        realtimeInterval = setInterval(() => {
+        realtimeInterval = setInterval(function() {
             loadRealtimeUSA();
             loadRealtimeEurope();
         }, 10000);
     }
-    
-    // ========================================
-    // FUNCIONES DEL CHAT
-    // ========================================
-    
+
     async function scanMarket(market) {
-        addMessage(`🔍 Escaneando mercado ${market === 'europe' ? 'Europeo' : 'USA'}...`, true);
+        addMessage('🔍 Escaneando mercado ' + (market === 'europe' ? 'Europeo' : 'USA') + '...', true);
         try {
             const endpoint = market === 'europe' ? '/api/scan/europe' : '/api/scan/usa';
-            const response = await fetch(`${WORKER_URL}${endpoint}`);
-            const stocks = await response.json();
-            
-            if (!Array.isArray(stocks) || stocks.length === 0) {
-                addMessage(`⚠️ No se encontraron oportunidades en ${market === 'europe' ? 'Europa' : 'USA'} en este momento.`);
+            const res = await fetch(WORKER_URL + endpoint);
+            const stocks = await res.json();
+            if (stocks.length === 0) {
+                addMessage('⚠️ No se encontraron oportunidades.', false);
                 return;
             }
-            
-            let html = `<strong>📊 ${market === 'europe' ? 'EUROPA' : 'USA'} - Oportunidades (${new Date().toLocaleTimeString()})</strong><br><br>`;
-            html += `<div class="stock-list">`;
-            stocks.slice(0, 15).forEach(stock => {
-                let signalClass = '';
-                if (stock.signal === 'COMPRA FUERTE' || stock.signal === 'COMPRA') signalClass = 'signal-compra';
-                if (stock.signal === 'NO COMPRA FUERTE' || stock.signal === 'NO COMPRA') signalClass = 'signal-no-compra';
-                if (stock.signal === 'CONSIDERAR' || stock.signal === 'OBSERVAR') signalClass = 'signal-observar';
-                
-                html += `
-                    <div class="stock-item" onclick="analyzeStock('${stock.ticker}')">
-                        <strong>${stock.ticker}</strong><br>
-                        ${stock.name}<br>
-                        Precio: ${stock.price}${stock.market === 'Europa' ? '€' : '$'}<br>
-                        RSI: ${stock.rsi}<br>
-                        <span class="${signalClass}">${stock.signal}</span>
-                    </div>
-                `;
-            });
-            html += `</div><br><small>💡 Haz clic en cualquier acción para análisis profundo</small>`;
-            addMessage(html);
+            let html = '<strong>📊 ' + (market === 'europe' ? 'EUROPA' : 'USA') + ' - Oportunidades (' + new Date().toLocaleTimeString() + ')</strong><br><br><div class="stock-list">';
+            for (let i = 0; i < Math.min(stocks.length, 15); i++) {
+                const s = stocks[i];
+                let sigCls = 'signal-observar';
+                if (s.signal === 'COMPRA FUERTE' || s.signal === 'COMPRA') sigCls = 'signal-compra';
+                else if (s.signal === 'NO COMPRA' || s.signal === 'NO COMPRA FUERTE') sigCls = 'signal-no-compra';
+                html += '<div class="stock-item" onclick="analyzeStock(\'' + s.ticker + '\')">';
+                html += '<strong>' + s.ticker + '</strong><br>' + s.name + '<br>';
+                html += 'Precio: ' + (s.market === 'Europa' ? '€' : '$') + s.price + '<br>';
+                html += 'RSI: ' + s.rsi + '<br>';
+                html += '<span class="' + sigCls + '">' + s.signal + '</span>';
+                html += '</div>';
+            }
+            html += '</div><br><small>💡 Haz clic para análisis profundo</small>';
+            addMessage(html, false);
         } catch(e) {
-            addMessage(`❌ Error al escanear: ${e.message}`);
+            addMessage('❌ Error: ' + e.message, false);
         }
     }
     
     async function analyzeStock(ticker) {
-        addMessage(`🔍 Analizando ${ticker}...`, true);
+        addMessage('🔍 Analizando ' + ticker + '...', true);
         try {
-            const response = await fetch(`${WORKER_URL}/api/analyze?ticker=${ticker}`);
-            const data = await response.json();
-            
+            const res = await fetch(WORKER_URL + '/api/analyze?ticker=' + ticker);
+            const data = await res.json();
             if (data.error) {
-                addMessage(`❌ ${data.error}`);
+                addMessage('❌ ' + data.error, false);
                 return;
             }
-            
-            let signalClass = '';
-            if (data.recommendation === 'COMPRA FUERTE' || data.recommendation === 'COMPRA') signalClass = 'signal-compra';
-            if (data.recommendation === 'NO COMPRA FUERTE' || data.recommendation === 'NO COMPRA') signalClass = 'signal-no-compra';
-            if (data.recommendation === 'CONSIDERAR' || data.recommendation === 'OBSERVAR') signalClass = 'signal-observar';
-            
-            let html = `<strong>📈 ANÁLISIS COMPLETO: ${data.ticker}</strong><br><br>`;
-            html += `📍 Mercado: ${data.market}<br>`;
-            html += `💰 Precio: ${data.price}${data.market === 'Europa' ? '€' : '$'}<br>`;
-            html += `📉 Cambio día: ${data.change > 0 ? '+' : ''}${data.change}%<br><br>`;
-            html += `<strong>📊 INDICADORES TÉCNICOS:</strong><br>`;
-            html += `• RSI: ${data.rsi} ${data.rsi < 35 ? '(sobreventa - señal de compra)' : (data.rsi > 70 ? '(sobrecompra - señal de venta)' : '(neutral)')}<br><br>`;
-            html += `<strong>🎯 RECOMENDACIÓN:</strong> <span class="${signalClass}">${data.recommendation}</span><br>`;
-            html += `📊 Confianza: ${data.confidence}<br><br>`;
-            html += `<small>⏰ ${new Date(data.timestamp).toLocaleString()}<br>⚠️ ${data.disclaimer}</small>`;
-            
-            addMessage(html);
+            let sigCls = 'signal-observar';
+            if (data.recommendation === 'COMPRA FUERTE' || data.recommendation === 'COMPRA') sigCls = 'signal-compra';
+            else if (data.recommendation === 'NO COMPRA' || data.recommendation === 'NO COMPRA FUERTE') sigCls = 'signal-no-compra';
+            let html = '<strong>📈 ANÁLISIS: ' + data.ticker + '</strong><br><br>';
+            html += '📍 Mercado: ' + data.market + '<br>';
+            html += '💰 Precio: ' + (data.market === 'Europa' ? '€' : '$') + data.price + '<br>';
+            html += '📉 Cambio: ' + (data.change > 0 ? '+' : '') + data.change + '%<br><br>';
+            html += '📊 RSI: ' + data.rsi;
+            if (data.rsi < 35) html += ' (sobreventa)';
+            else if (data.rsi > 70) html += ' (sobrecompra)';
+            else html += ' (neutral)';
+            html += '<br><br>';
+            html += '🎯 <span class="' + sigCls + '">' + data.recommendation + '</span><br>';
+            html += '📊 Confianza: ' + data.confidence + '<br><br>';
+            html += '<small>⏰ ' + new Date(data.timestamp).toLocaleString() + '<br>⚠️ ' + data.disclaimer + '</small>';
+            addMessage(html, false);
         } catch(e) {
-            addMessage(`❌ Error en el análisis: ${e.message}`);
+            addMessage('❌ Error: ' + e.message, false);
         }
     }
     
     async function showTickers() {
-        addMessage("📋 Cargando lista de empresas...", false);
+        addMessage('📋 Cargando lista...', false);
         try {
-            const response = await fetch(`${WORKER_URL}/api/tickers`);
-            const data = await response.json();
-            
-            let html = `<strong>📋 Empresas disponibles (${data.total} en total)</strong><br><br>`;
-            html += `<strong>🇺🇸 USA (${data.usa.length}):</strong><br>`;
-            html += `<div style="background:#f7fafc; padding:12px; border-radius:12px; margin:8px 0; max-height:200px; overflow-y:auto;">`;
-            data.usa.forEach(empresa => {
-                html += `<div><strong>${empresa.ticker}</strong> - ${empresa.name}</div>`;
-            });
-            html += `</div><br>`;
-            html += `<strong>🌍 Europa (${data.europe.length}):</strong><br>`;
-            html += `<div style="background:#f7fafc; padding:12px; border-radius:12px; margin:8px 0; max-height:200px; overflow-y:auto;">`;
-            data.europe.forEach(empresa => {
-                html += `<div><strong>${empresa.ticker}</strong> - ${empresa.name}</div>`;
-            });
-            html += `</div><br>`;
-            html += `<small>💡 Escribe "analiza TICKER" para análisis completo (ej: "analiza AAPL")</small>`;
-            addMessage(html);
+            const res = await fetch(WORKER_URL + '/api/tickers');
+            const data = await res.json();
+            let html = '<strong>📋 Empresas (' + data.total + ')</strong><br><br>';
+            html += '<strong>🇺🇸 USA (' + data.usa.length + '):</strong><br>';
+            html += '<div style="background:#f7fafc;padding:12px;border-radius:12px;max-height:150px;overflow-y:auto;">';
+            for (let i = 0; i < data.usa.length; i++) {
+                html += '<div><strong>' + data.usa[i].ticker + '</strong> - ' + data.usa[i].name + '</div>';
+            }
+            html += '</div><br>';
+            html += '<strong>🌍 Europa (' + data.europe.length + '):</strong><br>';
+            html += '<div style="background:#f7fafc;padding:12px;border-radius:12px;max-height:150px;overflow-y:auto;">';
+            for (let i = 0; i < data.europe.length; i++) {
+                html += '<div><strong>' + data.europe[i].ticker + '</strong> - ' + data.europe[i].name + '</div>';
+            }
+            html += '</div><br>';
+            html += '<small>💡 Escribe "analiza TICKER"</small>';
+            addMessage(html, false);
         } catch(e) {
-            addMessage(`❌ Error: ${e.message}`);
+            addMessage('❌ Error: ' + e.message, false);
         }
     }
     
     async function sendMessage() {
         const input = document.getElementById('userInput');
         const text = input.value.trim();
-        if (!text) return;
-        
+        if (text === '') return;
         addMessage(text, true);
         input.value = '';
-        
-        const lowerText = text.toLowerCase();
-        
-        if (lowerText.includes('escanea europa') || lowerText.includes('escanear europa')) {
+        const lower = text.toLowerCase();
+        if (lower.includes('escanea europa')) {
             await scanMarket('europe');
-        } else if (lowerText.includes('escanea usa') || lowerText.includes('escanear usa')) {
+        } else if (lower.includes('escanea usa')) {
             await scanMarket('usa');
-        } else if (lowerText.includes('analiza ')) {
-            const ticker = text.split('analiza ')[1].split(' ')[0].toUpperCase();
-            if (ticker && ticker.length > 0) {
-                await analyzeStock(ticker);
+        } else if (lower.includes('analiza ')) {
+            const parts = text.split('analiza ');
+            if (parts.length > 1) {
+                const ticker = parts[1].split(' ')[0].toUpperCase();
+                if (ticker) await analyzeStock(ticker);
+                else addMessage('❌ Especifica un ticker. Ej: analiza AAPL', false);
             } else {
-                addMessage("❌ Especifica un ticker. Ejemplo: 'analiza AAPL'");
+                addMessage('❌ Especifica un ticker. Ej: analiza AAPL', false);
             }
-        } else if (lowerText.includes('lista') || lowerText.includes('empresas') || lowerText.includes('tickers')) {
+        } else if (lower.includes('lista') || lower.includes('tickers')) {
             await showTickers();
         } else {
-            addMessage(`📝 Comando no reconocido. Prueba:<br>
-            • "escanea europa" - Oportunidades Europa<br>
-            • "escanea usa" - Oportunidades USA<br>
-            • "analiza AAPL" - Análisis profundo<br>
-            • "lista" - Ver empresas`);
+            addMessage('📝 Comandos: "escanea europa", "escanea usa", "analiza AAPL", "lista"', false);
         }
     }
+
+    function openMarketsPage() {
+        const marketsWindow = window.open('', '_blank');
+        if (!marketsWindow) {
+            alert('Permite ventanas emergentes para abrir los mercados');
+            return;
+        }
+        
+        const htmlContent = '<!DOCTYPE html>\n' +
+'<html>\n' +
+'<head>\n' +
+'<meta charset="UTF-8">\n' +
+'<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+'<title>SANTISYSTEMS - Mercados</title>\n' +
+'<style>\n' +
+'    * { margin:0; padding:0; box-sizing:border-box; }\n' +
+'    body { font-family: "Segoe UI", Roboto, sans-serif; background: #f0f2f5; padding: 20px; }\n' +
+'    .container { max-width: 1400px; margin: 0 auto; }\n' +
+'    h1 { color: #1a1a2e; margin-bottom: 10px; }\n' +
+'    h1 span { color: #667eea; }\n' +
+'    .subtitle { color: #718096; margin-bottom: 30px; font-size: 0.9rem; }\n' +
+'    .markets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }\n' +
+'    @media (max-width: 768px) { .markets-grid { grid-template-columns: 1fr; } }\n' +
+'    .market-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }\n' +
+'    .market-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0; }\n' +
+'    .market-title { font-size: 1.3rem; font-weight: bold; }\n' +
+'    .market-status { font-size: 0.75rem; padding: 4px 12px; border-radius: 40px; }\n' +
+'    .status-open { background: #c6f6d5; color: #22543d; }\n' +
+'    .status-closed { background: #fed7d7; color: #742a2a; }\n' +
+'    .update-time { font-size: 0.7rem; color: #718096; margin-bottom: 15px; }\n' +
+'    table { width: 100%; font-size: 0.8rem; border-collapse: collapse; }\n' +
+'    th { text-align: left; padding: 10px 6px; background: #f7fafc; color: #4a5568; border-bottom: 2px solid #e2e8f0; }\n' +
+'    td { padding: 10px 6px; border-bottom: 1px solid #edf2f7; }\n' +
+'    tr:hover { background: #f7fafc; cursor: pointer; }\n' +
+'    .positive { color: #27ae60; }\n' +
+'    .negative { color: #e74c3c; }\n' +
+'    .signal-badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 40px; display: inline-block; }\n' +
+'    .signal-compra { background: #c6f6d5; color: #22543d; }\n' +
+'    .signal-no-compra { background: #fed7d7; color: #742a2a; }\n' +
+'    .signal-observar { background: #feebc8; color: #7b4c1a; }\n' +
+'    .btn-back { background: #667eea; color: white; border: none; padding: 12px 24px; border-radius: 40px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-bottom: 20px; transition: all 0.2s; }\n' +
+'    .btn-back:hover { background: #5a67d8; transform: translateY(-1px); }\n' +
+'    .footer { margin-top: 30px; text-align: center; color: #718096; font-size: 0.75rem; }\n' +
+'    .loading { text-align: center; padding: 40px; color: #718096; }\n' +
+'</style>\n' +
+'</head>\n' +
+'<body>\n' +
+'<div class="container">\n' +
+'    <button class="btn-back" onclick="window.close()">← VOLVER AL CHAT</button>\n' +
+'    <h1>SANTI<span>SYSTEMS</span></h1>\n' +
+'    <div class="subtitle">📊 Mercados en tiempo real - Actualización cada 10 segundos</div>\n' +
+'    <div class="markets-grid">\n' +
+'        <div class="market-card">\n' +
+'            <div class="market-header">\n' +
+'                <span class="market-title">🇺🇸 MERCADO USA (40)</span>\n' +
+'                <span class="market-status" id="marketsUsaStatus">⏳</span>\n' +
+'            </div>\n' +
+'            <div class="update-time" id="marketsUsaUpdate"></div>\n' +
+'            <div id="marketsUsaTable">Cargando...</div>\n' +
+'        </div>\n' +
+'        <div class="market-card">\n' +
+'            <div class="market-header">\n' +
+'                <span class="market-title">🌍 MERCADO EUROPA (40)</span>\n' +
+'                <span class="market-status" id="marketsEuropaStatus">⏳</span>\n' +
+'            </div>\n' +
+'            <div class="update-time" id="marketsEuropaUpdate"></div>\n' +
+'            <div id="marketsEuropaTable">Cargando...</div>\n' +
+'        </div>\n' +
+'    </div>\n' +
+'    <div class="footer">💡 Haz clic en cualquier fila para análisis detallado (cerrará esta ventana)</div>\n' +
+'</div>\n' +
+'<script>\n' +
+'    const WORKER_URL = "' + WORKER_URL + '";\n' +
+'    let usaData = [], europeData = [];\n' +
+'    function getMarketStatus() {\n' +
+'        const now = new Date();\n' +
+'        const h = now.getHours();\n' +
+'        const m = now.getMinutes();\n' +
+'        const d = now.getDay();\n' +
+'        const tm = h * 60 + m;\n' +
+'        if (d === 0 || d === 6) return { usa: "closed", europe: "closed" };\n' +
+'        return { usa: (tm >= 930 && tm < 1320) ? "open" : "closed", europe: (tm >= 540 && tm < 1050) ? "open" : "closed" };\n' +
+'    }\n' +
+'    async function loadUSA() {\n' +
+'        try {\n' +
+'            const res = await fetch(WORKER_URL + "/api/scan/usa");\n' +
+'            const data = await res.json();\n' +
+'            if (Array.isArray(data)) {\n' +
+'                usaData = data;\n' +
+'                const container = document.getElementById("marketsUsaTable");\n' +
+'                if (usaData.length === 0) { container.innerHTML = "<div class=\"loading\">Cargando...</div>"; return; }\n' +
+'                let html = "<table><thead><tr><th>Símbolo</th><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>";\n' +
+'                for (let i = 0; i < usaData.length; i++) {\n' +
+'                    const s = usaData[i];\n' +
+'                    const cls = s.change >= 0 ? "positive" : "negative";\n' +
+'                    const sym = s.change >= 0 ? "▲" : "▼";\n' +
+'                    let sigCls = "signal-observar";\n' +
+'                    if (s.signal === "COMPRA FUERTE" || s.signal === "COMPRA") sigCls = "signal-compra";\n' +
+'                    else if (s.signal === "NO COMPRA" || s.signal === "NO COMPRA FUERTE") sigCls = "signal-no-compra";\n' +
+'                    html += "<tr onclick=\"window.opener.analyzeStockFromMarkets(\'" + s.ticker + "\'); window.close();\">";\n' +
+'                    html += "<td><strong>" + s.ticker + "</strong></td>";\n' +
+'                    html += "<td>" + s.name + "</td>";\n' +
+'                    html += "<td>$" + s.price.toFixed(2) + "</td>";\n' +
+'                    html += "<td class=\"" + cls + "\">" + sym + " " + Math.abs(s.change).toFixed(2) + "%</td>";\n' +
+'                    html += "<td>" + s.rsi + "</td>";\n' +
+'                    html += "<td><span class=\"signal-badge " + sigCls + "\">" + s.signal + "</span></td>";\n' +
+'                    html += "</tr>";\n' +
+'                }\n' +
+'                html += "</tbody></table>";\n' +
+'                container.innerHTML = html;\n' +
+'                const status = getMarketStatus();\n' +
+'                const statusEl = document.getElementById("marketsUsaStatus");\n' +
+'                statusEl.textContent = status.usa === "open" ? "🟢 ABIERTO" : "🔴 CERRADO";\n' +
+'                statusEl.className = "market-status " + (status.usa === "open" ? "status-open" : "status-closed");\n' +
+'                document.getElementById("marketsUsaUpdate").textContent = "🕐 " + new Date().toLocaleTimeString();\n' +
+'            }\n' +
+'        } catch(e) {}\n' +
+'    }\n' +
+'    async function loadEurope() {\n' +
+'        try {\n' +
+'            const res = await fetch(WORKER_URL + "/api/scan/europe");\n' +
+'            const data = await res.json();\n' +
+'            if (Array.isArray(data)) {\n' +
+'                europeData = data;\n' +
+'                const container = document.getElementById("marketsEuropaTable");\n' +
+'                if (europeData.length === 0) { container.innerHTML = "<div class=\"loading\">Cargando...</div>"; return; }\n' +
+'                let html = "<table><thead><tr><th>Símbolo</th><th>Empresa</th><th>Precio</th><th>Cambio</th><th>RSI</th><th>Señal</th></tr></thead><tbody>";\n' +
+'                for (let i = 0; i < europeData.length; i++) {\n' +
+'                    const s = europeData[i];\n' +
+'                    const cls = s.change >= 0 ? "positive" : "negative";\n' +
+'                    const sym = s.change >= 0 ? "▲" : "▼";\n' +
+'                    let sigCls = "signal-observar";\n' +
+'                    if (s.signal === "COMPRA FUERTE" || s.signal === "COMPRA") sigCls = "signal-compra";\n' +
+'                    else if (s.signal === "NO COMPRA" || s.signal === "NO COMPRA FUERTE") sigCls = "signal-no-compra";\n' +
+'                    html += "<tr onclick=\"window.opener.analyzeStockFromMarkets(\'" + s.ticker + "\'); window.close();\">";\n' +
+'                    html += "<td><strong>" + s.ticker + "</strong></td>";\n' +
+'                    html += "<td>" + s.name + "</td>";\n' +
+'                    html += "<td>€" + s.price.toFixed(2) + "</td>";\n' +
+'                    html += "<td class=\"" + cls + "\">" + sym + " " + Math.abs(s.change).toFixed(2) + "%</td>";\n' +
+'                    html += "<td>" + s.rsi + "</td>";\n' +
+'                    html += "<td><span class=\"signal-badge " + sigCls + "\">" + s.signal + "</span></td>";\n' +
+'                    html += "</tr>";\n' +
+'                }\n' +
+'                html += "</tbody></table>";\n' +
+'                container.innerHTML = html;\n' +
+'                const status = getMarketStatus();\n' +
+'                const statusEl = document.getElementById("marketsEuropaStatus");\n' +
+'                statusEl.textContent = status.europe === "open" ? "🟢 ABIERTO" : "🔴 CERRADO";\n' +
+'                statusEl.className = "market-status " + (status.europe === "open" ? "status-open" : "status-closed");\n' +
+'                document.getElementById("marketsEuropaUpdate").textContent = "🕐 " + new Date().toLocaleTimeString();\n' +
+'            }\n' +
+'        } catch(e) {}\n' +
+'    }\n' +
+'    loadUSA();\n' +
+'    loadEurope();\n' +
+'    setInterval(function() { loadUSA(); loadEurope(); }, 10000);\n' +
+'</script>\n' +
+'</body>\n' +
+'</html>';
+        
+        marketsWindow.document.write(htmlContent);
+        marketsWindow.document.close();
+    }
+
+    window.analyzeStockFromMarkets = function(ticker) {
+        analyzeStock(ticker);
+    };
     
-    // Inicializar
     checkSession();
-    
     document.getElementById('loginPass').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') doLogin();
+        if (e.key === 'Enter') doLogin(false);
     });
     document.getElementById('loginUser').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') doLogin();
+        if (e.key === 'Enter') doLogin(false);
     });
 </script>
 </body>
