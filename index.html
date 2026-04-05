@@ -325,8 +325,9 @@
             • 🌍 Europa: 40 empresas (tiempo real)<br><br>
             <strong>Comandos:</strong><br>
             • "escanea europa" / "escanea usa"<br>
-            • "analiza AAPL" — análisis profundo con noticias<br>
+            • "analiza AAPL 500" — análisis profundo con tu cantidad<br>
             • "lista" — todas las empresas<br><br>
+            🕒 <em>CRON automático: Europa 9:20 | USA 15:10 (lunes a viernes)</em><br>
             ⚠️ <em>Análisis técnico estimado. No es consejo financiero.</em>
         </div>
     </div>
@@ -530,10 +531,10 @@
     async function showLastScan(market) {
         addMessage('📂 Cargando último análisis CRON de ' + (market === 'europe' ? 'Europa' : 'USA') + '...', true);
         try {
-            var res = await authFetch(WORKER_URL + '/api/last-scan/' + market);
+            var res = await authFetchChecked(WORKER_URL + '/api/last-scan/' + market);
             var data = await res.json();
             if (data.error) {
-                addMessage('⚠️ ' + data.error + '<br><small>El CRON guarda a las ' + (market === 'europe' ? '9:00' : '15:10') + ' en días laborables.</small>', false);
+                addMessage('⚠️ ' + data.error + '<br><small>El CRON guarda a las ' + (market === 'europe' ? '9:20' : '15:10') + ' en días laborables (lunes a viernes).</small>', false);
                 return;
             }
             var stocks = data.results || [];
@@ -586,162 +587,188 @@
         } catch(e) { addMessage('❌ Error: ' + e.message, false); }
     }
 
+    // ── Manejo de respuestas 401 (sesión expirada)
+    async function authFetchChecked(url, options) {
+        var res = await authFetch(url, options);
+        if (res.status === 401) {
+            sessionStorage.removeItem('ss_logged');
+            sessionStorage.removeItem('ss_token');
+            document.getElementById('chatContainer').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('loginError').style.display = 'block';
+            document.getElementById('loginError').innerText = '⚠️ Tu sesión ha expirado o el token no es válido. Vuelve a iniciar sesión.';
+            throw new Error('401');
+        }
+        return res;
+    }
+
     // ── Análisis profundo
     async function analyzeStock(ticker, investment) {
         investment = investment || 300;
         addMessage('🔍 Analizando ' + ticker + ' con ' + investment + '€...', true);
         try {
-            var res = await authFetch(WORKER_URL + '/api/analyze?ticker=' + ticker + '&investment=' + investment);
+            var res = await authFetchChecked(WORKER_URL + '/api/analyze?ticker=' + ticker + '&investment=' + investment);
             var data = await res.json();
             if (data.error) { addMessage('❌ ' + data.error, false); return; }
 
             var rec = data.recommendation || 'OBSERVAR';
             var scls = sigClass(rec);
-            var confidence = data.confidence || '50%';
+            var confidence = data.confidenceCalibration?.finalConfidence || parseInt(data.confidence) || 50;
             var currency = data.market === 'Europa' ? '€' : '$';
             var rsi = data.rsi || data.indicators?.rsi || 50;
+            var ce = data.claudeExplanation; // objeto estructurado de Claude
 
-            var html = '<strong>📈 ANÁLISIS: ' + (data.ticker || ticker) + ' — ' + data.name + '</strong><br><br>';
-            html += '📍 ' + (data.market || 'USA') + ' &nbsp;|&nbsp; ';
+            // ── CABECERA
+            var html = '<strong>📈 ' + (data.ticker || ticker) + ' — ' + data.name + '</strong><br>';
+            html += '<small>📍 ' + (data.market || 'USA') + ' &nbsp;|&nbsp; ';
             html += '💰 ' + currency + (data.price || 'N/A') + ' &nbsp;|&nbsp; ';
-            html += '📉 ' + (data.change > 0 ? '+' : '') + (data.change || 0).toFixed(2) + '%<br><br>';
+            html += (data.change > 0 ? '▲ +' : '▼ ') + (data.change || 0).toFixed(2) + '%</small><br><br>';
 
-            // Estado del mercado general
+            // ── SEMÁFORO (arriba del todo, muy visible)
+            var semaforo = ce?.semaforo || (rec === 'COMPRA FUERTE' || rec === 'COMPRA' ? 'FAVORABLE' : rec === 'NO COMPRA' || rec === 'NO COMPRA FUERTE' ? 'DESFAVORABLE' : 'DUDOSA');
+            var semaforoEmoji = semaforo === 'FAVORABLE' ? '🟢' : semaforo === 'DESFAVORABLE' ? '🔴' : '🟡';
+            var semaforoBg = semaforo === 'FAVORABLE' ? '#f0fff4' : semaforo === 'DESFAVORABLE' ? '#fff5f5' : '#fffbf0';
+            var semaforoBorder = semaforo === 'FAVORABLE' ? '#9ae6b4' : semaforo === 'DESFAVORABLE' ? '#feb2b2' : '#fbd38d';
+            var semaforoText = semaforo === 'FAVORABLE' ? 'Oportunidad favorable' : semaforo === 'DESFAVORABLE' ? 'Mejor no entrar ahora' : 'Señal dudosa, precaución';
+            html += '<div style="background:' + semaforoBg + ';border:2px solid ' + semaforoBorder + ';border-radius:12px;padding:12px 16px;margin-bottom:12px;text-align:center;">';
+            html += '<div style="font-size:2rem;">' + semaforoEmoji + '</div>';
+            html += '<strong style="font-size:1.1rem;">' + semaforoText + '</strong><br>';
+            html += '<small>Señal: <strong>' + rec + '</strong> &nbsp;|&nbsp; Confianza: <strong>' + confidence + '%</strong></small>';
+            html += '</div>';
+
+            // ── MERCADO GENERAL
             if (data.marketIndex) {
                 var mi = data.marketIndex;
                 var miColor = mi.change >= 0.2 ? '#276749' : mi.change <= -0.2 ? '#742a2a' : '#744210';
                 var miBg = mi.change >= 0.2 ? '#f0fff4' : mi.change <= -0.2 ? '#fff5f5' : '#fffbf0';
                 html += '<div style="background:' + miBg + ';border-radius:10px;padding:8px 12px;margin-bottom:10px;font-size:0.85rem;">';
-                html += '<strong>📊 Mercado general hoy:</strong> ' + mi.emoji + ' <strong>' + mi.name + '</strong> ';
-                html += (mi.change > 0 ? '+' : '') + mi.change + '% — <span style="color:' + miColor + ';">' + mi.estado.toUpperCase() + '</span>';
+                html += mi.emoji + ' <strong>Mercado general hoy:</strong> ' + mi.name + ' ';
+                html += '<span style="color:' + miColor + ';font-weight:600;">' + (mi.change > 0 ? '+' : '') + mi.change + '% — ' + mi.estado.toUpperCase() + '</span>';
                 html += '</div>';
             }
 
-            // Explicación de Claude — lo más importante, arriba del todo
-            if (data.claudeExplanation) {
-                html += '<div style="background:#f0f4ff;border-left:4px solid #667eea;padding:12px 14px;border-radius:0 12px 12px 0;margin-bottom:14px;">';
-                html += '<strong>🤖 Análisis en lenguaje normal:</strong><br><br>';
+            // ── LECTURA RÁPIDA DE CLAUDE (lenguaje humano)
+            if (ce?.lecturaRapida) {
+                html += '<div style="background:#f0f4ff;border-left:4px solid #667eea;padding:12px 14px;border-radius:0 12px 12px 0;margin-bottom:12px;">';
+                html += '<strong>🤖 En pocas palabras:</strong><br><br>';
+                html += ce.lecturaRapida.replace(/\n/g, '<br>');
+                html += '</div>';
+            } else if (typeof data.claudeExplanation === 'string') {
+                // compatibilidad con formato antiguo
+                html += '<div style="background:#f0f4ff;border-left:4px solid #667eea;padding:12px 14px;border-radius:0 12px 12px 0;margin-bottom:12px;">';
+                html += '<strong>🤖 En pocas palabras:</strong><br><br>';
                 html += data.claudeExplanation.replace(/\n/g, '<br>');
                 html += '</div>';
             }
 
-            // Objetivo y riesgo orientativo
+            // ── RESUMEN CLAVE (historial + riesgo en lenguaje humano)
+            html += '<div style="background:#f7fafc;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.85rem;">';
+            html += '<strong>🧠 Resumen clave:</strong><br>';
+
+            // Historial del sistema
+            var edge = data.edge || 'NEUTRO';
+            var edgeEmoji = edge === 'POSITIVO' ? '🟢' : edge === 'NEGATIVO' ? '🔴' : '⚪';
+            if (edge === 'POSITIVO') html += edgeEmoji + ' El sistema ha tenido ventaja histórica en esta acción<br>';
+            else if (edge === 'NEGATIVO') html += edgeEmoji + ' El sistema no ha mostrado ventaja histórica en esta acción<br>';
+            else html += edgeEmoji + ' El historial del sistema en esta acción no es concluyente<br>';
+
+            // Ajuste por backtest
+            var adj = data.confidenceCalibration?.adjustedByBacktest || 0;
+            if (adj < -5) html += '📉 El historial ha reducido la confianza de esta señal<br>';
+            else if (adj > 0) html += '📈 El historial apoya ligeramente esta señal<br>';
+
+            // Riesgo/beneficio
+            var riskQ = data.riskAssessment?.quality;
+            if (riskQ === 'buena') html += '✅ La relación riesgo/beneficio es atractiva<br>';
+            else if (riskQ === 'mala') html += '⚠️ El riesgo es mayor que la ganancia esperada<br>';
+            else if (riskQ === 'normal') html += '⚖️ Riesgo y ganancia esperada están equilibrados<br>';
+
+            // Contexto de Claude si existe
+            if (ce?.contexto) html += '<br><small style="color:#4a5568;">' + ce.contexto.replace(/\n/g, '<br>') + '</small>';
+            html += '</div>';
+
+            // ── ESCENARIO ORIENTATIVO
             if (data.riskTarget) {
                 var rt = data.riskTarget;
                 var inv = data.investment || 300;
                 html += '<div style="background:#f7fafc;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.85rem;">';
-                html += '<strong>🎯 Orientativo con ' + inv + '€:</strong><br>';
-                html += '• Movimiento medio últimos 60 días: <strong>' + rt.avgDailyMove + '% al día</strong><br>';
-                html += '• Si sale bien en 1 día: <strong style="color:#276749;">~+' + rt.gain1d + '€</strong><br>';
-                html += '• Si sale bien en 3 días: <strong style="color:#276749;">~+' + rt.gain3d + '€</strong><br>';
-                html += '• Si sale bien en 5 días: <strong style="color:#276749;">~+' + rt.gain5d + '€</strong><br>';
-                if (rt.riskAmount) html += '• Riesgo si va mal (hasta soporte ' + rt.nearestSupport + '): <strong style="color:#742a2a;">~-' + rt.riskAmount + '€ (-' + rt.riskPct + '%)</strong><br>';
-                html += '<small>⚠️ Basado en el movimiento real de los últimos 60 días. No es una garantía.</small>';
+                html += '<strong>🎯 Escenario orientativo con ' + inv + '€:</strong><br>';
+                html += '• Movimiento medio diario: <strong>' + rt.avgDailyMove + '%</strong><br>';
+                html += '• Si va bien en 3 días: <strong style="color:#276749;">~+' + rt.gain3d + '€</strong> &nbsp;|&nbsp; en 5 días: <strong style="color:#276749;">~+' + rt.gain5d + '€</strong><br>';
+                if (rt.riskAmount) html += '• Riesgo si va mal: <strong style="color:#742a2a;">~-' + rt.riskAmount + '€</strong> (soporte en ' + rt.nearestSupport + ')<br>';
+                if (data.riskAssessment?.riskRewardRatio) html += '• Ratio riesgo/beneficio: <strong>' + data.riskAssessment.riskRewardRatio + '</strong> — ' + (data.riskAssessment.riskRewardRatio >= 2 ? '✅ bueno' : data.riskAssessment.riskRewardRatio >= 1 ? '⚖️ normal' : '⚠️ bajo') + '<br>';
+                html += '<small>Basado en volatilidad histórica. No es una garantía.</small>';
                 html += '</div>';
             }
 
-            // RSI
-            html += '📊 RSI: <strong>' + rsi + '</strong>';
-            if (rsi < 35) html += ' 🟢 sobreventa';
-            else if (rsi > 70) html += ' 🔴 sobrecompra';
-            else html += ' ⚪ neutral';
-            html += '<br><br>';
-
-            // Indicadores clave
+            // ── INDICADORES (sección secundaria)
+            html += '<details style="margin-bottom:10px;"><summary style="cursor:pointer;color:#667eea;font-size:0.85rem;font-weight:600;">🔬 Ver indicadores técnicos</summary><div style="padding:10px 0;">';
+            html += 'RSI: <strong>' + rsi + '</strong>' + (rsi < 35 ? ' 🟢 posible rebote' : rsi > 70 ? ' 🔴 sobrecompra' : ' ⚪ neutral') + '<br>';
             if (data.indicators) {
                 var ind = data.indicators;
-                html += '<strong>🔬 INDICADORES:</strong><br>';
-                if (ind.adx !== null && ind.adx !== undefined) html += '• ADX: ' + ind.adx + (ind.adx > 25 ? ' (tendencia fuerte)' : ' (mercado lateral)') + '<br>';
-                if (ind.superTrend) html += '• SuperTrend: ' + (ind.superTrend === 'bullish' ? '🟢 ALCISTA' : '🔴 BAJISTA') + '<br>';
-                if (ind.ema200) html += '• EMA200: ' + ind.ema200 + ' — precio ' + (data.price > ind.ema200 ? '🟢 por encima' : '🔴 por debajo') + '<br>';
-                if (ind.trendConfirmation) html += '• Confirmación tendencia: ' + (ind.trendConfirmation.signal === 'bullish' ? '🟢' : ind.trendConfirmation.signal === 'bearish' ? '🔴' : '⚪') + ' ' + (ind.trendConfirmation.note || ind.trendConfirmation.signal) + '<br>';
-                if (ind.volumeRatio) html += '• Volumen relativo: ' + ind.volumeRatio + 'x<br>';
-                html += '<br>';
-
-                // Noticias / Sentimiento
+                if (ind.superTrend) html += 'Tendencia largo plazo: ' + (ind.superTrend === 'bullish' ? '🟢 ALCISTA' : '🔴 BAJISTA') + '<br>';
+                if (ind.ema200) html += 'Media 200 días (' + ind.ema200 + '): precio ' + (data.price > ind.ema200 ? '🟢 por encima' : '🔴 por debajo') + '<br>';
+                if (ind.adx !== null && ind.adx !== undefined) html += 'Fuerza tendencia: ' + (ind.adx > 25 ? '🟢 fuerte (' + ind.adx + ')' : '⚪ lateral (' + ind.adx + ')') + '<br>';
+                if (ind.volumeRatio) html += 'Volumen relativo: ' + ind.volumeRatio + 'x<br>';
                 if (ind.newsSentiment) {
                     var ns = ind.newsSentiment;
-                    var nsEmoji = ns.label === 'positivo' ? '🟢' : ns.label === 'negativo' ? '🔴' : '⚪';
-                    html += '<strong>📰 NOTICIAS (' + ns.count + ' artículos):</strong> ' + nsEmoji + ' ' + ns.label.toUpperCase() + ' (score: ' + ns.score + ')<br>';
-                    if (ns.headlines && ns.headlines.length) {
-                        for (var h = 0; h < ns.headlines.length; h++) {
-                            if (ns.headlines[h]) html += '<small>• ' + ns.headlines[h] + '...</small><br>';
-                        }
-                    }
-                    html += '<br>';
+                    html += 'Noticias: ' + (ns.label === 'positivo' ? '🟢' : ns.label === 'negativo' ? '🔴' : '⚪') + ' ' + ns.label + ' (' + ns.count + ' artículos)<br>';
+                    if (ns.headlines?.length) ns.headlines.forEach(function(h) { if (h) html += '<small style="color:#718096;">• ' + h + '...</small><br>'; });
                 }
             }
+            html += '</div></details>';
 
-            // Puntuación por bloques
+            // ── BLOQUES (sección colapsable)
             if (data.blockScores) {
-                html += '<strong>🧱 PUNTUACIÓN POR BLOQUES:</strong><br>';
+                html += '<details style="margin-bottom:10px;"><summary style="cursor:pointer;color:#667eea;font-size:0.85rem;font-weight:600;">🧱 Ver puntuación por bloques</summary><div style="padding:8px 0;">';
                 html += '<div class="block-grid">';
                 for (var key in data.blockScores) {
                     var b = data.blockScores[key];
                     var bClass = b.score > 0.15 ? 'block-bull' : b.score < -0.15 ? 'block-bear' : 'block-neutral';
                     var bEmoji = b.score > 0.15 ? '🟢' : b.score < -0.15 ? '🔴' : '⚪';
-                    html += '<div class="block-card ' + bClass + '">';
-                    html += '<div class="block-name">' + b.name + '</div>';
-                    html += '<div class="block-score">' + bEmoji + ' ' + (b.score > 0 ? '+' : '') + b.score + '</div>';
-                    html += '</div>';
+                    html += '<div class="block-card ' + bClass + '"><div class="block-name">' + b.name + '</div>';
+                    html += '<div class="block-score">' + bEmoji + ' ' + (b.score > 0 ? '+' : '') + b.score + '</div></div>';
                 }
-                html += '</div><br>';
+                html += '</div></div></details>';
             }
 
-            // Resultado final
-            html += '🎯 <strong>Señal: <span class="' + scls + '">' + rec + '</span></strong><br>';
-            html += '📊 Confianza estimada: <strong>' + confidence + '</strong><br><br>';
-
-            // Desglose de confianza
-            if (data.confidenceBreakdown && data.confidenceBreakdown.length) {
-                html += '<strong>📋 DESGLOSE CONFIANZA:</strong><br>';
-                for (var cb = 0; cb < data.confidenceBreakdown.length; cb++) {
-                    html += '<small>• ' + data.confidenceBreakdown[cb] + '</small><br>';
-                }
+            // ── DETALLES TÉCNICOS (sección colapsable)
+            html += '<details style="margin-bottom:10px;"><summary style="cursor:pointer;color:#718096;font-size:0.82rem;">📋 Ver detalles técnicos completos</summary><div style="padding:8px 0;font-size:0.82rem;">';
+            if (data.conflicts?.length) {
+                html += '⚠️ Conflictos: ';
+                data.conflicts.forEach(function(c) { html += '<span class="conflict-tag">' + c + '</span>'; });
                 html += '<br>';
             }
-
-            // Conflictos y puntos débiles
-            if (data.conflicts && data.conflicts.length) {
-                html += '⚠️ <strong>Conflictos:</strong> ';
-                for (var c = 0; c < data.conflicts.length; c++) html += '<span class="conflict-tag">' + data.conflicts[c] + '</span>';
+            if (data.weakPoints?.length) {
+                html += '🔸 Datos débiles: ';
+                data.weakPoints.forEach(function(w) { html += '<span class="weak-tag">' + w + '</span>'; });
                 html += '<br>';
             }
-            if (data.weakPoints && data.weakPoints.length) {
-                html += '🔸 <strong>Datos débiles:</strong> ';
-                for (var w = 0; w < data.weakPoints.length; w++) html += '<span class="weak-tag">' + data.weakPoints[w] + '</span>';
-                html += '<br>';
+            if (data.confidenceCalibration) {
+                var cc = data.confidenceCalibration;
+                html += 'Confianza base: ' + cc.baseConfidence + '% → ajustada: ' + cc.finalConfidence + '% (ajuste: ' + (cc.adjustedByBacktest >= 0 ? '+' : '') + cc.adjustedByBacktest + ')<br>';
             }
-
-            // Razones principales
-            if (data.recommendationDetails?.reasons && data.recommendationDetails.reasons.length) {
-                html += '<br><strong>🔍 RAZONES PRINCIPALES:</strong><br>';
-                var reasons = data.recommendationDetails.reasons;
-                for (var j = 0; j < Math.min(reasons.length, 6); j++) {
-                    html += '<small>• ' + reasons[j] + '</small><br>';
-                }
+            if (data.backtestReal) {
+                var br = data.backtestReal;
+                html += 'Backtest técnico: win rate compras ' + br.overallWinRate + '%, profit factor ' + br.overallProfitFactor + ' (' + br.buySignalsSample + ' señales)<br>';
+                html += '<small style="color:#718096;">' + br.note + '</small><br>';
             }
-
-            // Backtesting histórico
-            if (data.backtest) {
-                var bt = data.backtest;
-                html += '<br><div style="background:#f7fafc;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.82rem;">';
-                html += '<strong>📉 Comportamiento histórico (' + bt.totalSamples + ' días analizados):</strong><br>';
-                html += '• En 1 día: subió el <strong>' + bt.winRate1d + '%</strong> de las veces (media ' + (bt.avgMove1d > 0 ? '+' : '') + bt.avgMove1d + '%)<br>';
-                html += '• En 3 días: subió el <strong>' + bt.winRate3d + '%</strong> de las veces (media ' + (bt.avgMove3d > 0 ? '+' : '') + bt.avgMove3d + '%)<br>';
-                html += '• En 5 días: subió el <strong>' + bt.winRate5d + '%</strong> de las veces (media ' + (bt.avgMove5d > 0 ? '+' : '') + bt.avgMove5d + '%)<br>';
-                html += '<small>⚠️ ' + bt.note + '</small>';
-                html += '</div>';
+            if (data.recommendationDetails?.reasons?.length) {
+                html += '<br>Razones: ';
+                data.recommendationDetails.reasons.slice(0, 5).forEach(function(r) { html += '<br><small>• ' + r + '</small>'; });
             }
+            html += '</div></details>';
 
-            // Indicador de caché
-            if (data.cached) html += '<small style="color:#718096;">⚡ Análisis desde caché (menos de 90s)</small><br>';
+            // ── PIE
+            if (data.cached) html += '<small style="color:#718096;">⚡ Desde caché (menos de 90s)</small><br>';
+            html += '<br><small style="color:#718096;">⏰ ' + new Date(data.timestamp).toLocaleString() + ' &nbsp;|&nbsp; ⚠️ No es consejo financiero garantizado.</small>';
 
-            html += '<br><small>⏰ ' + new Date(data.timestamp).toLocaleString() + '<br>⚠️ ' + (data.disclaimer || 'Análisis estimado. No es consejo financiero.') + '</small>';
             addMessage(html, false);
         } catch(e) {
-            console.error(e);
-            addMessage('❌ Error en el análisis: ' + e.message, false);
+            if (e.message !== '401') {
+                console.error(e);
+                addMessage('❌ Error en el análisis: ' + e.message, false);
+            }
         }
     }
 
