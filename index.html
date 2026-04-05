@@ -437,7 +437,7 @@
                 addMessage('✅ Sesión iniciada. Bienvenido.', false);
             } else {
                 errorDiv.style.display = 'block';
-                errorDiv.innerText = '❌ Usuario o contraseña incorrectos';
+                errorDiv.innerText = '❌ ' + (result.error || 'Usuario o contraseña incorrectos');
             }
         } catch (error) {
             errorDiv.style.display = 'block';
