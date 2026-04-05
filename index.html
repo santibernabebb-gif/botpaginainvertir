@@ -360,6 +360,15 @@
     let fullUsaData = [], fullEuropeData = [];
     const SIGNAL_ORDER = { 'COMPRA FUERTE': 1, 'COMPRA': 2, 'CONSIDERAR': 3, 'OBSERVAR': 4, 'CONSIDERAR VENTA': 5, 'NO COMPRA': 6, 'NO COMPRA FUERTE': 7 };
 
+    // Fetch con token de autenticación automático
+    function authFetch(url, options) {
+        options = options || {};
+        options.headers = options.headers || {};
+        var token = sessionStorage.getItem('ss_token');
+        if (token) options.headers['Authorization'] = token;
+        return fetch(url, options);
+    }
+
     function sigClass(signal) {
         if (signal === 'COMPRA FUERTE' || signal === 'COMPRA') return 'signal-compra';
         if (signal === 'NO COMPRA' || signal === 'NO COMPRA FUERTE' || signal === 'CONSIDERAR VENTA') return 'signal-no-compra';
@@ -421,8 +430,8 @@
             });
             var result = await response.json();
             if (result.success === true) {
-                // Solo guardamos un flag de sesión, nunca la contraseña
                 sessionStorage.setItem('ss_logged', '1');
+                if (result.token) sessionStorage.setItem('ss_token', result.token);
                 errorDiv.style.display = 'none';
                 showApp();
                 addMessage('✅ Sesión iniciada. Bienvenido.', false);
@@ -439,6 +448,7 @@
     function logout() {
         if (fullMarketsInterval) clearInterval(fullMarketsInterval);
         sessionStorage.removeItem('ss_logged');
+        sessionStorage.removeItem('ss_token');
         document.getElementById('chatContainer').style.display = 'none';
         document.getElementById('loginContainer').style.display = 'flex';
         document.getElementById('loginUser').value = '';
@@ -486,7 +496,7 @@
 
     async function loadFullUSA() {
         try {
-            var res = await fetch(WORKER_URL + '/api/scan/usa');
+            var res = await authFetch(WORKER_URL + '/api/scan/usa');
             var data = await res.json();
             if (Array.isArray(data)) {
                 fullUsaData = data;
@@ -498,7 +508,7 @@
 
     async function loadFullEurope() {
         try {
-            var res = await fetch(WORKER_URL + '/api/scan/europe');
+            var res = await authFetch(WORKER_URL + '/api/scan/europe');
             var data = await res.json();
             if (Array.isArray(data)) {
                 fullEuropeData = data;
@@ -520,7 +530,7 @@
     async function showLastScan(market) {
         addMessage('📂 Cargando último análisis CRON de ' + (market === 'europe' ? 'Europa' : 'USA') + '...', true);
         try {
-            var res = await fetch(WORKER_URL + '/api/last-scan/' + market);
+            var res = await authFetch(WORKER_URL + '/api/last-scan/' + market);
             var data = await res.json();
             if (data.error) {
                 addMessage('⚠️ ' + data.error + '<br><small>El CRON guarda a las ' + (market === 'europe' ? '9:00' : '15:10') + ' en días laborables.</small>', false);
@@ -553,7 +563,7 @@
         addMessage('🔍 Escaneando mercado ' + (market === 'europe' ? 'Europeo' : 'USA') + '...', true);
         try {
             var endpoint = market === 'europe' ? '/api/scan/europe' : '/api/scan/usa';
-            var res = await fetch(WORKER_URL + endpoint);
+            var res = await authFetch(WORKER_URL + endpoint);
             var stocks = await res.json();
             if (!stocks.length) { addMessage('⚠️ Sin resultados.', false); return; }
             stocks.sort(function(a, b) {
@@ -581,7 +591,7 @@
         investment = investment || 300;
         addMessage('🔍 Analizando ' + ticker + ' con ' + investment + '€...', true);
         try {
-            var res = await fetch(WORKER_URL + '/api/analyze?ticker=' + ticker + '&investment=' + investment);
+            var res = await authFetch(WORKER_URL + '/api/analyze?ticker=' + ticker + '&investment=' + investment);
             var data = await res.json();
             if (data.error) { addMessage('❌ ' + data.error, false); return; }
 
@@ -712,6 +722,21 @@
                 }
             }
 
+            // Backtesting histórico
+            if (data.backtest) {
+                var bt = data.backtest;
+                html += '<br><div style="background:#f7fafc;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.82rem;">';
+                html += '<strong>📉 Comportamiento histórico (' + bt.totalSamples + ' días analizados):</strong><br>';
+                html += '• En 1 día: subió el <strong>' + bt.winRate1d + '%</strong> de las veces (media ' + (bt.avgMove1d > 0 ? '+' : '') + bt.avgMove1d + '%)<br>';
+                html += '• En 3 días: subió el <strong>' + bt.winRate3d + '%</strong> de las veces (media ' + (bt.avgMove3d > 0 ? '+' : '') + bt.avgMove3d + '%)<br>';
+                html += '• En 5 días: subió el <strong>' + bt.winRate5d + '%</strong> de las veces (media ' + (bt.avgMove5d > 0 ? '+' : '') + bt.avgMove5d + '%)<br>';
+                html += '<small>⚠️ ' + bt.note + '</small>';
+                html += '</div>';
+            }
+
+            // Indicador de caché
+            if (data.cached) html += '<small style="color:#718096;">⚡ Análisis desde caché (menos de 90s)</small><br>';
+
             html += '<br><small>⏰ ' + new Date(data.timestamp).toLocaleString() + '<br>⚠️ ' + (data.disclaimer || 'Análisis estimado. No es consejo financiero.') + '</small>';
             addMessage(html, false);
         } catch(e) {
@@ -724,7 +749,7 @@
     async function showTickers() {
         addMessage('📋 Cargando lista...', false);
         try {
-            var res = await fetch(WORKER_URL + '/api/tickers');
+            var res = await authFetch(WORKER_URL + '/api/tickers');
             var data = await res.json();
             var html = '<strong>📋 Empresas (' + data.total + ')</strong><br><br>';
             html += '<strong>🇺🇸 USA (' + data.usa.length + '):</strong><br>';
