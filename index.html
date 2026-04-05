@@ -332,7 +332,7 @@
     </div>
 
     <div class="input-area">
-        <input type="text" id="userInput" placeholder="Ej: analiza AAPL, escanea europa, lista..." onkeypress="if(event.key==='Enter') sendMessage()">
+        <input type="text" id="userInput" placeholder="Ej: analiza AAPL 500, escanea europa, lista..." onkeypress="if(event.key==='Enter') sendMessage()">
         <button onclick="sendMessage()">Enviar 📤</button>
     </div>
 
@@ -577,10 +577,11 @@
     }
 
     // ── Análisis profundo
-    async function analyzeStock(ticker) {
-        addMessage('🔍 Analizando ' + ticker + ' (incluyendo noticias)...', true);
+    async function analyzeStock(ticker, investment) {
+        investment = investment || 300;
+        addMessage('🔍 Analizando ' + ticker + ' con ' + investment + '€...', true);
         try {
-            var res = await fetch(WORKER_URL + '/api/analyze?ticker=' + ticker);
+            var res = await fetch(WORKER_URL + '/api/analyze?ticker=' + ticker + '&investment=' + investment);
             var data = await res.json();
             if (data.error) { addMessage('❌ ' + data.error, false); return; }
 
@@ -617,8 +618,9 @@
             // Objetivo y riesgo orientativo
             if (data.riskTarget) {
                 var rt = data.riskTarget;
+                var inv = data.investment || 300;
                 html += '<div style="background:#f7fafc;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.85rem;">';
-                html += '<strong>🎯 Orientativo con 300€:</strong><br>';
+                html += '<strong>🎯 Orientativo con ' + inv + '€:</strong><br>';
                 html += '• Objetivo estimado: <strong style="color:#276749;">+' + rt.targetPct + '% (+' + rt.targetGain + '€)</strong><br>';
                 if (rt.riskAmount) html += '• Riesgo si va mal: <strong style="color:#742a2a;">-' + rt.riskPct + '% (-' + rt.riskAmount + '€)</strong> — soporte en ' + (rt.nearestSupport || '—') + '<br>';
                 html += '<small>⚠️ Estimación basada en el movimiento medio de los últimos 20 días. No garantizado.</small>';
@@ -730,7 +732,7 @@
             html += '<div style="background:#f7fafc;padding:12px;border-radius:12px;max-height:150px;overflow-y:auto;">';
             for (var i = 0; i < data.europe.length; i++) html += '<div><strong>' + data.europe[i].ticker + '</strong> — ' + data.europe[i].name + '</div>';
             html += '</div><br>';
-            html += '<small>💡 Escribe "analiza TICKER"</small>';
+            html += '<small>💡 Escribe "analiza TICKER 500" (la cantidad es opcional, por defecto 300€)</small>';
             addMessage(html, false);
         } catch(e) { addMessage('❌ Error: ' + e.message, false); }
     }
@@ -748,12 +750,15 @@
         else if (lower.includes('analiza ')) {
             var parts = text.split(/analiza /i);
             if (parts.length > 1) {
-                var ticker = parts[1].split(' ')[0].toUpperCase();
-                if (ticker) await analyzeStock(ticker);
-                else addMessage('❌ Especifica un ticker. Ej: analiza AAPL', false);
+                var tokens = parts[1].trim().split(' ');
+                var ticker = tokens[0].toUpperCase();
+                var investment = tokens[1] ? parseFloat(tokens[1]) : 300;
+                if (isNaN(investment) || investment <= 0) investment = 300;
+                if (ticker) await analyzeStock(ticker, investment);
+                else addMessage('❌ Especifica un ticker. Ej: analiza AAPL 500', false);
             }
         } else if (lower.includes('lista') || lower.includes('tickers')) { await showTickers(); }
-        else { addMessage('📝 Comandos: "escanea europa", "escanea usa", "analiza AAPL", "lista"', false); }
+        else { addMessage('📝 Comandos: "escanea europa", "escanea usa", "analiza AAPL 500", "lista"', false); }
     }
 
     // ── Inicialización
