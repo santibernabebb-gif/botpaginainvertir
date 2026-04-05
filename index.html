@@ -595,11 +595,33 @@
             html += '💰 ' + currency + (data.price || 'N/A') + ' &nbsp;|&nbsp; ';
             html += '📉 ' + (data.change > 0 ? '+' : '') + (data.change || 0).toFixed(2) + '%<br><br>';
 
-            // Explicación de Claude en lenguaje normal — lo más importante, arriba del todo
+            // Estado del mercado general
+            if (data.marketIndex) {
+                var mi = data.marketIndex;
+                var miColor = mi.change >= 0.2 ? '#276749' : mi.change <= -0.2 ? '#742a2a' : '#744210';
+                var miBg = mi.change >= 0.2 ? '#f0fff4' : mi.change <= -0.2 ? '#fff5f5' : '#fffbf0';
+                html += '<div style="background:' + miBg + ';border-radius:10px;padding:8px 12px;margin-bottom:10px;font-size:0.85rem;">';
+                html += '<strong>📊 Mercado general hoy:</strong> ' + mi.emoji + ' <strong>' + mi.name + '</strong> ';
+                html += (mi.change > 0 ? '+' : '') + mi.change + '% — <span style="color:' + miColor + ';">' + mi.estado.toUpperCase() + '</span>';
+                html += '</div>';
+            }
+
+            // Explicación de Claude — lo más importante, arriba del todo
             if (data.claudeExplanation) {
                 html += '<div style="background:#f0f4ff;border-left:4px solid #667eea;padding:12px 14px;border-radius:0 12px 12px 0;margin-bottom:14px;">';
                 html += '<strong>🤖 Análisis en lenguaje normal:</strong><br><br>';
                 html += data.claudeExplanation.replace(/\n/g, '<br>');
+                html += '</div>';
+            }
+
+            // Objetivo y riesgo orientativo
+            if (data.riskTarget) {
+                var rt = data.riskTarget;
+                html += '<div style="background:#f7fafc;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.85rem;">';
+                html += '<strong>🎯 Orientativo con 300€:</strong><br>';
+                html += '• Objetivo estimado: <strong style="color:#276749;">+' + rt.targetPct + '% (+' + rt.targetGain + '€)</strong><br>';
+                if (rt.riskAmount) html += '• Riesgo si va mal: <strong style="color:#742a2a;">-' + rt.riskPct + '% (-' + rt.riskAmount + '€)</strong> — soporte en ' + (rt.nearestSupport || '—') + '<br>';
+                html += '<small>⚠️ Estimación basada en el movimiento medio de los últimos 20 días. No garantizado.</small>';
                 html += '</div>';
             }
 
@@ -741,4 +763,3 @@
 </script>
 </body>
 </html>
-
