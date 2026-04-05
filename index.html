@@ -477,7 +477,7 @@
             if (sigDiff !== 0) return sigDiff;
             return (parseInt(b.confidence) || 0) - (parseInt(a.confidence) || 0);
         });
-        var html = '<table class="full-market-table"><thead><tr><th>Símbolo</th><th>Empresa</th><th>Precio</th><th>Cambio</th><th>Confianza</th><th>Señal</th></tr></thead><tbody>';
+        var html = '<table class="full-market-table"><thead><tr><th>Símbolo</th><th>Empresa</th><th>Precio</th><th>Cambio</th><th title="Confianza técnica estimada. El análisis profundo puede ajustarla con datos históricos.">Confianza*</th><th>Señal</th></tr></thead><tbody>';
         for (var i = 0; i < data.length; i++) {
             var s = data[i];
             var cls = s.change >= 0 ? 'positive' : 'negative';
@@ -633,7 +633,13 @@
             html += '<div style="background:' + semaforoBg + ';border:2px solid ' + semaforoBorder + ';border-radius:12px;padding:12px 16px;margin-bottom:12px;text-align:center;">';
             html += '<div style="font-size:2rem;">' + semaforoEmoji + '</div>';
             html += '<strong style="font-size:1.1rem;">' + semaforoText + '</strong><br>';
-            html += '<small>Señal: <strong>' + rec + '</strong> &nbsp;|&nbsp; Confianza: <strong>' + confidence + '%</strong></small>';
+            html += '<small>Señal: <strong>' + rec + '</strong> &nbsp;|&nbsp; Confianza: <strong>' + confidence + '%</strong>';
+            // Si la confianza base es distinta de la calibrada, mostrarlo
+            var baseConf = data.confidenceCalibration?.baseConfidence;
+            if (baseConf && baseConf !== confidence) {
+                html += ' <span style="color:#718096;">(técnica: ' + baseConf + '%, ajustada con histórico: ' + confidence + '%)</span>';
+            }
+            html += '</small>';
             html += '</div>';
 
             // ── MERCADO GENERAL
