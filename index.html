@@ -641,9 +641,30 @@
                 var mi = data.marketIndex;
                 var miColor = mi.change >= 0.2 ? '#276749' : mi.change <= -0.2 ? '#742a2a' : '#744210';
                 var miBg = mi.change >= 0.2 ? '#f0fff4' : mi.change <= -0.2 ? '#fff5f5' : '#fffbf0';
-                html += '<div style="background:' + miBg + ';border-radius:10px;padding:8px 12px;margin-bottom:10px;font-size:0.85rem;">';
+                html += '<div style="background:' + miBg + ';border-radius:10px;padding:8px 12px;margin-bottom:8px;font-size:0.85rem;">';
                 html += mi.emoji + ' <strong>Mercado general hoy:</strong> ' + mi.name + ' ';
                 html += '<span style="color:' + miColor + ';font-weight:600;">' + (mi.change > 0 ? '+' : '') + mi.change + '% — ' + mi.estado.toUpperCase() + '</span>';
+                html += '</div>';
+            }
+
+            // ── AVISOS IMPORTANTES (earnings + macro) — muy visibles si existen
+            if (data.earningsData?.hasEarnings && data.earningsData.daysUntil <= 7) {
+                html += '<div style="background:#fff5f5;border:2px solid #fc8181;border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:0.85rem;">';
+                html += '<strong>' + data.earningsData.warning + '</strong><br>';
+                html += '<small>Los resultados empresariales pueden mover el precio de forma imprevisible, independientemente del análisis técnico.</small>';
+                html += '</div>';
+            } else if (data.earningsData?.hasEarnings) {
+                html += '<div style="background:#fffbf0;border-radius:10px;padding:8px 12px;margin-bottom:8px;font-size:0.82rem;">';
+                html += data.earningsData.warning;
+                html += '</div>';
+            }
+
+            if (data.macroEvents?.hasHighImpact) {
+                html += '<div style="background:#fff5f5;border:1px solid #feb2b2;border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:0.85rem;">';
+                html += '<strong>' + data.macroEvents.warning + '</strong><br>';
+                data.macroEvents.events.forEach(function(e) {
+                    html += '<small>• ' + e.event + ' (' + e.country + ') — ' + e.date + '</small><br>';
+                });
                 html += '</div>';
             }
 
