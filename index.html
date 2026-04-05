@@ -621,9 +621,12 @@
                 var inv = data.investment || 300;
                 html += '<div style="background:#f7fafc;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.85rem;">';
                 html += '<strong>🎯 Orientativo con ' + inv + '€:</strong><br>';
-                html += '• Objetivo estimado: <strong style="color:#276749;">+' + rt.targetPct + '% (+' + rt.targetGain + '€)</strong><br>';
-                if (rt.riskAmount) html += '• Riesgo si va mal: <strong style="color:#742a2a;">-' + rt.riskPct + '% (-' + rt.riskAmount + '€)</strong> — soporte en ' + (rt.nearestSupport || '—') + '<br>';
-                html += '<small>⚠️ Estimación basada en el movimiento medio de los últimos 20 días. No garantizado.</small>';
+                html += '• Movimiento medio últimos 60 días: <strong>' + rt.avgDailyMove + '% al día</strong><br>';
+                html += '• Si sale bien en 1 día: <strong style="color:#276749;">~+' + rt.gain1d + '€</strong><br>';
+                html += '• Si sale bien en 3 días: <strong style="color:#276749;">~+' + rt.gain3d + '€</strong><br>';
+                html += '• Si sale bien en 5 días: <strong style="color:#276749;">~+' + rt.gain5d + '€</strong><br>';
+                if (rt.riskAmount) html += '• Riesgo si va mal (hasta soporte ' + rt.nearestSupport + '): <strong style="color:#742a2a;">~-' + rt.riskAmount + '€ (-' + rt.riskPct + '%)</strong><br>';
+                html += '<small>⚠️ Basado en el movimiento real de los últimos 60 días. No es una garantía.</small>';
                 html += '</div>';
             }
 
