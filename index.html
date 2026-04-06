@@ -340,7 +340,10 @@
     <div class="markets-full-container">
         <div class="markets-full-header" onclick="toggleFullMarkets()">
             <h3>📊 MERCADOS COMPLETOS (40 USA + 40 Europa)</h3>
-            <span class="arrow" id="fullMarketsArrow">▼</span>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <button id="pauseBtn" onclick="event.stopPropagation();togglePause();" style="background:#667eea;color:white;border:none;border-radius:20px;padding:5px 14px;font-size:0.8rem;cursor:pointer;font-weight:600;">⏸ Pausar</button>
+                <span class="arrow" id="fullMarketsArrow">▼</span>
+            </div>
         </div>
         <div id="fullMarketsContent" class="markets-full-content">
             <div class="full-market-card">
@@ -359,7 +362,23 @@
     const WORKER_URL = "https://botinvertir.santibernabebb.workers.dev";
     let fullMarketsInterval = null;
     let fullUsaData = [], fullEuropeData = [];
+    let marketsPaused = false;
     const SIGNAL_ORDER = { 'COMPRA FUERTE': 1, 'COMPRA': 2, 'CONSIDERAR': 3, 'OBSERVAR': 4, 'CONSIDERAR VENTA': 5, 'NO COMPRA': 6, 'NO COMPRA FUERTE': 7 };
+
+    function togglePause() {
+        marketsPaused = !marketsPaused;
+        var btn = document.getElementById('pauseBtn');
+        if (marketsPaused) {
+            btn.textContent = '▶ Reanudar';
+            btn.style.background = '#27ae60';
+        } else {
+            btn.textContent = '⏸ Pausar';
+            btn.style.background = '#667eea';
+            // Refresca inmediatamente al reanudar
+            loadFullUSA();
+            loadFullEurope();
+        }
+    }
 
     // Fetch con token de autenticación automático
     function authFetch(url, options) {
@@ -524,7 +543,12 @@
         loadFullEurope();
         updateMarketStatus();
         if (fullMarketsInterval) clearInterval(fullMarketsInterval);
-        fullMarketsInterval = setInterval(function() { loadFullUSA(); loadFullEurope(); }, 30000);
+        fullMarketsInterval = setInterval(function() {
+            if (!marketsPaused) {
+                loadFullUSA();
+                loadFullEurope();
+            }
+        }, 30000);
     }
 
     // ── Último CRON
