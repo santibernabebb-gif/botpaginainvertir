@@ -345,6 +345,9 @@
                 <span class="arrow" id="fullMarketsArrow">▼</span>
             </div>
         </div>
+
+        <!-- BARRA DE ÍNDICES EN TIEMPO REAL -->
+        <div id="indicesBar" style="padding:10px 24px 0;display:flex;gap:8px;flex-wrap:wrap;"></div>
         <div id="fullMarketsContent" class="markets-full-content">
             <div class="full-market-card">
                 <h4>🇺🇸 MERCADO USA (40 empresas) <span id="fullUsaStatus" class="full-market-status">⏳</span></h4>
@@ -538,12 +541,34 @@
         } catch(e) { console.error(e); }
     }
 
+    async function loadIndices() {
+        try {
+            var res = await fetch(WORKER_URL + '/api/indices');
+            var data = await res.json();
+            if (!Array.isArray(data)) return;
+            var bar = document.getElementById('indicesBar');
+            var html = '';
+            data.forEach(function(idx) {
+                var bg = idx.change >= 0.2 ? '#f0fff4' : idx.change <= -0.2 ? '#fff5f5' : '#f7fafc';
+                var color = idx.change >= 0.2 ? '#276749' : idx.change <= -0.2 ? '#742a2a' : '#4a5568';
+                var border = idx.change >= 0.2 ? '#9ae6b4' : idx.change <= -0.2 ? '#feb2b2' : '#e2e8f0';
+                html += '<div style="background:' + bg + ';border:1px solid ' + border + ';border-radius:20px;padding:4px 12px;font-size:0.78rem;white-space:nowrap;">';
+                html += idx.emoji + ' <strong>' + idx.name + '</strong> ';
+                html += '<span style="color:' + color + ';font-weight:600;">' + (idx.change > 0 ? '+' : '') + idx.change + '%</span>';
+                html += '</div>';
+            });
+            bar.innerHTML = html;
+        } catch(e) { console.error('loadIndices error:', e); }
+    }
+
     function startUpdates() {
+        loadIndices();
         loadFullUSA();
         loadFullEurope();
         updateMarketStatus();
         if (fullMarketsInterval) clearInterval(fullMarketsInterval);
         fullMarketsInterval = setInterval(function() {
+            loadIndices();
             if (!marketsPaused) {
                 loadFullUSA();
                 loadFullEurope();
@@ -665,17 +690,6 @@
             }
             html += '</small>';
             html += '</div>';
-
-            // ── MERCADO GENERAL
-            if (data.marketIndex) {
-                var mi = data.marketIndex;
-                var miColor = mi.change >= 0.2 ? '#276749' : mi.change <= -0.2 ? '#742a2a' : '#744210';
-                var miBg = mi.change >= 0.2 ? '#f0fff4' : mi.change <= -0.2 ? '#fff5f5' : '#fffbf0';
-                html += '<div style="background:' + miBg + ';border-radius:10px;padding:8px 12px;margin-bottom:8px;font-size:0.85rem;">';
-                html += mi.emoji + ' <strong>Mercado general hoy:</strong> ' + mi.name + ' ';
-                html += '<span style="color:' + miColor + ';font-weight:600;">' + (mi.change > 0 ? '+' : '') + mi.change + '% — ' + mi.estado.toUpperCase() + '</span>';
-                html += '</div>';
-            }
 
             // ── AVISOS IMPORTANTES (earnings + macro) — muy visibles si existen
             if (data.earningsData?.hasEarnings && data.earningsData.daysUntil <= 7) {
