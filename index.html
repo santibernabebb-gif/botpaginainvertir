@@ -744,11 +744,14 @@
                 var inv = data.investment || 300;
                 html += '<div style="background:#f7fafc;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.85rem;">';
                 html += '<strong>🎯 Escenario orientativo con ' + inv + '€:</strong><br>';
-                html += '• Movimiento medio diario: <strong>' + rt.avgDailyMove + '%</strong><br>';
+                html += '• Volatilidad media diaria: <strong>' + rt.avgDailyMove + '%</strong>';
+                if (rt.winRateDays) html += ' &nbsp;|&nbsp; Días positivos: <strong>' + rt.winRateDays + '%</strong> de las veces';
+                html += '<br>';
+                if (rt.avgUpDay) html += '• En un día alcista típico sube: <strong style="color:#276749;">~' + rt.avgUpDay + '%</strong> = <strong style="color:#276749;">~+' + rt.gain1d + '€</strong><br>';
                 html += '• Si va bien en 3 días: <strong style="color:#276749;">~+' + rt.gain3d + '€</strong> &nbsp;|&nbsp; en 5 días: <strong style="color:#276749;">~+' + rt.gain5d + '€</strong><br>';
                 if (rt.riskAmount) html += '• Riesgo si va mal: <strong style="color:#742a2a;">~-' + rt.riskAmount + '€</strong> (soporte en ' + rt.nearestSupport + ')<br>';
-                if (data.riskAssessment?.riskRewardRatio) html += '• Ratio riesgo/beneficio: <strong>' + data.riskAssessment.riskRewardRatio + '</strong> — ' + (data.riskAssessment.riskRewardRatio >= 2 ? '✅ bueno' : data.riskAssessment.riskRewardRatio >= 1 ? '⚖️ normal' : '⚠️ bajo') + '<br>';
-                html += '<small>Basado en volatilidad histórica. No es una garantía.</small>';
+                if (rt.riskRewardRatio) html += '• Ratio riesgo/beneficio: <strong>' + rt.riskRewardRatio + '</strong> — ' + (rt.riskRewardRatio >= 2 ? '✅ bueno' : rt.riskRewardRatio >= 1 ? '⚖️ normal' : '⚠️ bajo') + '<br>';
+                html += '<small>Basado en comportamiento histórico real de esta acción. No es una garantía.</small>';
                 html += '</div>';
             }
 
