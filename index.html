@@ -723,7 +723,9 @@
                 if (im.volumeSpike > 1.5) html += '<small>• 🔊 Volumen ' + im.volumeSpike + 'x la media — hay actividad inusual</small><br>';
                 else if (im.volumeSpike < 0.7) html += '<small>• 🔇 Volumen bajo (' + im.volumeSpike + 'x) — poca actividad</small><br>';
                 html += '</div>';
-            } — muy visibles si existen
+            }
+
+            // AVISOS IMPORTANTES (earnings + macro)
             if (data.earningsData?.hasEarnings && data.earningsData.daysUntil <= 7) {
                 html += '<div style="background:#fff5f5;border:2px solid #fc8181;border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:0.85rem;">';
                 html += '<strong>' + data.earningsData.warning + '</strong><br>';
