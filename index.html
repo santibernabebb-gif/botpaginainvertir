@@ -709,7 +709,21 @@
                 html += '</div>';
             }
 
-            // ── AVISOS IMPORTANTES (earnings + macro) — muy visibles si existen
+            // ── MOMENTUM INTRADIARIO (solo USA, muy visible)
+            if (data.intradayMomentum) {
+                var im = data.intradayMomentum;
+                var imBg = im.momentumSignal === 'ALCISTA_FUERTE' ? '#f0fff4' : im.momentumSignal === 'BAJISTA_FUERTE' ? '#fff5f5' : im.momentumSignal === 'ALCISTA' ? '#f0fff4' : im.momentumSignal === 'BAJISTA' ? '#fff5f5' : '#f7fafc';
+                var imBorder = im.momentumSignal === 'ALCISTA_FUERTE' ? '#9ae6b4' : im.momentumSignal === 'BAJISTA_FUERTE' ? '#feb2b2' : im.momentumSignal === 'ALCISTA' ? '#c6f6d5' : im.momentumSignal === 'BAJISTA' ? '#fed7d7' : '#e2e8f0';
+                var imEmoji = im.momentumSignal === 'ALCISTA_FUERTE' ? '🚀' : im.momentumSignal === 'BAJISTA_FUERTE' ? '💥' : im.momentumSignal === 'ALCISTA' ? '📈' : im.momentumSignal === 'BAJISTA' ? '📉' : '➡️';
+                html += '<div style="background:' + imBg + ';border:2px solid ' + imBorder + ';border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:0.85rem;">';
+                html += '<strong>' + imEmoji + ' Momentum ahora mismo:</strong><br>';
+                html += im.momentumDesc + '<br>';
+                html += '<small>• Desde apertura de hoy: <strong>' + (im.changeFromOpen > 0 ? '+' : '') + im.changeFromOpen + '%</strong></small><br>';
+                html += '<small>• ' + im.rangeDesc + '</small><br>';
+                if (im.volumeSpike > 1.5) html += '<small>• 🔊 Volumen ' + im.volumeSpike + 'x la media — hay actividad inusual</small><br>';
+                else if (im.volumeSpike < 0.7) html += '<small>• 🔇 Volumen bajo (' + im.volumeSpike + 'x) — poca actividad</small><br>';
+                html += '</div>';
+            } — muy visibles si existen
             if (data.earningsData?.hasEarnings && data.earningsData.daysUntil <= 7) {
                 html += '<div style="background:#fff5f5;border:2px solid #fc8181;border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:0.85rem;">';
                 html += '<strong>' + data.earningsData.warning + '</strong><br>';
