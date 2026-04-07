@@ -506,7 +506,7 @@
             var sym = s.change >= 0 ? '▲' : '▼';
             html += '<tr onclick="analyzeStock(\'' + s.ticker + '\')">';
             html += '<td><strong>' + s.ticker + '</strong></td>';
-            html += '<td>' + s.name + (s.dataWarning ? ' <small style="color:#e53e3e;">⚠️</small>' : '') + '</td>';
+            html += '<td>' + s.name + (s.dataWarning ? ' <small style="color:#e53e3e;">⚠️</small>' : '') + (s.beta !== null && s.beta !== undefined ? ' <small style="color:#718096;">β' + s.beta + '</small>' : '') + '</td>';
             html += '<td>' + currency + s.price.toFixed(2) + '</td>';
             html += '<td class="' + cls + '">' + sym + ' ' + Math.abs(s.change).toFixed(2) + '%</td>';
             html += '<td><strong>' + (s.confidence || '—') + '%</strong></td>';
@@ -673,6 +673,17 @@
             html += '💰 ' + currency + (data.price || 'N/A') + ' &nbsp;|&nbsp; ';
             html += (data.change > 0 ? '▲ +' : '▼ ') + (data.change || 0).toFixed(2) + '%</small><br><br>';
 
+            // ── FILTRO DE MERCADO — aviso muy visible si mercado cae fuerte
+            if (data.marketFilter?.warnings?.length) {
+                data.marketFilter.warnings.forEach(function(w) {
+                    var isBlock = w.includes('bloqueadas');
+                    var isCorriente = w.includes('contracorriente');
+                    var bg = isBlock ? '#fff5f5' : isCorriente ? '#f0fff4' : '#fffbf0';
+                    var border = isBlock ? '#fc8181' : isCorriente ? '#9ae6b4' : '#fbd38d';
+                    html += '<div style="background:' + bg + ';border:2px solid ' + border + ';border-radius:10px;padding:8px 12px;margin-bottom:8px;font-size:0.85rem;font-weight:600;">' + w + '</div>';
+                });
+            }
+
             // ── SEMÁFORO (arriba del todo, muy visible)
             var semaforo = ce?.semaforo || (rec === 'COMPRA FUERTE' || rec === 'COMPRA' ? 'FAVORABLE' : rec === 'NO COMPRA' || rec === 'NO COMPRA FUERTE' ? 'DESFAVORABLE' : 'DUDOSA');
             var semaforoEmoji = semaforo === 'FAVORABLE' ? '🟢' : semaforo === 'DESFAVORABLE' ? '🔴' : '🟡';
@@ -755,8 +766,21 @@
             else if (riskQ === 'mala') html += '⚠️ El riesgo es mayor que la ganancia esperada<br>';
             else if (riskQ === 'normal') html += '⚖️ Riesgo y ganancia esperada están equilibrados<br>';
 
+            // Beta
+            if (data.beta !== null && data.beta !== undefined) {
+                var betaText, betaEmoji;
+                if (data.beta < 0) { betaEmoji = '🔄'; betaText = 'Se mueve al contrario del mercado (beta ' + data.beta + ') — defensiva ante caídas generales'; }
+                else if (data.beta < 0.5) { betaEmoji = '🛡️'; betaText = 'Muy poco sensible al mercado (beta ' + data.beta + ') — muy defensiva'; }
+                else if (data.beta < 0.8) { betaEmoji = '🛡️'; betaText = 'Poco sensible al mercado (beta ' + data.beta + ') — defensiva, cae menos cuando el mercado baja'; }
+                else if (data.beta < 1.2) { betaEmoji = '⚖️'; betaText = 'Se mueve similar al mercado (beta ' + data.beta + ') — comportamiento normal'; }
+                else if (data.beta < 1.5) { betaEmoji = '⚡'; betaText = 'Más volátil que el mercado (beta ' + data.beta + ') — sube más cuando sube, baja más cuando baja'; }
+                else { betaEmoji = '🔥'; betaText = 'Muy volátil (beta ' + data.beta + ') — amplifica los movimientos del mercado, mayor riesgo'; }
+                html += betaEmoji + ' ' + betaText + '<br>';
+            }
+
             // Contexto de Claude si existe
             if (ce?.contexto) html += '<br><small style="color:#4a5568;">' + ce.contexto.replace(/\n/g, '<br>') + '</small>';
+
             html += '</div>';
 
             // ── ESCENARIO ORIENTATIVO
