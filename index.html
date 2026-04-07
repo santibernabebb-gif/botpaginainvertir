@@ -576,6 +576,35 @@
         }, 30000);
     }
 
+    // Intervalo para actualizar top 5 Europa en tiempo real
+    var top5Interval = null;
+
+    async function loadTop5Europe() {
+        try {
+            var res = await authFetch(WORKER_URL + '/api/top5-europe');
+            var data = await res.json();
+            if (data.error || !data.results) return;
+            var el = document.getElementById('top5EuropeContainer');
+            if (!el) return;
+            var html = '';
+            data.results.forEach(function(s) {
+                var cls = s.change >= 0 ? 'positive' : 'negative';
+                var sym = s.change >= 0 ? '▲' : '▼';
+                html += '<div class="stock-item" onclick="analyzeStock(\'' + s.ticker + '\')" style="position:relative;">';
+                if (s.livePrice) html += '<span style="position:absolute;top:6px;right:8px;font-size:0.6rem;color:#27ae60;font-weight:600;">🔴 LIVE</span>';
+                html += '<strong>' + s.ticker + '</strong><br><small>' + s.name + '</small><br>';
+                html += '€' + s.price + ' <span class="' + cls + '">' + sym + ' ' + Math.abs(s.change || 0).toFixed(2) + '%</span><br>';
+                html += '<strong>Confianza: ' + (s.confidence || '—') + '%</strong><br>';
+                html += '<span class="' + sigClass(s.signal) + '">' + s.signal + '</span>';
+                html += '</div>';
+            });
+            el.innerHTML = html;
+            // Actualizar hora
+            var tsEl = document.getElementById('top5EuropeTime');
+            if (tsEl) tsEl.textContent = 'Precio actualizado: ' + new Date().toLocaleTimeString();
+        } catch(e) { console.error('top5 error:', e); }
+    }
+
     // ── Último CRON
     async function showLastScan(market) {
         addMessage('📂 Cargando último análisis CRON de ' + (market === 'europe' ? 'Europa' : 'USA') + '...', true);
@@ -593,19 +622,50 @@
                 if (sigDiff !== 0) return sigDiff;
                 return (parseInt(b.confidence) || 0) - (parseInt(a.confidence) || 0);
             });
-            var html = '<strong>📂 CRON ' + (market === 'europe' ? 'EUROPA' : 'USA') + ' — Guardado: ' + ts + '</strong><br><br><div class="stock-list">';
-            for (var i = 0; i < Math.min(stocks.length, 20); i++) {
-                var s = stocks[i];
-                html += '<div class="stock-item" onclick="analyzeStock(\'' + s.ticker + '\')">';
-                html += '<strong>' + s.ticker + '</strong><br>' + s.name + '<br>';
-                html += (s.market === 'Europa' ? '€' : '$') + s.price + '<br>';
-                html += '<strong>Confianza: ' + (s.confidence || '—') + '%</strong><br>';
-                html += '<span class="' + sigClass(s.signal) + '">' + s.signal + '</span>';
-                html += '</div>';
+
+            if (market === 'europe') {
+                // TOP 5 con precio en tiempo real via iTick
+                var html = '<strong>📂 CRON EUROPA — Análisis: ' + ts + '</strong><br>';
+                html += '<small id="top5EuropeTime">Cargando precios en tiempo real...</small><br><br>';
+                html += '🔴 <strong>TOP 5 — Precio en tiempo real (iTick)</strong><br>';
+                html += '<div class="stock-list" id="top5EuropeContainer"><small>Cargando...</small></div><br>';
+                // Resto del ranking
+                html += '<details><summary style="cursor:pointer;color:#667eea;font-size:0.85rem;font-weight:600;">📋 Ver ranking completo (' + stocks.length + ' empresas)</summary>';
+                html += '<div class="stock-list" style="margin-top:8px;">';
+                for (var i = 5; i < Math.min(stocks.length, 20); i++) {
+                    var s = stocks[i];
+                    html += '<div class="stock-item" onclick="analyzeStock(\'' + s.ticker + '\')">';
+                    html += '<strong>' + s.ticker + '</strong><br><small>' + s.name + '</small><br>';
+                    html += '€' + s.price + '<br>';
+                    html += '<strong>Confianza: ' + (s.confidence || '—') + '%</strong><br>';
+                    html += '<span class="' + sigClass(s.signal) + '">' + s.signal + '</span>';
+                    html += '</div>';
+                }
+                html += '</div></details>';
+                html += '<br><small>💡 Clic en cualquier empresa para análisis profundo</small>';
+                addMessage(html, false);
+
+                // Cargar top 5 en tiempo real y activar intervalo de 1 minuto
+                await loadTop5Europe();
+                if (top5Interval) clearInterval(top5Interval);
+                top5Interval = setInterval(loadTop5Europe, 60000);
+
+            } else {
+                // USA — igual que antes
+                var html = '<strong>📂 CRON USA — Guardado: ' + ts + '</strong><br><br><div class="stock-list">';
+                for (var i = 0; i < Math.min(stocks.length, 20); i++) {
+                    var s = stocks[i];
+                    html += '<div class="stock-item" onclick="analyzeStock(\'' + s.ticker + '\')">';
+                    html += '<strong>' + s.ticker + '</strong><br>' + s.name + '<br>';
+                    html += '$' + s.price + '<br>';
+                    html += '<strong>Confianza: ' + (s.confidence || '—') + '%</strong><br>';
+                    html += '<span class="' + sigClass(s.signal) + '">' + s.signal + '</span>';
+                    html += '</div>';
+                }
+                html += '</div><br><small>💡 Clic para análisis profundo | Total: ' + stocks.length + ' empresas</small>';
+                addMessage(html, false);
             }
-            html += '</div><br><small>💡 Clic para análisis profundo | Total: ' + stocks.length + ' empresas</small>';
-            addMessage(html, false);
-        } catch(e) { addMessage('❌ Error: ' + e.message, false); }
+        } catch(e) { if (e.message !== '401') addMessage('❌ Error: ' + e.message, false); }
     }
 
     // ── Escáner en tiempo real
